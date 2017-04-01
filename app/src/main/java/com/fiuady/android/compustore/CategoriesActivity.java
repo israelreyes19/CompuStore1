@@ -82,6 +82,39 @@ public class CategoriesActivity extends AppCompatActivity {
                             else if(which ==1)
                             {
 
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(CategoriesActivity.this);
+                                builder1.setTitle("¿Deseas borrar esta categoría?");
+                                builder1.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        Inventory inventory = new Inventory(CategoriesActivity.this);
+                                        if(inventory.deleteCategory(category))
+                                        {
+                                            //recyclerView.setAdapter(adapter);
+
+                                            Toast.makeText(CategoriesActivity.this,"Se eliminó exitosamente " +
+                                                    "la categoría",Toast.LENGTH_SHORT).show();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(CategoriesActivity.this,"No se pudo eliminar la categoría. " +
+                                                    "Existen productos de la categoría",Toast.LENGTH_SHORT).show();
+                                        }
+                                        //recyclerView.setAdapter(adapter);
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+
+                                builder1.show();
+                                recyclerView.setAdapter(adapter);
+
                             }
                         }
                     });

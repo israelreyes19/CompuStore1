@@ -88,4 +88,28 @@ public final class Inventory {
             db.execSQL("INSERT INTO product_categories (id, description) VALUES ("+String.valueOf(mx+1)+", '"+category.getDescription()+"');");
         }
     }
+
+    public boolean  deleteCategory(Category category)
+    {
+        Cursor cursor = db.rawQuery("SELECT pc.id from " +
+                "product_categories pc INNER JOIN products p ON (pc.id = p.category_id) " +
+                "GROUP BY pc.id HAVING pc.id = "+ String.valueOf(category.getId())+";", new String[]{});
+        if (cursor==null)
+        {
+            db.execSQL("DELETE from product_categories WHERE id = " + String.valueOf(category.getId()) + ";");
+            return true;
+        }
+        else if(!cursor.moveToFirst())
+        {
+            db.execSQL("DELETE from product_categories WHERE id = " + String.valueOf(category.getId()) + ";");
+            cursor.close();
+            return true;
+
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+    }
 }
