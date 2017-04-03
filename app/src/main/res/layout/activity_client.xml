@@ -74,11 +74,11 @@
                 android:paddingTop="10dp"
                 android:src="@drawable/magnify"
                 android:background="#00000000"/>
-            <Spinner
-                android:layout_width="100dp"
-                android:layout_height="wrap_content">
 
-            </Spinner>
+            <com.fiuady.android.compustore.MultiSelectionSpinner
+                android:id="@+id/mySpinner1"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content" />
 
 
         </LinearLayout>

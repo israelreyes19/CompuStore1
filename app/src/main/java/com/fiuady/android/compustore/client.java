@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ public class client extends AppCompatActivity {
         private TextView lastname;
         private TextView firstname;
         private TextView id;
+
         public CustomersHolder(View itemView) {
             super(itemView);
             lastname = (TextView) itemView.findViewById(R.id.txtlastname);
@@ -88,6 +91,8 @@ public class client extends AppCompatActivity {
     private EditText Edittextname;
     private ImageButton backbutton;
     private ImageButton addclientbutton;
+    MultiSelectionSpinner spinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +105,17 @@ public class client extends AppCompatActivity {
         Edittextname = (EditText)findViewById(R.id.edittext_name);
         recyclerView = (RecyclerView) findViewById(R.id.clients_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        spinner = (MultiSelectionSpinner) findViewById(R.id.mySpinner1);
+
+        List<String>  Items_Spinners = new ArrayList<String>();
+        Items_Spinners.add("ID");
+        Items_Spinners.add("Nombre");
+        Items_Spinners.add("Apellido");
+        Items_Spinners.add("Telefono");
+        Items_Spinners.add("e_mail");
+
+        spinner.setItems(Items_Spinners);
 
         List<Customers> listprove = new ArrayList<Customers>();
         listprove = inventory.getAllCustomers();
