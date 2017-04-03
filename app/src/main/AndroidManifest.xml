@@ -20,7 +20,7 @@
         <activity android:name=".CategoriesActivity" />
         <activity android:name=".EditCActivity" />
         <activity android:name=".client" />
-        <activity android:name=".ProductosActivity"></activity>
+        <activity android:name=".AssembliesActivity"></activity>
     </application>
 
 </manifest>

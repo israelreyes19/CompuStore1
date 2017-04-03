@@ -49,17 +49,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        products.setOnClickListener(new View.OnClickListener()
-
-        {
+        assemblies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ProductosActivity.class);
+                Intent i = new Intent(MainActivity.this, AssembliesActivity.class);
                 startActivity(i);
-
             }
         });
-
-
     }
 }
