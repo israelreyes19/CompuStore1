@@ -129,6 +129,5 @@ public class ProductosActivity extends AppCompatActivity {
         adapter2 = new ProductsAdapter(products);
         recyclerView.setAdapter(adapter2);
 
-
     }
 }
