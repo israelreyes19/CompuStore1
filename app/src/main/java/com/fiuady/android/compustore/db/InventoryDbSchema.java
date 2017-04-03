@@ -24,7 +24,23 @@ public final class InventoryDbSchema {
         }
     }
 
+    public static final class CustomersTable {
+        public static final String Name = "clients";
 
+        public static final class Columns
+        {
+            public static final String id ="id";
+            public static final String first_name="first_name";
+            public static final String last_name= "last_name";
+            public static final String address = "address";
+            public static final String Phone1 = "phone1";
+            public static final String Phone2 = "phone2";
+            public static final String Phone3 = "phone3";
+            public static final String e_mail = "e_mail";
+            //id, first_name, last_name, address, phone1, phone2, phone3, e_mail)
+        }
+
+    }
 
 }
 

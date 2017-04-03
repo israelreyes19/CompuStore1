@@ -197,6 +197,7 @@ public class CategoriesActivity extends AppCompatActivity {
                 builder.setMessage("Nueva categoría: ");
                 final EditText input = new EditText(CategoriesActivity.this);
                 builder.setView(input);
+
                 builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
 
                     @Override

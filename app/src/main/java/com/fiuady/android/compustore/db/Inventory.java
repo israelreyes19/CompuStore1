@@ -11,6 +11,39 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fiuady.android.compustore.db.InventoryDbSchema.*;
 
+class CustomersCursor extends CursorWrapper {
+    public CustomersCursor(Cursor cursor) {
+        super(cursor);
+    }
+
+    private int id;
+    private String first_name="";
+    private String last_name="";
+    private String address="";
+    private String phone1="";
+    private String phone2="";
+    private String phone3="";
+    private String e_mail="";
+
+    public Customers getCustomer() {
+        Cursor cursor = getWrappedCursor();
+        id =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.id));
+        first_name =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.first_name));
+        last_name = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.last_name));
+        address = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.address));
+        phone1 = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.Phone1));
+        //if (phone1 == null){phone1="";}
+        phone2 = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.Phone2));
+        //if (phone2 == null){phone2="";}
+        phone3 = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.Phone3));
+        // if (phone3 == null){phone3="";}
+        e_mail = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.e_mail));
+        // if (e_mail == null){e_mail="";}
+
+        return new Customers(id,first_name,last_name,address,phone1,phone2 ,phone3 ,e_mail );
+    }
+}
+
 class CategoryCursor extends CursorWrapper
 {
     public CategoryCursor(Cursor cursor) {
@@ -112,4 +145,17 @@ public final class Inventory {
             return false;
         }
     }
+
+    public List<Customers> getAllCustomers() {
+        ArrayList<Customers> list = new ArrayList<Customers>();
+        CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers", null));// ORDER BY last_name
+        while (cursor.moveToNext()) {
+            list.add(cursor.getCustomer());
+
+        }
+        cursor.close();
+        return list;
+    }
+
+
 }
