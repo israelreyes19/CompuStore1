@@ -44,6 +44,26 @@ class CustomersCursor extends CursorWrapper {
     }
 }
 
+
+class ProductCursor extends CursorWrapper
+{
+    public ProductCursor(Cursor cursor) {
+        super(cursor);
+    }
+
+
+    public Products getCategory()
+    {
+
+        Cursor cursor = getWrappedCursor();
+        return  new Products(cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.ID))), cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.CATEGORY_ID))),
+                cursor.getString(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.DESCRIPTION))),cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.PRICE))),cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.QUANTITY))));
+
+    }
+
+}
+
+
 class CategoryCursor extends CursorWrapper
 {
     public CategoryCursor(Cursor cursor) {
@@ -69,6 +89,28 @@ public final class Inventory {
         //InventoryHelper.backupDatabaseFile(context);
         inventoryHelper = new InventoryHelper(context);
         db = inventoryHelper.getWritableDatabase();
+    }
+
+
+    public List<Products> getallCategories()
+    {
+        List<Products> list = new ArrayList<Products>();
+
+
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+
+        ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * FROM products ORDER BY id", null)));
+
+        while (cursor.moveToNext()){
+
+            //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
+            //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
+
+            list.add((cursor.getCategory()));  // metodo wrappcursor
+
+        }
+        cursor.close();
+        return list;
     }
 
 
