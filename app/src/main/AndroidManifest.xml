@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CategoriesActivity" />
-        <activity android:name=".EditCActivity"></activity>
+        <activity android:name=".EditCActivity" />
+        <activity android:name=".client"></activity>
     </application>
 
 </manifest>
