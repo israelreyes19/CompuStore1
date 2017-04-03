@@ -96,6 +96,9 @@ public class CategoriesActivity extends AppCompatActivity {
 
                                             Toast.makeText(CategoriesActivity.this,"Se eliminó exitosamente " +
                                                     "la categoría",Toast.LENGTH_SHORT).show();
+                                            adapter = new CategoriesAdapter(inventory.getAllCategories());
+                                            recyclerView.setAdapter(adapter);
+
                                         }
                                         else
                                         {
@@ -113,7 +116,7 @@ public class CategoriesActivity extends AppCompatActivity {
                                 });
 
                                 builder1.show();
-                                recyclerView.setAdapter(adapter);
+
 
                             }
                         }
@@ -209,6 +212,7 @@ public class CategoriesActivity extends AppCompatActivity {
                         //recyclerView.setAdapter(adapter);
                         Category cat = new Category(9999, value);
                         inventory.addCategory(cat);
+                        adapter = new CategoriesAdapter(inventory.getAllCategories());
                         recyclerView.setAdapter(adapter);
                     }
                 });
