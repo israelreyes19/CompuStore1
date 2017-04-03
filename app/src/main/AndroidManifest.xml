@@ -18,6 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CategoriesActivity" />
+        <activity android:name=".ProductosActivity" />
         <activity android:name=".EditCActivity" />
         <activity android:name=".client" />
         <activity android:name=".AssembliesActivity"></activity>
