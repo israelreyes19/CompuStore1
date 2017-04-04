@@ -78,6 +78,18 @@ class CategoryCursor extends CursorWrapper
     }
 }
 
+class AssembliesCursor extends CursorWrapper
+{
+    public AssembliesCursor(Cursor cursor) {super(cursor);}
+
+    public Assemblies getAssembly()
+    {
+        Cursor cursor = getWrappedCursor();
+        return new Assemblies(cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.AssembliesTable.Columns.ID)),
+                cursor.getString(cursor.getColumnIndex(AssembliesTable.Columns.DESCRIPTION)));
+    }
+}
+
 public final class Inventory {
 
     private InventoryHelper inventoryHelper;
@@ -121,6 +133,18 @@ public final class Inventory {
         while(cursor.moveToNext())
         {
             list.add(cursor.getCategory());
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<Assemblies> getAllAssemblies()
+    {
+        ArrayList<Assemblies> list = new ArrayList<Assemblies>();
+        AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies ORDER BY description;", null));
+        while(cursor.moveToNext())
+        {
+            list.add(cursor.getAssembly());
         }
         cursor.close();
         return list;
@@ -177,6 +201,31 @@ public final class Inventory {
         else if(!cursor.moveToFirst())
         {
             db.execSQL("DELETE from product_categories WHERE id = " + String.valueOf(category.getId()) + ";");
+            cursor.close();
+            return true;
+
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+    }
+
+    public boolean deleteAssemblies(Assemblies assemblies)
+    {
+        Cursor cursor = db.rawQuery("SELECT a.id FROM assemblies a " +
+                "INNER JOIN order_assemblies oa ON (a.id = oa.assembly_id) " +
+                "GROUP BY a.id HAVING a.id = " + String.valueOf(assemblies.getId()) +
+                ";", new String[]{});
+        if (cursor == null)
+        {
+            db.execSQL("DELETE from assemblies WHERE id = " + String.valueOf(assemblies.getId()) + ";");
+            return true;
+        }
+        else if(!cursor.moveToFirst())
+        {
+            db.execSQL("DELETE from assemblies WHERE id = " + String.valueOf(assemblies.getId()) + ";");
             cursor.close();
             return true;
 

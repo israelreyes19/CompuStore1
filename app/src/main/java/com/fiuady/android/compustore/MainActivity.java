@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.fiuady.android.compustore.db.Category;
 import com.fiuady.android.compustore.db.Inventory;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, CategoriesActivity.class);
                 startActivity(i);
+
             }
         });
 
