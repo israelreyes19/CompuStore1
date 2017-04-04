@@ -8,11 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.fiuady.android.compustore.db.Category;
 import com.fiuady.android.compustore.db.Inventory;
 import com.fiuady.android.compustore.db.Products;
 
@@ -103,24 +105,22 @@ public class ProductosActivity extends AppCompatActivity {
         ArrayAdapter<String > adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
         Sproducts.setAdapter((adapter));
 
-        List<Products> products = inventory.getallCategories();
+        List<Products> products = inventory.getallProducts();
 
 
         adapter.add("Todos");
-        adapter.add("Disco duro");
-        adapter.add("Memoria");
-        adapter.add("Monitor");
-        adapter.add("Procesador");
-        adapter.add("Tarjeta madre");
-        adapter.add("Tarjeta de video");
-        adapter.add("Tarjeta de sonido");
+        //  adapter.add("Disco duro");
+        //   adapter.add("Memoria");
+        //  adapter.add("Monitor");
+        // adapter.add("Procesador");
+        // adapter.add("Tarjeta madre");
+        // adapter.add("Tarjeta de video");
+        //adapter.add("Tarjeta de sonido");
 
-        //for (Products p : inventory.getallCategories())
-        //{
-        //  adapter.add(String.valueOf(p.getCategory_id()));
-        //}
-
-
+        for (Category c : inventory.getAllCategories())
+        {
+            adapter.add(c.getDescription());
+        }
 
 
         recyclerView = (RecyclerView) findViewById(R.id.products_recyclerview);
@@ -128,5 +128,34 @@ public class ProductosActivity extends AppCompatActivity {
 
         adapter2 = new ProductsAdapter(products);
         recyclerView.setAdapter(adapter2);
+
+
+        Sproducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // On selecting a spinner item
+                String item = parent.getItemAtPosition(position).toString();
+
+                if(item == "Todos")
+                {
+                    adapter2 = new ProductsAdapter(inventory.getallProducts());
+                    recyclerView.setAdapter(adapter2);
+                }
+
+                else
+                {
+                    adapter2 = new ProductsAdapter(inventory.getonecategoryproduct(item));
+                    recyclerView.setAdapter(adapter2);
+                }
+                // Showing selected spinner item
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 }

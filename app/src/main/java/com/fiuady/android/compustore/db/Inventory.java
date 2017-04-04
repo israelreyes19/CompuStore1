@@ -52,7 +52,7 @@ class ProductCursor extends CursorWrapper
     }
 
 
-    public Products getCategory()
+    public Products getProduct()
     {
 
         Cursor cursor = getWrappedCursor();
@@ -104,21 +104,45 @@ public final class Inventory {
     }
 
 
-    public List<Products> getallCategories()
+    public List<Products> getallProducts()
     {
         List<Products> list = new ArrayList<Products>();
 
 
         //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
 
-        ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * FROM products ORDER BY id", null)));
+        ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * FROM products ORDER BY description", null)));
 
         while (cursor.moveToNext()){
 
             //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
             //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
 
-            list.add((cursor.getCategory()));  // metodo wrappcursor
+            list.add((cursor.getProduct()));  // metodo wrappcursor
+
+        }
+        cursor.close();
+        return list;
+    }
+
+    public  List<Products> getonecategoryproduct(String categroy_description)
+    {
+        List<Products> list = new ArrayList<Products>();
+
+
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+
+        ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT p.id, p.category_id, p.description, p.price, p.qty " +
+                "FROM products p " +
+                "INNER JOIN product_categories c ON (p.category_id = c.id) " +
+                "WHERE c.description LIKE '" + categroy_description + "' ORDER BY p.description" , null)));
+
+        while (cursor.moveToNext()){
+
+            //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
+            //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
+
+            list.add((cursor.getProduct()));  // metodo wrappcursor
 
         }
         cursor.close();
