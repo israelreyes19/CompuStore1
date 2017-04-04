@@ -125,6 +125,56 @@ public final class Inventory {
         return list;
     }
 
+    public List<Products> getallProductsineverycategory(String description)
+    {
+        List<Products> list = new ArrayList<Products>();
+
+
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+
+        ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * " +
+                "FROM products p " +
+                "WHERE p.description LIKE'"   + description +  "%'", null)));
+
+        while (cursor.moveToNext()){
+
+            //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
+            //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
+
+            list.add((cursor.getProduct()));  // metodo wrappcursor
+
+        }
+        cursor.close();
+        return list;
+    }
+
+
+    public List<Products> getoneProducts(String categroydescription, String productdescription)
+    {
+        List<Products> list = new ArrayList<Products>();
+
+
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+
+        ProductCursor cursor = new ProductCursor((db.rawQuery(" SELECT p.id, p.category_id, p.description, p.price, p.qty\n" +
+                "FROM products p " +
+                "INNER JOIN product_categories c ON (p.category_id = c.id) " +
+                "WHERE c.description LIKE '" + categroydescription + "'" +
+                "AND p.description LIKE '" + productdescription +"%" + "'", null)));
+
+        while (cursor.moveToNext()){
+
+            //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
+            //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
+
+            list.add((cursor.getProduct()));  // metodo wrappcursor
+
+        }
+        cursor.close();
+        return list;
+    }
+
+
     public  List<Products> getonecategoryproduct(String categroy_description)
     {
         List<Products> list = new ArrayList<Products>();

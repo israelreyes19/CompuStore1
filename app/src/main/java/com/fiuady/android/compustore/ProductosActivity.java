@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,7 +26,9 @@ public class ProductosActivity extends AppCompatActivity {
 
     private Spinner Sproducts;
     private Inventory inventory;
-
+    private ImageButton Buscador;    //nuevo
+    private EditText EditorProductos;
+    public String item;
 
     private class ProductsHolder extends RecyclerView.ViewHolder
     {
@@ -101,6 +104,8 @@ public class ProductosActivity extends AppCompatActivity {
         inventory = new Inventory(getApplicationContext());
 
         Sproducts =  (Spinner)findViewById(R.id.products);
+        Buscador = (ImageButton)findViewById(R.id.search_products);              //nuevo
+        EditorProductos = (EditText)findViewById(R.id.search_products_editbox);
 
         ArrayAdapter<String > adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
         Sproducts.setAdapter((adapter));
@@ -126,16 +131,15 @@ public class ProductosActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.products_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter2 = new ProductsAdapter(products);
-        recyclerView.setAdapter(adapter2);
-
+       // adapter2 = new ProductsAdapter(products);
+        //recyclerView.setAdapter(adapter2);
 
         Sproducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // On selecting a spinner item
-                String item = parent.getItemAtPosition(position).toString();
-
+                item = parent.getItemAtPosition(position).toString();
+/*
                 if(item == "Todos")
                 {
                     adapter2 = new ProductsAdapter(inventory.getallProducts());
@@ -147,12 +151,56 @@ public class ProductosActivity extends AppCompatActivity {
                     adapter2 = new ProductsAdapter(inventory.getonecategoryproduct(item));
                     recyclerView.setAdapter(adapter2);
                 }
-                // Showing selected spinner item
+            */
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        Buscador.setOnClickListener(new View.OnClickListener(){     //nuevo
+            @Override
+            public void onClick(View v) {
+
+                //String item = Sproducts.getItemAtPosition()
+
+                String producto_buscado =  EditorProductos.getText().toString();
+
+                if(producto_buscado == "")
+
+                {
+                    if(item == "Todos")
+                    {
+                        adapter2 = new ProductsAdapter(inventory.getallProducts());
+                        recyclerView.setAdapter(adapter2);
+                    }
+
+                    else
+                    {
+                        adapter2 = new ProductsAdapter(inventory.getonecategoryproduct(item));
+                        recyclerView.setAdapter(adapter2);
+                    }
+
+                }
+                else
+                {
+                    if(item == "Todos")
+                    {
+                        adapter2 = new ProductsAdapter(inventory.getallProductsineverycategory(producto_buscado));
+                        recyclerView.setAdapter(adapter2);
+                    }
+
+                    else
+                    {
+                        adapter2 = new ProductsAdapter(inventory.getoneProducts(item,producto_buscado));
+                        recyclerView.setAdapter(adapter2);
+                    }
+
+                }
 
             }
         });
