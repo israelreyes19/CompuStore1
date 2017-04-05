@@ -1,6 +1,9 @@
 package com.fiuady.android.compustore;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +26,7 @@ import com.fiuady.android.compustore.db.Customers;
 import com.fiuady.android.compustore.db.Inventory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class client extends AppCompatActivity {
@@ -91,6 +96,7 @@ public class client extends AppCompatActivity {
     private EditText Edittextname;
     private ImageButton backbutton;
     private ImageButton addclientbutton;
+    private ImageButton findclientebtn;
     MultiSelectionSpinner spinner;
 
     @Override
@@ -105,25 +111,71 @@ public class client extends AppCompatActivity {
         Edittextname = (EditText)findViewById(R.id.edittext_name);
         recyclerView = (RecyclerView) findViewById(R.id.clients_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        findclientebtn = (ImageButton)findViewById(R.id.Imagebtn_findclient);
 
         spinner = (MultiSelectionSpinner) findViewById(R.id.mySpinner1);
+        final List<String>  Items_Spinners = new ArrayList<String>();
 
-        List<String>  Items_Spinners = new ArrayList<String>();
-        Items_Spinners.add("ID");
         Items_Spinners.add("Nombre");
         Items_Spinners.add("Apellido");
+        Items_Spinners.add("Dirección");
         Items_Spinners.add("Telefono");
         Items_Spinners.add("e_mail");
 
         spinner.setItems(Items_Spinners);
 
+
         List<Customers> listprove = new ArrayList<Customers>();
         listprove = inventory.getAllCustomers();
 
         adapter = new CustomersAdapter(listprove);
-        recyclerView.setAdapter(adapter);
+        //recyclerView.setAdapter(adapter);
 
+        findclientebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String firstname= "";
+                String lastname= "";
+                String address= "";
+                String phone= "";
+                String email= "";
+                String descrip= Edittextname.getText().toString();
 
+                Inventory inventory1 = new Inventory(getApplicationContext());
+                for (Integer searchby: spinner.getSelectedIndicies())
+                {
+                    if (searchby == 0){firstname= "first_name";}
+                    if (searchby == 1){lastname= "last_name";}
+                    if (searchby == 2){address= "address";}
+                    if (searchby == 3){phone ="phone1 or phone2 or phone3";}
+                    if (searchby == 4){email= "e_mail";}
+                }
+                List<Customers> clientsfounded= new ArrayList<Customers>();
+                clientsfounded = inventory1.findby(firstname,lastname,address,phone,email,descrip);
+                adapter = new CustomersAdapter(clientsfounded);
+                recyclerView.setAdapter(adapter);
+                if (firstname.length() ==  0)
+                {
+                    if(lastname.length() ==0)
+                    {
+                        if( address.length() ==0)
+                        {
+                          if( phone.length() ==0)
+                          {
+                              if( email.length()==0)
+                              {
+                                  List<Customers> listprove = new ArrayList<Customers>();
+                                  listprove = inventory1.getAllCustomers();
+
+                                  adapter = new CustomersAdapter(listprove);
+                                  recyclerView.setAdapter(adapter);
+                              }
+                          }
+                        }
+                    }
+                }
+        }
+        });
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
