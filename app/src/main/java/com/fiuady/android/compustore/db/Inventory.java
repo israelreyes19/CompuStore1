@@ -192,6 +192,52 @@ public final class Inventory {
         return list;
     }
 
+    public int return_categroty_id(String descritpion)
+    {
+
+        Cursor cursor = db.rawQuery("select p.id from product_categories p " +
+                "Where p.description = '" + descritpion + "'", new String[]{});
+
+        cursor.moveToFirst();
+
+        int test = cursor.getInt(0);
+
+      //  int cat_id = 0;
+
+      //  for (Category c : getAllCategories()) {
+         //   if (descritpion == c.getDescription()) {
+            //    cat_id = c.getId();
+           // }
+
+      //  }
+
+        return test;
+    }
+
+    public void addProduct(int id, String cat_id, String descritpion, String price, String qty )
+    {
+        int mx=-1;
+        Cursor cursor = db.rawQuery("SELECT max(ID) from products", new String[]{});
+        if (cursor!=null)
+        {
+            if(cursor.moveToFirst())
+            {
+                mx = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+        else
+        {
+            mx = -1;
+        }
+        if(mx!=-1){
+            //ContentValues values = new ContentValues();
+            //values.put(CategoriesTable.Columns.DESCRIPTION, category.getDescription());
+
+            db.execSQL("INSERT INTO products (id, category_id, description, price, qty) VALUES ("+String.valueOf(mx+1)+"," + cat_id + ",'"+descritpion+"'," + price +","+ qty +");");
+        }
+    }
+
 
     public List<Category> getAllCategories()
     {

@@ -1,5 +1,7 @@
 package com.fiuady.android.compustore;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +14,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fiuady.android.compustore.db.Category;
 import com.fiuady.android.compustore.db.Inventory;
@@ -29,6 +33,7 @@ public class ProductosActivity extends AppCompatActivity {
     private ImageButton Buscador;    //nuevo
     private EditText EditorProductos;
     public String item;
+    private ImageButton Addproductbtn;
 
     private class ProductsHolder extends RecyclerView.ViewHolder
     {
@@ -106,6 +111,8 @@ public class ProductosActivity extends AppCompatActivity {
         Sproducts =  (Spinner)findViewById(R.id.products);
         Buscador = (ImageButton)findViewById(R.id.search_products);              //nuevo
         EditorProductos = (EditText)findViewById(R.id.search_products_editbox);
+        Addproductbtn = (ImageButton) findViewById(R.id.imageButtonAddProducts);
+
 
         ArrayAdapter<String > adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
         Sproducts.setAdapter((adapter));
@@ -162,7 +169,7 @@ public class ProductosActivity extends AppCompatActivity {
         });
 
 
-        Buscador.setOnClickListener(new View.OnClickListener(){     //nuevo
+        Buscador.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
 
@@ -204,6 +211,69 @@ public class ProductosActivity extends AppCompatActivity {
 
             }
         });
+
+
+        Addproductbtn.setOnClickListener(new View.OnClickListener() {     //nuevo
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProductosActivity.this);
+                View product_view = getLayoutInflater().inflate(R.layout.add_product, null);
+               // LinearLayout product_layout = new LinearLayout(ProductosActivity.this);
+               // product_layout.setOrientation(LinearLayout.VERTICAL);
+                final EditText nombre = (EditText) product_view.findViewById(R.id.Nombre_producto);
+                final EditText precio = (EditText) product_view.findViewById(R.id.Precio_producto);
+                final Spinner catgeorias_posibles = (Spinner) product_view.findViewById(R.id.product_spinner);
+                ArrayAdapter<String > add_adapter = new ArrayAdapter<String>(ProductosActivity.this, android.R.layout.simple_spinner_dropdown_item);
+                catgeorias_posibles.setAdapter((add_adapter));
+                for (Category c : inventory.getAllCategories())
+                {
+                    add_adapter.add(c.getDescription());
+                }
+                //final String text = "0";
+
+                builder.setTitle("Agregar nuevo producto");
+
+
+                builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                      if(!nombre.getText().toString().isEmpty() && !precio.getText().toString().isEmpty())
+                      {
+                          String text = catgeorias_posibles.getSelectedItem().toString();
+                          int aux = inventory.return_categroty_id(text);
+                          // String aux = inventory.return_categroty_id(text);
+                          String valor_nombre = nombre.getText().toString();
+                          String valor_precio = precio.getText().toString();
+                          String categoria = String.valueOf(aux);
+                          String cantidad = "0";
+                          inventory.addProduct(999,categoria,valor_nombre,valor_precio,cantidad);
+                          Toast.makeText(ProductosActivity.this,"Producto guardado exitosamente", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                      {
+                          Toast.makeText(ProductosActivity.this,"Debe llenar todos los campos", Toast.LENGTH_SHORT).show();
+                      }
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+               // builder.show();
+                builder.setView(product_view);
+
+              //  builder.setView(product_layout);
+                builder.show();
+            }
+        });
+
+
 
     }
 }
