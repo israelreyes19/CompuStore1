@@ -17,9 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Aneh Thakur on 5/7/2015.
- */
+
 public class MultiSelectionSpinner extends Spinner implements
         OnMultiChoiceClickListener {
     String[] _items = null;
@@ -192,4 +190,5 @@ public class MultiSelectionSpinner extends Spinner implements
         }
         return sb.toString();
     }
+
 }

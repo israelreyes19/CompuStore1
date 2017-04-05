@@ -321,7 +321,7 @@ public final class Inventory {
 
     public List<Customers> getAllCustomers() {
         ArrayList<Customers> list = new ArrayList<Customers>();
-        CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers", null));// ORDER BY last_name
+        CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers ORDER BY last_name", null));// ORDER BY last_name
         while (cursor.moveToNext()) {
             list.add(cursor.getCustomer());
 
@@ -329,6 +329,111 @@ public final class Inventory {
         cursor.close();
         return list;
     }
+    public List<Customers> findby(String firstname, String lastname, String address, String phone, String email, String descrip) {
+        ArrayList<Customers> list = new ArrayList<Customers>();
 
+        if (firstname.length() > 0) {
+            String prove = "SELECT * from customers c WHERE c." + firstname + " like '" + descrip + "%'";
+            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + firstname + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+
+            if (list.size() < 0) {
+                while (cursor.moveToNext()) {
+                    for (Customers find : list) {
+                        if (find.getId() != cursor.getCustomer().getId()) {
+                            list.add(cursor.getCustomer());
+                        }
+                    }
+                }
+            }
+            else {
+                while (cursor.moveToNext()) {
+                    list.add(cursor.getCustomer());
+
+                }
+            }
+            cursor.close();
+        }
+
+        if (lastname.length() > 0) {
+            String prove = "SELECT * from customers c WHERE c." + lastname + " like '" + descrip + "%'";
+            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + lastname + " like '" + descrip + "%' ORDER BY last_name ", null));// ORDER BY last_name
+            if (list.size() < 0) {
+                while (cursor.moveToNext()) {
+                    for (Customers find : list) {
+                        if (find.getId() != cursor.getCustomer().getId()) {
+                            list.add(cursor.getCustomer());
+                        }
+                    }
+                }
+            }
+            else {
+                while (cursor.moveToNext()) {
+                    list.add(cursor.getCustomer());
+
+                }
+            }
+            cursor.close();
+        }
+        if (address.length() > 0) {
+            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + address + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+            if (list.size() < 0) {
+                while (cursor.moveToNext()) {
+                    for (Customers find : list) {
+                        if (find.getId() != cursor.getCustomer().getId()) {
+                            list.add(cursor.getCustomer());
+                        }
+                    }
+                }
+            }
+            else {
+                while (cursor.moveToNext()) {
+                    list.add(cursor.getCustomer());
+
+                }
+            }
+            cursor.close();
+        }
+        if (phone.length() > 0) {
+            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + phone + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+            if (list.size() < 0) {
+                while (cursor.moveToNext()) {
+                    for (Customers find : list) {
+                        if (find.getId() != cursor.getCustomer().getId()) {
+                            list.add(cursor.getCustomer());
+                        }
+                    }
+                }
+            }
+            else {
+                while (cursor.moveToNext()) {
+                    list.add(cursor.getCustomer());
+
+                }
+            }
+            cursor.close();
+        }
+
+        if (email.length() > 0) {
+            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + email + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+            if (list.size() < 0) {
+                while (cursor.moveToNext()) {
+                    for (Customers find : list) {
+                        if (find.getId() != cursor.getCustomer().getId()) {
+                            list.add(cursor.getCustomer());
+                        }
+                    }
+                }
+            }
+            else {
+                while (cursor.moveToNext()) {
+                    list.add(cursor.getCustomer());
+
+                }
+            }
+            cursor.close();
+        }
+
+        return list;
+    }
 
 }
