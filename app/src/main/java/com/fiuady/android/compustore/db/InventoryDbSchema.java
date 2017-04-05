@@ -42,5 +42,16 @@ public final class InventoryDbSchema {
 
     }
 
+    public static class AssembliesTable
+    {
+        public static final String Name = "assemblies";
+
+        public static final class Columns
+        {
+            public static final String ID = "id";
+            public static final String DESCRIPTION = "description";
+        }
+    }
+
 }
 

@@ -18,9 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".CategoriesActivity" />
-        <activity android:name=".EditCActivity" />
+        <activity android:name=".ProductosActivity" />
         <activity android:name=".client" />
-        <activity android:name=".AssembliesActivity"></activity>
+        <activity android:name=".AssembliesActivity" />
+        <activity android:name=".AddAssemblyActivity"></activity>
     </application>
 
 </manifest>
