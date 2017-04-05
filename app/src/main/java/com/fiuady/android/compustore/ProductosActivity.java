@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +55,114 @@ public class ProductosActivity extends AppCompatActivity {
             price =  (TextView) itemView.findViewById(R.id.txt_price);
             quantity = (TextView) itemView.findViewById(R.id.txt_qty);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final int pos = getAdapterPosition();
+                    CharSequence options[] = new CharSequence[]{"Agregar stock","Modificar", "Eliminar"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProductosActivity.this);
+                    builder.setCancelable(true);
+                    builder.setTitle("Elige una opción: ");
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            final Products productos = adapter2.products.get(pos);
+
+                            if (which == 0)
+                            {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ProductosActivity.this);
+                                builder1.setTitle("¿Cuantas unidades desea que tenga el producto?");
+                                View product_view = getLayoutInflater().inflate(R.layout.add_product_quantity, null);
+                                final NumberPicker agregar_cantidad = (NumberPicker)product_view.findViewById(R.id.qty_numberPicker);
+                                //final Spinner agregar_cantidad = (Spinner) product_view.findViewById(R.id.product_spinner);
+                               // ArrayAdapter<String > add_quantity_adapter = new ArrayAdapter<String>(ProductosActivity.this, android.R.layout.simple_spinner_dropdown_item);
+                               // agregar_cantidad.setAdapter((add_quantity_adapter));
+                                int qty_actual = productos.getQty();
+                                agregar_cantidad.setMinValue(qty_actual);
+                                agregar_cantidad.setMaxValue(100);
+                              //  for(int i= qty_actual; i<=50; i++) {
+                              //  }
+                                builder1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                String qty_nueva = String.valueOf(agregar_cantidad.getValue());
+                                String producto_id = String.valueOf(productos.getId());
+                                inventory.add_stock(producto_id,qty_nueva);
+                                        Toast.makeText(ProductosActivity.this,"La cantidad fue agregada exitosamente " ,Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+
+                                // builder.show();
+                                builder1.setView(product_view);
+
+                                //  builder.setView(product_layout);
+                                builder1.show();
+
+                            }
+
+                           else if (which == 1)
+                            {
+                                Toast.makeText(ProductosActivity.this,"selecciono modificar", Toast.LENGTH_SHORT).show();
+                            }
+                            else if (which == 2)
+                            {
+
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ProductosActivity.this);
+                                builder1.setTitle("¿Deseas borrar este producto?");
+                                builder1.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        Inventory inventory = new Inventory(ProductosActivity.this);
+
+                                        if(inventory.DeleteProduct(String.valueOf(productos.getId())))
+                                        {
+                                            //recyclerView.setAdapter(adapter);
+
+                                            Toast.makeText(ProductosActivity.this,"Se eliminó exitosamente " +
+                                                    "el producto",Toast.LENGTH_SHORT).show();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(ProductosActivity.this,"No se pudo eliminar el producto. " +
+                                                    "Existen ensambles con dicho producto",Toast.LENGTH_SHORT).show();
+                                        }
+                                        //recyclerView.setAdapter(adapter);
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+
+                                builder1.show();
+                            }
+
+                        }
+                    });
+                    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.show();
+                    //Toast.makeText(getApplicationContext(), String.valueOf(pos),Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         public void bindProducts(Products products)

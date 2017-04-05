@@ -238,6 +238,49 @@ public final class Inventory {
         }
     }
 
+    public boolean DeleteProduct(String id)
+    {
+        Cursor cursor = db.rawQuery("SELECT p.id from " +
+                "products p INNER JOIN assembly_products ap ON (p.id = ap.product_id) " +
+                "GROUP BY p.id HAVING p.id = "+ id + ";", new String[]{});
+        if (cursor==null)
+        {
+            db.execSQL("DELETE from products WHERE id = " + id + ";");
+            return true;
+        }
+        else if(!cursor.moveToFirst())
+        {
+            db.execSQL("DELETE from products WHERE id = " + id + ";");
+            cursor.close();
+            return true;
+
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+
+    }
+
+public void add_stock(String id, String qty)
+{
+
+    ContentValues values = new ContentValues();
+
+    values.put(ProductTable.Columns.QUANTITY, qty);
+    db.update(ProductTable.Name,
+            values,
+            ProductTable.Columns.ID + "= ?",
+            new String[]{id}
+    );
+
+           //  db.rawQuery("UPDATE products " +
+                  //   "SET qty = "+  qty + "" +
+                  //   " WHERE id = "+ id  , null);
+
+}
+
 
     public List<Category> getAllCategories()
     {
