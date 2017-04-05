@@ -107,19 +107,12 @@ public final class Inventory {
     public List<Products> getallProducts()
     {
         List<Products> list = new ArrayList<Products>();
-
-
         //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
-
         ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * FROM products ORDER BY description", null)));
-
         while (cursor.moveToNext()){
-
             //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
             //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
-
             list.add((cursor.getProduct()));  // metodo wrappcursor
-
         }
         cursor.close();
         return list;
@@ -221,6 +214,21 @@ public final class Inventory {
             list.add(cursor.getAssembly());
         }
         cursor.close();
+        return list;
+    }
+
+    public List<Products> getAssemblyProducts(Assemblies assembly)
+    {
+        List<Products> list = new ArrayList<Products>();
+        ProductCursor cursor = new ProductCursor(db.rawQuery("SELECT p.id, p.category_id, p.description, p.price, ap.qty FROM assemblies a " +
+                "INNER JOIN assembly_products ap ON (a.id = ap.id) " +
+                "INNER JOIN products p ON (ap.product_id=p.id) " +
+                "WHERE a.id=" + String.valueOf(assembly.getId()) +
+                " ORDER BY p.description;",null));
+        while(cursor.moveToNext())
+        {
+            list.add(cursor.getProduct());
+        }
         return list;
     }
 

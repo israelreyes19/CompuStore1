@@ -151,7 +151,7 @@ public class client extends AppCompatActivity {
                     if (searchby == 4){email= "e_mail";}
                 }
                 List<Customers> clientsfounded= new ArrayList<Customers>();
-                clientsfounded = inventory1.findby(firstname,lastname,address,phone,email,descrip);
+                //clientsfounded = inventory1.findby(firstname,lastname,address,phone,email,descrip);
                 adapter = new CustomersAdapter(clientsfounded);
                 recyclerView.setAdapter(adapter);
                 if (firstname.length() ==  0)

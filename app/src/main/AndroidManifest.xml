@@ -21,7 +21,8 @@
         <activity android:name=".ProductosActivity" />
         <activity android:name=".client" />
         <activity android:name=".AssembliesActivity" />
-        <activity android:name=".AddAssemblyActivity"></activity>
+        <activity android:name=".AddAssemblyActivity"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>
