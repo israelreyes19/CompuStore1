@@ -8,8 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +52,37 @@ public class AddAssemblyActivity extends AppCompatActivity {
                     builder.setItems(options, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            if(which==0)
+                            {
+                                final Products product = adapter.products.get(pos);
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(AddAssemblyActivity.this);
+                                builder1.setTitle("Editar Producto");
 
+                                builder1.setMessage(product.getDescription()+" \nCantidad: ");
+                                final NumberPicker picker = new NumberPicker(AddAssemblyActivity.this);
+                                picker.setMaxValue(99);
+                                picker.setMinValue(1);
+                                builder1.setView(picker);
+                                builder1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        picker.getValue();
+                                        Inventory inventory = new Inventory(AddAssemblyActivity.this);
+                                        inventory.updateProductInAssembly(AssembliesActivity.selectedAssembly,product,picker.getValue());
+                                        //Toast.makeText(AddAssemblyActivity.this, AssembliesActivity.selectedAssembly.getDescription()+" "+product.getDescription() +" "+ picker.getValue(),Toast.LENGTH_SHORT).show();
+
+                                        adapter = new ProductsAdapter(inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly));
+                                        recyclerView.setAdapter(adapter);
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+                                builder1.show();
+                            }
                         }
                     });
                     builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -107,6 +139,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
     private ImageButton arrowButton;
     private ImageButton addButton;
     private TextView title;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +151,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
         arrowButton = (ImageButton) findViewById(R.id.imageButtonBack);
         addButton = (ImageButton) findViewById(R.id.imageButtonAdd);
         assemblyDescription = (EditText) findViewById(R.id.assemblyName_text);
+        saveButton = (Button) findViewById(R.id.saveButton);
         title = (TextView) findViewById(R.id.title_add);
         if(AssembliesActivity.edit) //Editar ensamble
         {
@@ -133,12 +167,28 @@ public class AddAssemblyActivity extends AppCompatActivity {
         else if(!AssembliesActivity.edit) // Agregar nuevo ensamble
         {
             //Toast.makeText(getApplicationContext(), "Agregando", Toast.LENGTH_SHORT).show();
+            saveButton.setEnabled(false);
 
         }
         arrowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(inventory.updateAssembly(AssembliesActivity.selectedAssembly,assemblyDescription.getText().toString()))
+                {
+                    Toast.makeText(AddAssemblyActivity.this, "Se actualizó la información del ensamble", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(AddAssemblyActivity.this, "ERROR: El nuevo nombre del ensamble ya esta asignado a otro ensamble", Toast.LENGTH_LONG).show();
+                    finish();
+                }
             }
         });
     }

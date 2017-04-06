@@ -292,6 +292,41 @@ public final class Inventory {
 
     }
 
+    public void updateProductInAssembly(Assemblies assembly, Products product, int qty)
+    {
+        db.execSQL("UPDATE assembly_products SET qty = " + String.valueOf(qty)+
+                " WHERE (id=" +String.valueOf(assembly.getId())+
+                ") AND (product_id=" + String.valueOf(product.getId())+
+                ");");
+    }
+
+    public boolean updateAssembly(Assemblies assembly, String description)
+    {
+        if(assembly.getDescription().equals(description))
+        {
+            //db.execSQL("");
+            return true;
+        }
+        Cursor cursor = db.rawQuery("SELECT id FROM assemblies  where description = '" +
+                description +
+                "';", new String[]{});
+        if(!cursor.moveToFirst())
+        {
+            db.execSQL("UPDATE assemblies  SET description = '" +
+                    description +
+                    "' WHERE id="+String.valueOf(assembly.getId()) +
+                    ";");
+            cursor.close();
+            return true;
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+        //return true;
+    }
+
     public void addCategory(Category category)
     {
         int mx=-1;
