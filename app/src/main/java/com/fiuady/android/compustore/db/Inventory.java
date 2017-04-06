@@ -127,7 +127,8 @@ public final class Inventory {
 
         ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * " +
                 "FROM products p " +
-                "WHERE p.description LIKE'"   + description +  "%'", null)));
+                "WHERE p.description LIKE'"   + description +  "%' " +
+              " ORDER BY p.description"  , null)));
 
         while (cursor.moveToNext()){
 
@@ -153,7 +154,8 @@ public final class Inventory {
                 "FROM products p " +
                 "INNER JOIN product_categories c ON (p.category_id = c.id) " +
                 "WHERE c.description LIKE '" + categroydescription + "'" +
-                "AND p.description LIKE '" + productdescription +"%" + "'", null)));
+                "AND p.description LIKE '" + productdescription +"%" + "' " +
+                " ORDER BY p.description", null)));
 
         while (cursor.moveToNext()){
 
@@ -301,7 +303,29 @@ public void add_stock(String id, String qty)
 
     }
 
+public boolean check_product(String description)
+{
+    Cursor cursor = db.rawQuery("SELECT p.id from " +
+            "products p " +
+            " GROUP BY p.id HAVING p.description = '"+ description + "';", new String[]{});
+    if (cursor==null)
+    {
 
+        return true;
+    }
+    else if(!cursor.moveToFirst())
+    {
+
+        cursor.close();
+        return true;
+
+    }
+    else
+    {
+        cursor.close();
+        return false;
+    }
+}
 
 
     public List<Category> getAllCategories()

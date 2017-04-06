@@ -130,12 +130,17 @@ public class ProductosActivity extends AppCompatActivity {
                                     add_adapter.add(c.getDescription());
                                 }
                                 nombre.setText(productos.getDescription());
-                                precio.setText(Integer.toString(productos.getPrice()));
+
+                                double aux1 = productos.getPrice();
+                                double division = (aux1)/100;
+
+                                precio.setText(String.format("%.2f",division));
 
                                 builder1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int whichButton) {
+
 
                                         String text = catgeorias_posibles.getSelectedItem().toString();
                                         int aux = inventory.return_categroty_id(text);
@@ -146,10 +151,40 @@ public class ProductosActivity extends AppCompatActivity {
                                         String cantidad = String.valueOf(productos.getQty());
                                         String ID = String.valueOf(productos.getId());
 
-                                        inventory.Update_product(ID,categoria,valor_nombre,valor_precio,cantidad);
+                                        String aux2 = valor_precio;
 
-                                        Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
-                                        update_recyclerview();
+                                        if(aux2.contains("."))
+                                        {
+                                            aux2 = aux2.replace(".","");
+                                        }
+                                        else
+                                        {
+                                            aux2 = aux2 + "00";
+                                        }
+
+
+                                        if(!nombre.getText().toString().isEmpty() && !precio.getText().toString().isEmpty())
+                                        {
+                                            if(inventory.check_product(valor_nombre)){
+                                                inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
+
+                                                Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                update_recyclerview();
+                                            }
+                                            else
+                                            {
+                                                Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
+                                                        "Ya existe un producto con ese nombre " ,Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        }
+
+                                        else
+                                        {
+                                            Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
+                                                    "Debe llenar todos los campos", Toast.LENGTH_SHORT).show();
+                                        }
+
                                     }
                                 });
                                 builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -223,10 +258,12 @@ public class ProductosActivity extends AppCompatActivity {
         public void bindProducts(Products products)
         {
 
+            double aux1 = products.getPrice();
+            double division = (aux1)/100;
             category.setText(String.valueOf(products.getCategory_id()));
-
             description.setText(products.getDescription());
-            price.setText(String.valueOf(products.getPrice()));
+            price.setText(String.format("%.2f",division));
+           // price.setText(String.valueOf(division));
             quantity.setText(String.valueOf(products.getQty()));
             id.setText(String.valueOf(products.getId()));
         }
@@ -261,7 +298,7 @@ public class ProductosActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProductsAdapter adapter2;
     private Toolbar toolbar;
-    private ImageButton backbutton;
+    private ImageButton backbuttonp;
     private ImageButton addclientbutton;
 
 
@@ -276,7 +313,7 @@ public class ProductosActivity extends AppCompatActivity {
         Buscador = (ImageButton)findViewById(R.id.search_products);              //nuevo
         EditorProductos = (EditText)findViewById(R.id.search_products_editbox);
         Addproductbtn = (ImageButton) findViewById(R.id.imageButtonAddProducts);
-
+        backbuttonp = (ImageButton) findViewById(R.id.imageButtonBackProductos);
 
         ArrayAdapter<String > adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
         Sproducts.setAdapter((adapter));
@@ -302,8 +339,18 @@ public class ProductosActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.products_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-       // adapter2 = new ProductsAdapter(products);
-        //recyclerView.setAdapter(adapter2);
+        //update_recyclerview();
+       //adapter2 = new ProductsAdapter(products);
+      //  recyclerView.setAdapter(adapter2);
+
+
+        backbuttonp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
         Sproducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -414,12 +461,35 @@ public class ProductosActivity extends AppCompatActivity {
                           String valor_precio = precio.getText().toString();
                           String categoria = String.valueOf(aux);
                           String cantidad = "0";
-                          inventory.addProduct(999,categoria,valor_nombre,valor_precio,cantidad);
-                          Toast.makeText(ProductosActivity.this,"Producto guardado exitosamente", Toast.LENGTH_SHORT).show();
+
+                          String aux2 = valor_precio;
+
+                          if(aux2.contains("."))
+                          {
+                              aux2 = aux2.replace(".","");
+                          }
+                          else
+                          {
+                              aux2 = aux2 + "00";
+                          }
+
+                          if(inventory.check_product(valor_nombre)){
+                              inventory.addProduct(999,categoria,valor_nombre,aux2,cantidad);
+                              Toast.makeText(ProductosActivity.this,"Producto guardado exitosamente", Toast.LENGTH_SHORT).show();
+                          }
+                          else
+                          {
+
+                              Toast.makeText(ProductosActivity.this," Operación no exitosa. " +
+                                      "Ya existe un producto con ese nombre " ,Toast.LENGTH_SHORT).show();
+
+                          }
+
                         }
                         else
                       {
-                          Toast.makeText(ProductosActivity.this,"Debe llenar todos los campos", Toast.LENGTH_SHORT).show();
+                          Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
+                                  "Debe llenar todos los campos", Toast.LENGTH_SHORT).show();
                       }
 
                     }
@@ -438,7 +508,11 @@ public class ProductosActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+
     }
+
+
 
     public void update_recyclerview ()
     {

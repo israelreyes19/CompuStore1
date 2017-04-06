@@ -21,7 +21,9 @@
             android:configChanges="keyboardHidden|orientation"
 
             />
-        <activity android:name=".ProductosActivity" />
+        <activity android:name=".ProductosActivity"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity
             android:name=".client"
             android:windowSoftInputMode="stateHidden" />
