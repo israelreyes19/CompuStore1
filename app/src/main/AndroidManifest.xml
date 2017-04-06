@@ -19,7 +19,8 @@
         </activity>
         <activity android:name=".CategoriesActivity" />
         <activity android:name=".ProductosActivity" />
-        <activity android:name=".client" />
+        <activity android:name=".client"
+                  android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".AssembliesActivity" />
         <activity android:name=".AddAssemblyActivity"
             android:windowSoftInputMode="stateHidden"/>

@@ -559,5 +559,75 @@ public void add_stock(String id, String qty)
 
         return list;
     }
+    public void addCustomer(String firstname, String lastname, String address,String phone1,String phone2,String phone3,String email){
+        ArrayList<Customers> list = new ArrayList<Customers>();
+        CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers ", null));// ORDER BY last_name
+        while (cursor.moveToNext()) {
+            list.add(cursor.getCustomer());
 
+        }
+        cursor.close();
+        int id_prove = 0;
+        for (Customers client: list)
+        {
+            if (client.getId() >id_prove)
+            {
+                id_prove=client.getId();
+            }
+        }
+         id_prove = id_prove+1;
+
+        //db.execSQL("INSERT INTO product_categories (id, description) VALUES ("+String.valueOf(mx+1)+
+          //      ", '"+category.getDescription()+"');");
+        db.execSQL("INSERT INTO customers (id, first_name, last_name, address, phone1, phone2, phone3, e_mail)" +
+        "VALUES ("+id_prove+", '"+firstname+"', '"+lastname+"', '"+address+"', "+phone1+", "+phone2+", "+phone3+", "+email+")");
+
+
+    }
+    public boolean deleteCustomer(Customers customer){
+        boolean val;
+        String prove = "SELECT c.id from " +
+                "customers c INNER JOIN orders o ON (c.id = o.customer_id) " +
+                "GROUP BY c.id HAVING c.id = "+ String.valueOf(customer.getId())+";";
+        Cursor cursor = db.rawQuery("SELECT c.id from " +
+                "customers c INNER JOIN orders o ON (c.id = o.customer_id) " +
+                "GROUP BY c.id HAVING c.id = "+ String.valueOf(customer.getId())+";", new String[]{});
+        if (cursor==null)
+        {
+            db.execSQL("DELETE from customers WHERE id = " + String.valueOf(customer.getId())+ ";");
+            return true;
+        }
+        else if(!cursor.moveToFirst())
+        {
+            db.execSQL("DELETE from customers WHERE id = " + String.valueOf(customer.getId()) + ";");
+            cursor.close();
+            return true;
+
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+
+    }
+    public void updateCustomer(Customers customer)
+    {
+        ContentValues values = new ContentValues();
+        String aux = customer.getFirst_name();
+        String aux1= customer.getLast_name();
+        String aux3 = String.valueOf(customer.getId());
+        String aux4 = customer.getPhone1();
+        String aux5 = customer.getPhone2();
+        String aux6 = customer.getPhone3();
+        String aux7 = customer.getE_mail();
+        values.put(CustomersTable.Columns.first_name, customer.getFirst_name());
+        db.update(CategoriesTable.Name,
+                values,
+                CategoriesTable.Columns.ID + "= ?",
+                new String[]{Integer.toString(customer.getId())}
+        );
+
+
+    }
 }
