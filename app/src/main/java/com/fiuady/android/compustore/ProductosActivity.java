@@ -34,6 +34,7 @@ public class ProductosActivity extends AppCompatActivity {
     private ImageButton Buscador;    //nuevo
     private EditText EditorProductos;
     public String item;
+    public String texto_escrito;
     private ImageButton Addproductbtn;
 
     private class ProductsHolder extends RecyclerView.ViewHolder
@@ -92,6 +93,7 @@ public class ProductosActivity extends AppCompatActivity {
                                 String producto_id = String.valueOf(productos.getId());
                                 inventory.add_stock(producto_id,qty_nueva);
                                         Toast.makeText(ProductosActivity.this,"La cantidad fue agregada exitosamente " ,Toast.LENGTH_SHORT).show();
+                                        update_recyclerview();
                                     }
                                 });
                                 builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -112,7 +114,59 @@ public class ProductosActivity extends AppCompatActivity {
 
                            else if (which == 1)
                             {
-                                Toast.makeText(ProductosActivity.this,"selecciono modificar", Toast.LENGTH_SHORT).show();
+
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ProductosActivity.this);
+                                builder1.setTitle("Modificar producto existente");
+                                View product_view = getLayoutInflater().inflate(R.layout.add_product, null);
+                                // LinearLayout product_layout = new LinearLayout(ProductosActivity.this);
+                                // product_layout.setOrientation(LinearLayout.VERTICAL);
+                                final EditText nombre = (EditText) product_view.findViewById(R.id.Nombre_producto);
+                                final EditText precio = (EditText) product_view.findViewById(R.id.Precio_producto);
+                                final Spinner catgeorias_posibles = (Spinner) product_view.findViewById(R.id.product_spinner);
+                                ArrayAdapter<String > add_adapter = new ArrayAdapter<String>(ProductosActivity.this, android.R.layout.simple_spinner_dropdown_item);
+                                catgeorias_posibles.setAdapter((add_adapter));
+                                for (Category c : inventory.getAllCategories())
+                                {
+                                    add_adapter.add(c.getDescription());
+                                }
+                                nombre.setText(productos.getDescription());
+                                precio.setText(Integer.toString(productos.getPrice()));
+
+                                builder1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        String text = catgeorias_posibles.getSelectedItem().toString();
+                                        int aux = inventory.return_categroty_id(text);
+                                        // String aux = inventory.return_categroty_id(text);
+                                        String valor_nombre = nombre.getText().toString();
+                                        String valor_precio = precio.getText().toString();
+                                        String categoria = String.valueOf(aux);
+                                        String cantidad = String.valueOf(productos.getQty());
+                                        String ID = String.valueOf(productos.getId());
+
+                                        inventory.Update_product(ID,categoria,valor_nombre,valor_precio,cantidad);
+
+                                        Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                        update_recyclerview();
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+
+                                // builder.show();
+                                builder1.setView(product_view);
+
+                                //  builder.setView(product_layout);
+                                builder1.show();
+
+
                             }
                             else if (which == 2)
                             {
@@ -132,6 +186,7 @@ public class ProductosActivity extends AppCompatActivity {
 
                                             Toast.makeText(ProductosActivity.this,"Se eliminó exitosamente " +
                                                     "el producto",Toast.LENGTH_SHORT).show();
+                                            update_recyclerview();
                                         }
                                         else
                                         {
@@ -286,6 +341,8 @@ public class ProductosActivity extends AppCompatActivity {
 
                 String producto_buscado =  EditorProductos.getText().toString();
 
+                texto_escrito = producto_buscado;
+
                 if(producto_buscado == "")
 
                 {
@@ -381,8 +438,42 @@ public class ProductosActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-
-
-
     }
+
+    public void update_recyclerview ()
+    {
+        if(texto_escrito == "")
+
+        {
+            if(item == "Todos")
+            {
+                adapter2 = new ProductsAdapter(inventory.getallProducts());
+                recyclerView.setAdapter(adapter2);
+            }
+
+            else
+            {
+                adapter2 = new ProductsAdapter(inventory.getonecategoryproduct(item));
+                recyclerView.setAdapter(adapter2);
+            }
+
+        }
+        else
+        {
+            if(item == "Todos")
+            {
+                adapter2 = new ProductsAdapter(inventory.getallProductsineverycategory(texto_escrito));
+                recyclerView.setAdapter(adapter2);
+            }
+
+            else
+            {
+                adapter2 = new ProductsAdapter(inventory.getoneProducts(item,texto_escrito));
+                recyclerView.setAdapter(adapter2);
+            }
+
+        }
+    }
+
+
 }

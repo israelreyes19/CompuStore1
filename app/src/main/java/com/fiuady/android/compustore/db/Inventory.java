@@ -278,8 +278,30 @@ public void add_stock(String id, String qty)
            //  db.rawQuery("UPDATE products " +
                   //   "SET qty = "+  qty + "" +
                   //   " WHERE id = "+ id  , null);
-
 }
+
+    public void Update_product(String id, String category_id,String description, String price, String qty)
+    {
+
+        ContentValues values = new ContentValues();
+
+        //values.put(ProductTable.Columns.QUANTITY, qty);
+        values.put(ProductTable.Columns.DESCRIPTION,description);
+        values.put(ProductTable.Columns.CATEGORY_ID,category_id);
+        values.put(ProductTable.Columns.PRICE,price);
+        db.update(ProductTable.Name,
+                values,
+                ProductTable.Columns.ID + "= ?",
+                new String[]{id}
+        );
+
+        //  db.rawQuery("UPDATE products " +
+        //   "SET qty = "+  qty + "" +
+        //   " WHERE id = "+ id  , null);
+
+    }
+
+
 
 
     public List<Category> getAllCategories()
