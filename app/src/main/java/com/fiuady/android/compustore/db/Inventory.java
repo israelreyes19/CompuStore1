@@ -9,6 +9,8 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
+
 import com.fiuady.android.compustore.db.InventoryDbSchema.*;
 
 class CustomersCursor extends CursorWrapper {
@@ -611,109 +613,124 @@ public boolean check_product(String description)
     }
     public List<Customers> findby(String firstname, String lastname, String address, String phone, String email, String descrip) {
         ArrayList<Customers> list = new ArrayList<Customers>();
+        boolean Flag_firstname,Flag_lastname, Flag_phone,Flag_address, Flag_e_mail;
 
-        if (firstname.length() > 0) {
-            String prove = "SELECT * from customers c WHERE c." + firstname + " like '" + descrip + "%'";
-            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + firstname + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+        if (firstname.length() + lastname.length() + address.length() + phone.length() + email.length() == 0)
+        {
+            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers ORDER BY last_name", null));// ORDER BY last_name
+            while (cursor.moveToNext()) {
+                list.add(cursor.getCustomer());
 
-            if (list.size() < 0) {
-                while (cursor.moveToNext()) {
-                    for (Customers find : list) {
-                        if (find.getId() != cursor.getCustomer().getId()) {
-                            list.add(cursor.getCustomer());
+            }
+            cursor.close();
+            return list;
+        }
+        else
+        {
+            if (firstname.length() > 0) {
+                String prove = "SELECT * from customers c WHERE c." + firstname + " like '" + descrip + "%'";
+                CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + firstname + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+
+                if (list.size() < 0) {
+                    while (cursor.moveToNext()) {
+                        for (Customers find : list) {
+                            if (find.getId() != cursor.getCustomer().getId()) {
+                                list.add(cursor.getCustomer());
+                            }
                         }
                     }
                 }
-            }
-            else {
-                while (cursor.moveToNext()) {
-                    list.add(cursor.getCustomer());
+                else {
+                    while (cursor.moveToNext()) {
+                        list.add(cursor.getCustomer());
 
+                    }
                 }
+                cursor.close();
             }
-            cursor.close();
-        }
 
-        if (lastname.length() > 0) {
-            String prove = "SELECT * from customers c WHERE c." + lastname + " like '" + descrip + "%'";
-            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + lastname + " like '" + descrip + "%' ORDER BY last_name ", null));// ORDER BY last_name
-            if (list.size() < 0) {
-                while (cursor.moveToNext()) {
-                    for (Customers find : list) {
-                        if (find.getId() != cursor.getCustomer().getId()) {
-                            list.add(cursor.getCustomer());
+            if (lastname.length() > 0) {
+                String prove = "SELECT * from customers c WHERE c." + lastname + " like '" + descrip + "%'";
+                CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + lastname + " like '" + descrip + "%' ORDER BY last_name ", null));// ORDER BY last_name
+                if (list.size() < 0) {
+                    while (cursor.moveToNext()) {
+                        for (Customers find : list) {
+                            if (find.getId() != cursor.getCustomer().getId()) {
+                                list.add(cursor.getCustomer());
+                            }
                         }
                     }
                 }
-            }
-            else {
-                while (cursor.moveToNext()) {
-                    list.add(cursor.getCustomer());
+                else {
+                    while (cursor.moveToNext()) {
+                        list.add(cursor.getCustomer());
 
+                    }
                 }
+                cursor.close();
             }
-            cursor.close();
-        }
-        if (address.length() > 0) {
-            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + address + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
-            if (list.size() < 0) {
-                while (cursor.moveToNext()) {
-                    for (Customers find : list) {
-                        if (find.getId() != cursor.getCustomer().getId()) {
-                            list.add(cursor.getCustomer());
+            if (address.length() > 0) {
+                CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + address + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+                if (list.size() < 0) {
+                    while (cursor.moveToNext()) {
+                        for (Customers find : list) {
+                            if (find.getId() != cursor.getCustomer().getId()) {
+                                list.add(cursor.getCustomer());
+                            }
                         }
                     }
                 }
-            }
-            else {
-                while (cursor.moveToNext()) {
-                    list.add(cursor.getCustomer());
+                else {
+                    while (cursor.moveToNext()) {
+                        list.add(cursor.getCustomer());
 
+                    }
                 }
+                cursor.close();
             }
-            cursor.close();
-        }
-        if (phone.length() > 0) {
-            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + phone + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
-            if (list.size() < 0) {
-                while (cursor.moveToNext()) {
-                    for (Customers find : list) {
-                        if (find.getId() != cursor.getCustomer().getId()) {
-                            list.add(cursor.getCustomer());
+            if (phone.length() > 0) {
+                CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + phone + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+                if (list.size() < 0) {
+                    while (cursor.moveToNext()) {
+                        for (Customers find : list) {
+                            if (find.getId() != cursor.getCustomer().getId()) {
+                                list.add(cursor.getCustomer());
+                            }
                         }
                     }
                 }
-            }
-            else {
-                while (cursor.moveToNext()) {
-                    list.add(cursor.getCustomer());
+                else {
+                    while (cursor.moveToNext()) {
+                        list.add(cursor.getCustomer());
 
+                    }
                 }
+                cursor.close();
             }
-            cursor.close();
-        }
 
-        if (email.length() > 0) {
-            CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + email + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
-            if (list.size() < 0) {
-                while (cursor.moveToNext()) {
-                    for (Customers find : list) {
-                        if (find.getId() != cursor.getCustomer().getId()) {
-                            list.add(cursor.getCustomer());
+            if (email.length() > 0) {
+                CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * from customers c WHERE c." + email + " like '" + descrip + "%' ORDER BY last_name", null));// ORDER BY last_name
+                if (list.size() < 0) {
+                    while (cursor.moveToNext()) {
+                        for (Customers find : list) {
+                            if (find.getId() != cursor.getCustomer().getId()) {
+                                list.add(cursor.getCustomer());
+                            }
                         }
                     }
                 }
-            }
-            else {
-                while (cursor.moveToNext()) {
-                    list.add(cursor.getCustomer());
+                else {
+                    while (cursor.moveToNext()) {
+                        list.add(cursor.getCustomer());
 
+                    }
                 }
+                cursor.close();
             }
-            cursor.close();
+
+            return list;
         }
 
-        return list;
     }
     public void addCustomer(String firstname, String lastname, String address,String phone1,String phone2,String phone3,String email){
         ArrayList<Customers> list = new ArrayList<Customers>();
@@ -769,20 +786,27 @@ public boolean check_product(String description)
     }
     public void updateCustomer(Customers customer)
     {
-        ContentValues values = new ContentValues();
-        String aux = customer.getFirst_name();
-        String aux1= customer.getLast_name();
-        String aux3 = String.valueOf(customer.getId());
-        String aux4 = customer.getPhone1();
-        String aux5 = customer.getPhone2();
-        String aux6 = customer.getPhone3();
-        String aux7 = customer.getE_mail();
-        values.put(CustomersTable.Columns.first_name, customer.getFirst_name());
-        db.update(CategoriesTable.Name,
-                values,
-                CategoriesTable.Columns.ID + "= ?",
-                new String[]{Integer.toString(customer.getId())}
-        );
+        String aux = "UPDATE customers SET  first_name = '"+ customer.getFirst_name()+
+                "' , last_name = '"+ customer.getLast_name()+
+                "' , address = '"+ customer.getAddress()+
+                "' , phone1 = '"+ customer.getPhone1()+
+                "' , phone2 = '"+ customer.getPhone2()+
+                "' , phone3 = '"+ customer.getPhone3()+
+                "' , e_mail = '"+ customer.getE_mail()+
+                "' WHERE id = "+
+                String.valueOf(customer.getId())+";";
+
+
+        db.execSQL("UPDATE customers SET  first_name = '"+ customer.getFirst_name()+
+                "' , last_name = '"+ customer.getLast_name()+
+                "' , address = '"+ customer.getAddress()+
+                "' , phone1 = "+ customer.getPhone1()+
+                " , phone2 = "+ customer.getPhone2()+
+                " , phone3 = "+ customer.getPhone3()+
+                " , e_mail = "+ customer.getE_mail()+
+                " WHERE id = "+
+                String.valueOf(customer.getId())+";");
+
 
 
     }

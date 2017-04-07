@@ -194,17 +194,19 @@ public class client extends AppCompatActivity {
                                        String AuxPhone2="";
                                        String AuxPhone3="";
                                        String AuxEmail = "";
-                                       if(ChB_phone1.isChecked()==false){AuxPhone1=null;}else{AuxPhone1 = EditText_phone1_lada.getText().toString()+"-"+EditText_phone1.getText().toString();}
-                                       if(ChB_phone2.isChecked()==false){AuxPhone2=null;}else{AuxPhone2 = EditText_phone2_lada.getText().toString()+"-"+EditText_phone2.getText().toString();}
-                                       if(ChB_phone3.isChecked()==false){AuxPhone3=null;}else{AuxPhone3 = EditText_phone3_lada.getText().toString()+"-"+EditText_phone3.getText().toString();}
-                                       if (ChB_e_mail.isChecked()==false){AuxEmail=null;}else{AuxEmail= EditText_Email.getText().toString();}
+                                       if(ChB_phone1.isChecked()==false){AuxPhone1=null;}else{AuxPhone1 = "'"+EditText_phone1_lada.getText().toString()+"-"+EditText_phone1.getText().toString()+"'";}
+                                       if(ChB_phone2.isChecked()==false){AuxPhone2=null;}else{AuxPhone2 = "'"+EditText_phone2_lada.getText().toString()+"-"+EditText_phone2.getText().toString()+"'";}
+                                       if(ChB_phone3.isChecked()==false){AuxPhone3=null;}else{AuxPhone3 = "'"+EditText_phone3_lada.getText().toString()+"-"+EditText_phone3.getText().toString()+"'";}
+                                       if(ChB_e_mail.isChecked()==false){AuxEmail=null;}else{AuxEmail= "'"+EditText_Email.getText().toString()+"'";}
                                        Customers customerU = new Customers(CustomersonRV.get(pos).getId(),
                                                EditText_FirstName.getText().toString(),EditText_LastName.getText().toString(),
                                                EditText_Address.getText().toString(),AuxPhone1,AuxPhone2,AuxPhone3,AuxEmail);
-                                       //inventory2.updateCustomer(customerU);//Checarupdate
+                                       inventory2.updateCustomer(customerU);
+                                       Toast.makeText(getApplicationContext(),"El cliente fue actualizado",Toast.LENGTH_SHORT).show();
                                        adapter = new CustomersAdapter(inventory2.getAllCustomers());
-                                       recyclerView.setAdapter(adapter);
                                        CustomersonRV = inventory2.getAllCustomers();
+                                       recyclerView.setAdapter(adapter);
+                                       dialog1.cancel();
                                    }
                                });
                             } else if (which == 1) {
@@ -234,6 +236,7 @@ public class client extends AppCompatActivity {
                                     }
                                 });
                                 builder1.show();
+
                             }
                         }
                     });
@@ -293,7 +296,8 @@ public class client extends AppCompatActivity {
     private ImageButton addclientbutton;
     private ImageButton findclientebtn;
     MultiSelectionSpinner spinner;
-
+    private final String KEY_FINDCLIENTSWASCLICK = "find_clienteswasclick";
+    public  Boolean searchwasclick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -307,6 +311,17 @@ public class client extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.clients_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         findclientebtn = (ImageButton) findViewById(R.id.Imagebtn_findclient);
+
+        if (savedInstanceState !=null) {
+            searchwasclick = savedInstanceState.getBoolean(KEY_FINDCLIENTSWASCLICK, false);
+            Toast.makeText(getApplicationContext(),"Hay algo guardado",Toast.LENGTH_SHORT).show();
+            if(searchwasclick==true){
+                //ShowClientes(CustomersonRV);
+                adapter = new CustomersAdapter(CustomersonRV);
+                recyclerView.setAdapter(adapter);
+                Toast.makeText(getApplicationContext(),String.valueOf(CustomersonRV.size()),Toast.LENGTH_SHORT).show();
+            }
+        }
 
         spinner = (MultiSelectionSpinner) findViewById(R.id.mySpinner1);
         final List<String> Items_Spinners = new ArrayList<String>();
@@ -327,6 +342,8 @@ public class client extends AppCompatActivity {
         findclientebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchwasclick = true;
+                boolean bool = searchwasclick;
                 String firstname = "";
                 String lastname = "";
                 String address = "";
@@ -357,30 +374,9 @@ public class client extends AppCompatActivity {
                 adapter = new CustomersAdapter(clientsfounded);
                 recyclerView.setAdapter(adapter);
                 CustomersonRV = clientsfounded;
-                //Toast.makeText(getApplicationContext(), String.valueOf(CustomersonRV.size()),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), String.valueOf(CustomersonRV.size()),Toast.LENGTH_SHORT).show();
 
-                if (firstname.length() == 0) {
-                    if (lastname.length() == 0) {
-                        if (address.length() == 0) {
-                            if (phone.length() == 0) {
-                                if (email.length() == 0) {
-                                    List<Customers> listprove = new ArrayList<Customers>();
-                                    adapter = new CustomersAdapter(listprove);
-                                    recyclerView.setAdapter(adapter);
-
-
-                                    listprove = inventory1.getAllCustomers();
-                                    adapter = new CustomersAdapter(listprove);
-                                    recyclerView.setAdapter(adapter);
-                                    CustomersonRV = listprove;
-                                    //Toast.makeText(getApplicationContext(), String.valueOf(CustomersonRV.size()),Toast.LENGTH_SHORT).show();
-
-
-                                }
-                            }
-                        }
-                    }
-                }
+              
             }
         });
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -499,8 +495,7 @@ public class client extends AppCompatActivity {
                         }
                         inventory.addCustomer(firstname, lastname, address, phone1, phone2, phone3, email);
                         Toast.makeText(getApplicationContext(), "El cliente ha sido agregado exitosamente", Toast.LENGTH_SHORT).show();
-                        adapter = new CustomersAdapter(inventory.getAllCustomers());
-                        recyclerView.setAdapter(adapter);
+                        ShowClientes(inventory.getAllCustomers());
                         CustomersonRV = inventory.getAllCustomers();
                         dialog.cancel();
                     }
@@ -514,5 +509,33 @@ public class client extends AppCompatActivity {
 
             }
         });
+    }
+    public void ShowClientes(List<Customers> customers)
+    {
+        adapter = new CustomersAdapter(customers);
+        recyclerView.setAdapter(adapter);
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+       outState.putBoolean(KEY_FINDCLIENTSWASCLICK,searchwasclick);
+       // outState.putInt(KEY_A0, answers[0]);
+       // outState.putInt(KEY_A1, answers[1]);
+       // outState.putInt(KEY_A2, answers[2]);
+       // outState.putInt(KEY_A3, answers[3]);
+       // outState.putInt(KEY_A4, answers[4]);
+       // outState.putInt(KEY_A5, answers[5]);
+       // outState.putInt(KEY_A6, answers[6]);
+       // outState.putInt(KEY_A7, answers[7]);
+       // outState.putBoolean(KEY_C0, ischeated[0]);
+       // outState.putBoolean(KEY_C1, ischeated[1]);
+       // outState.putBoolean(KEY_C2, ischeated[2]);
+       // outState.putBoolean(KEY_C3, ischeated[3]);
+       // outState.putBoolean(KEY_C4, ischeated[4]);
+       // outState.putBoolean(KEY_C5, ischeated[5]);
+       // outState.putBoolean(KEY_C6, ischeated[6]);
+       // outState.putBoolean(KEY_C7, ischeated[7]);
+
+
     }
 }

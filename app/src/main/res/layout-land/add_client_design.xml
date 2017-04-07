@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="400dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/appbar"
-        android:layout_width="384dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
@@ -16,7 +16,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingLeft="100dp"
         android:paddingTop="10dp"
         android:id="@+id/add_client_title"
         android:text="Agregar Cliente"
@@ -35,25 +34,21 @@
             android:id="@+id/txt_name_tag"
             android:text="Nombre: "/>
         <EditText
-            android:layout_width="186dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:id="@+id/EditText_ClientfirstName"/>
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/txt_namelastname_tag"
             android:text="Apellido: "/>
+
         <EditText
-            android:layout_width="186dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/EditText_ClientlastName"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,12 +59,13 @@
             android:id="@+id/txt_address_tag"
             android:text="Dirección: "/>
         <EditText
-            android:layout_width="186dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/EditText_ClientAddress"/>
     </LinearLayout>
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
@@ -80,13 +76,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/CheckBox_phone1"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,7 +84,7 @@
             android:inputType="number"
 
 
-        />
+            />
         <EditText
             android:layout_width="80dp"
             android:layout_height="wrap_content"
@@ -111,6 +100,7 @@
             android:text="Número : "
 
             />
+
         <EditText
             android:layout_width="150dp"
             android:layout_height="wrap_content"
@@ -119,9 +109,19 @@
             android:enabled="false"
             android:maxLength="7"
             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agregar "
+            android:id="@+id/btn_confirm"
+            />
+
+
     </LinearLayout>
+
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
@@ -132,13 +132,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/CheckBox_phone2"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -165,10 +158,9 @@
             android:id="@+id/EditText_phone2"
             android:inputType="number"
             android:enabled="false"
-            android:maxLength="7"
-
-            />
+            android:maxLength="7"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -181,13 +173,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/CheckBox_phone3"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -219,7 +204,14 @@
             android:maxLength="7"
 
             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar "
+            android:id="@+id/btn_cancel"
+            />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -232,13 +224,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/CheckBox_e_mail"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -253,38 +238,7 @@
             />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        >
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Agregar "
-                android:id="@+id/btn_confirm"
-                />
-
-
-        </LinearLayout>
-       <LinearLayout
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content">
-
-           <Button
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="Cancelar "
-               android:id="@+id/btn_cancel"
-               />
-       </LinearLayout>
-
-    </LinearLayout>
 
 
 </LinearLayout>
