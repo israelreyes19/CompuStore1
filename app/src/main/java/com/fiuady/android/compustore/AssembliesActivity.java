@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AssembliesActivity extends AppCompatActivity {
 
-    public static Assemblies selectedAssembly;
+    public static Assemblies selectedAssembly = new Assemblies(9999,"");
 
     public static boolean edit;
 
@@ -161,13 +161,27 @@ public class AssembliesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 edit = false;
                 Intent i = new Intent(AssembliesActivity.this, AddAssemblyActivity.class);
-                startActivity(i);
-                if (AddAssemblyActivity.saveState) {
-                    adapter = new AssembliesAdapter(inventory.getAllAssemblies());
-                    recyclerView.setAdapter(adapter);
-                }
+                startActivityForResult(i,AddAssemblyActivity.CODE_EDIT);
+
             }
         });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK)
+        {
+            Inventory inventory = new Inventory(AssembliesActivity.this);
+            adapter = new AssembliesAdapter(inventory.getAllAssemblies());
+            recyclerView.setAdapter(adapter);
+            Toast.makeText(AssembliesActivity.this,"Puta madre",Toast.LENGTH_SHORT).show();
+        }
+        //Inventory inventory = new Inventory(AssembliesActivity.this);
+        //adapter = new AssembliesAdapter(inventory.getAllAssemblies());
+        recyclerView.setAdapter(adapter);
+        //Toast.makeText(AssembliesActivity.this,"Puta madre",Toast.LENGTH_SHORT).show();
 
     }
 }

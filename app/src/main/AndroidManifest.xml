@@ -17,7 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CategoriesActivity" />
+        <activity android:name=".CategoriesActivity"
+            android:configChanges="keyboardHidden|orientation"
+
+            />
         <activity android:name=".ProductosActivity" />
         <activity
             android:name=".client"
@@ -31,6 +34,8 @@
             android:label="@string/title_activity_add_new_product"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden"
+            android:configChanges="keyboardHidden|orientation"
+
             />
     </application>
 

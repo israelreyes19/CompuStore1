@@ -81,6 +81,7 @@ public class AddNewProductActivity extends AppCompatActivity {
                                 {
                                     Toast.makeText(AddNewProductActivity.this,"El producto ya esta en el ensamble",Toast.LENGTH_SHORT).show();
                                 }
+                                setResult(RESULT_OK);
                                 finish();
                             }
 

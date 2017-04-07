@@ -443,6 +443,73 @@ public void add_stock(String id, String qty)
         }
     }
 
+    public boolean addAssembly(Assemblies assemblies)
+    {
+        int mx=-1;
+        Cursor cursor = db.rawQuery("SELECT max(ID) from assemblies;", new String[]{});
+        if (cursor!=null)
+        {
+            if(cursor.moveToFirst())
+            {
+                mx = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+        else
+        {
+            mx = -1;
+        }
+        if(mx!=-1){
+            db.execSQL("INSERT INTO assemblies (id, description) VALUES (" +String.valueOf(mx+1) +
+                    ", '" + assemblies.getDescription() +
+                    "');");
+            return true;
+        }
+        return false;
+
+    }
+
+    public void addAuxAssembly(Assemblies assemblies)
+    {
+        db.execSQL("INSERT INTO assemblies (id, description) VALUES (" +String.valueOf(assemblies.getId()) +
+                ", '" + assemblies.getDescription() +
+                "');");
+    }
+
+    public void transferProductsToDefinitiveAssembly()
+    {
+        int mx=-1;
+        Cursor cursor = db.rawQuery("SELECT max(ID) from assemblies;", new String[]{});
+        if (cursor!=null)
+        {
+            if(cursor.moveToFirst())
+            {
+                mx = cursor.getInt(0);
+            }
+            cursor.close();
+        }
+        else
+        {
+            mx = -1;
+        }
+        if(mx!=-1){
+            db.execSQL("UPDATE assembly_products SET id = " +String.valueOf( mx)+
+                    " WHERE id=9999");
+        }
+    }
+
+
+    public  void  deleteAux()
+    {
+        db.execSQL("DELETE FROM assemblies where id=9999");
+    }
+
+
+    public void emptyNDeleteAux()
+    {
+        db.execSQL("DELETE From assembly_products WHERE id=9999;");
+        db.execSQL("DELETE FROM assemblies where id=9999;");
+    }
 
     public boolean  deleteCategory(Category category)
     {

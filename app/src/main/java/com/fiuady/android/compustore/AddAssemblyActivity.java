@@ -16,6 +16,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fiuady.android.compustore.db.Assemblies;
 import com.fiuady.android.compustore.db.Inventory;
 import com.fiuady.android.compustore.db.Products;
 
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class AddAssemblyActivity extends AppCompatActivity {
 
+    public static final int CODE_EDIT = 1;
     public static boolean saveState;
     public class ProductHolder extends RecyclerView.ViewHolder {
         private TextView txtId;
@@ -164,6 +166,32 @@ public class AddAssemblyActivity extends AppCompatActivity {
     private Button saveButton;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Toast.makeText(getApplicationContext(), "Cerrando", Toast.LENGTH_SHORT).show();
+
+        if(!AssembliesActivity.edit)
+        {
+
+            Inventory inventory = new Inventory(AddAssemblyActivity.this);
+            inventory.emptyNDeleteAux();
+        }
+        //setResult(RESULT_OK);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(RESULT_OK==resultCode)
+        {
+            Inventory inventory = new Inventory(AddAssemblyActivity.this);
+            adapter = new ProductsAdapter(inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly));
+            recyclerView.setAdapter(adapter);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_assembly);
@@ -187,8 +215,9 @@ public class AddAssemblyActivity extends AppCompatActivity {
 
         } else if (!AssembliesActivity.edit) // Agregar nuevo ensamble
         {
-            //Toast.makeText(getApplicationContext(), "Agregando", Toast.LENGTH_SHORT).show();
-            //saveButton.setEnabled(false);
+            AssembliesActivity.selectedAssembly.setDescription("");
+            AssembliesActivity.selectedAssembly.setId(9999);
+            inventory.addAuxAssembly(AssembliesActivity.selectedAssembly);
 
         }
         arrowButton.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +232,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
                 if (AssembliesActivity.edit) {
                     if (inventory.updateAssembly(AssembliesActivity.selectedAssembly, assemblyDescription.getText().toString())) {
                         Toast.makeText(AddAssemblyActivity.this, "Se actualizó la información del ensamble", Toast.LENGTH_SHORT).show();
-                        saveState = true;
+                        setResult(RESULT_OK);
                         finish();
                     } else {
                         Toast.makeText(AddAssemblyActivity.this, "ERROR: El nuevo nombre del ensamble ya esta asignado a otro ensamble", Toast.LENGTH_LONG).show();
@@ -212,7 +241,10 @@ public class AddAssemblyActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(AddAssemblyActivity.this, "Nel no creo", Toast.LENGTH_SHORT).show();
+                    AssembliesActivity.selectedAssembly.setDescription(assemblyDescription.getText().toString());
+                    inventory.addAssembly(AssembliesActivity.selectedAssembly);
+                    inventory.transferProductsToDefinitiveAssembly();
+                    inventory.deleteAux();
                 }
             }
         });
@@ -220,7 +252,8 @@ public class AddAssemblyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(AddAssemblyActivity.this,AddNewProductActivity.class);
-                startActivity(i);
+                startActivityForResult(i,2);
+
             }
         });
     }
