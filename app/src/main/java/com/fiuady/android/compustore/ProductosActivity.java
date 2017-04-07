@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,15 @@ public class ProductosActivity extends AppCompatActivity {
     public String item;
     public String texto_escrito;
     private ImageButton Addproductbtn;
+    private final String KEY_A0= "R0";
+    private final String KEY_A1= "R1";
+    private final String KEY_A2= "R2";
+    private final String KEY_A3= "R3";
+    private final String KEY_A4= "R4";
+    private final String KEY_A5= "R5";
+    private final String KEY_A6= "R6";
+
+
 
     private class ProductsHolder extends RecyclerView.ViewHolder
     {
@@ -510,6 +520,18 @@ public class ProductosActivity extends AppCompatActivity {
         });
 
 
+        if(savedInstanceState != null)
+        {
+
+
+            item =savedInstanceState.getString(KEY_A0,"");
+            texto_escrito =savedInstanceState.getString(KEY_A1,"");
+
+            update_recyclerview();
+            //txtOther.setText("Haciendo " + counter + " click(s) en Android");
+
+        }
+
     }
 
 
@@ -549,5 +571,14 @@ public class ProductosActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("Test app", "OnSaveInstanceState...");
+        outState.putString(KEY_A0,item);
+        outState.putString(KEY_A1,texto_escrito);
+
+    }
 
 }
