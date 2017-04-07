@@ -483,11 +483,24 @@ public boolean check_product(String description)
         {
             mx = -1;
         }
-        if(mx!=-1){
-            db.execSQL("INSERT INTO assemblies (id, description) VALUES (" +String.valueOf(mx+1) +
-                    ", '" + assemblies.getDescription() +
-                    "');");
-            return true;
+        if(mx!=-1){ // Editado
+            Cursor cursor1 = db.rawQuery("SELECT id FROM assemblies  where description = '" +
+                    assemblies.getDescription() +
+                    "';", new String[]{});
+            if(!cursor1.moveToFirst())
+            {
+                db.execSQL("INSERT INTO assemblies (id, description) VALUES (" +String.valueOf(mx+1) +
+                        ", '" + assemblies.getDescription() +
+                        "');");
+                cursor1.close();
+                return true;
+            }
+            else
+            {
+                cursor1.close();
+                return false;
+            }
+
         }
         return false;
 
@@ -572,6 +585,8 @@ public boolean check_product(String description)
         }
         else if(!cursor.moveToFirst())
         {
+            db.execSQL("DELETE From assembly_products WHERE id = " + String.valueOf(assemblies.getId())+
+                    ";");
             db.execSQL("DELETE from assemblies WHERE id = " + String.valueOf(assemblies.getId()) + ";");
             cursor.close();
             return true;

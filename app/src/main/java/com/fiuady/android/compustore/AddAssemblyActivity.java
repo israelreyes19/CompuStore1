@@ -242,9 +242,16 @@ public class AddAssemblyActivity extends AppCompatActivity {
                 else
                 {
                     AssembliesActivity.selectedAssembly.setDescription(assemblyDescription.getText().toString());
-                    inventory.addAssembly(AssembliesActivity.selectedAssembly);
+                    if(inventory.addAssembly(AssembliesActivity.selectedAssembly)){
                     inventory.transferProductsToDefinitiveAssembly();
                     inventory.deleteAux();
+                        setResult(RESULT_OK);}
+                    else
+                    {
+                        Toast.makeText(AddAssemblyActivity.this, "ERROR: El nuevo nombre del ensamble ya esta asignado a otro ensamble", Toast.LENGTH_LONG).show();
+
+                    }
+                        finish();
                 }
             }
         });

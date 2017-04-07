@@ -180,7 +180,7 @@ public class AssembliesActivity extends AppCompatActivity {
         }
         //Inventory inventory = new Inventory(AssembliesActivity.this);
         //adapter = new AssembliesAdapter(inventory.getAllAssemblies());
-        recyclerView.setAdapter(adapter);
+        //recyclerView.setAdapter(adapter);
         //Toast.makeText(AssembliesActivity.this,"Puta madre",Toast.LENGTH_SHORT).show();
 
     }
