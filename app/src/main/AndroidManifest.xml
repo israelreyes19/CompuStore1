@@ -19,11 +19,19 @@
         </activity>
         <activity android:name=".CategoriesActivity" />
         <activity android:name=".ProductosActivity" />
-        <activity android:name=".client"
-                  android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".client"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".AssembliesActivity" />
-        <activity android:name=".AddAssemblyActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".AddAssemblyActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".AddNewProductActivity"
+            android:label="@string/title_activity_add_new_product"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"
+            />
     </application>
 
 </manifest>

@@ -354,7 +354,6 @@ public void add_stock(String id, String qty)
                 new String[]{Integer.toString(category.getId())}
         );
 
-
     }
 
     public void updateProductInAssembly(Assemblies assembly, Products product, int qty)
@@ -362,6 +361,13 @@ public void add_stock(String id, String qty)
         db.execSQL("UPDATE assembly_products SET qty = " + String.valueOf(qty)+
                 " WHERE (id=" +String.valueOf(assembly.getId())+
                 ") AND (product_id=" + String.valueOf(product.getId())+
+                ");");
+    }
+
+    public void deleteProductInAssembly(Assemblies assembly, Products product)
+    {
+        db.execSQL("DELETE FROM assembly_products WHERE (product_id="+ String.valueOf(product.getId()) +
+                ") AND (id="+ String.valueOf(assembly.getId()) +
                 ");");
     }
 
@@ -415,6 +421,28 @@ public void add_stock(String id, String qty)
             db.execSQL("INSERT INTO product_categories (id, description) VALUES ("+String.valueOf(mx+1)+", '"+category.getDescription()+"');");
         }
     }
+
+
+    public boolean addProductInAssembly(Products product, Assemblies assembly)
+    {
+        Cursor cursor = db.rawQuery("SELECT id FROM assembly_products ap WHERE ap.id=" + String.valueOf(assembly.getId())+
+                " AND ap.product_id=" + String.valueOf(product.getId())+
+                ";",new String[]{});
+        if(!cursor.moveToFirst())
+        {
+            db.execSQL("INSERT INTO assembly_products (id, product_id, qty) VALUES ("+String.valueOf(assembly.getId()) +
+                    ", " + String.valueOf(product.getId())+
+                    ", 1);");
+            cursor.close();
+            return true;
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+    }
+
 
     public boolean  deleteCategory(Category category)
     {

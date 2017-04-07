@@ -21,11 +21,11 @@ import java.util.List;
 
 public class AssembliesActivity extends AppCompatActivity {
 
-    public static Assemblies selectedAssembly ;
+    public static Assemblies selectedAssembly;
 
     public static boolean edit;
-    public class AssembliesHolder extends RecyclerView.ViewHolder
-    {
+
+    public class AssembliesHolder extends RecyclerView.ViewHolder {
         private TextView txtDescription;
         private TextView tagDescription;
 
@@ -44,21 +44,16 @@ public class AssembliesActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AssembliesActivity.this);
                     builder.setCancelable(true);
                     builder.setTitle("Elige una opción: ");
-                    builder.setItems(options, new DialogInterface.OnClickListener()
-                    {
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             final Assemblies assembly = adapter.list.get(pos);
                             selectedAssembly = assembly;
-                            if(which == 0)
-                            {
+                            if (which == 0) {
                                 edit = true;
                                 Intent i = new Intent(AssembliesActivity.this, AddAssemblyActivity.class);
                                 startActivity(i);
-                            }
-                            else if(which == 1)
-                            {
+                            } else if (which == 1) {
                                 AlertDialog.Builder builder1 = new AlertDialog.Builder(AssembliesActivity.this);
                                 builder1.setTitle("¿Deseas borrar este ensamble?");
                                 builder1.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
@@ -67,20 +62,17 @@ public class AssembliesActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
                                         Inventory inventory = new Inventory(AssembliesActivity.this);
-                                        if(inventory.deleteAssemblies(assembly))
-                                        {
+                                        if (inventory.deleteAssemblies(assembly)) {
                                             //recyclerView.setAdapter(adapter);
 
-                                            Toast.makeText(AssembliesActivity.this,"Se eliminó exitosamente " +
-                                                    "el ensamble",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(AssembliesActivity.this, "Se eliminó exitosamente " +
+                                                    "el ensamble", Toast.LENGTH_SHORT).show();
                                             adapter = new AssembliesAdapter(inventory.getAllAssemblies());
                                             recyclerView.setAdapter(adapter);
 
-                                        }
-                                        else
-                                        {
-                                            Toast.makeText(AssembliesActivity.this,"No se pudo eliminar el ensamble. " +
-                                                    "El ensamble esta asignado a una orden",Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(AssembliesActivity.this, "No se pudo eliminar el ensamble. " +
+                                                    "El ensamble esta asignado a una orden", Toast.LENGTH_SHORT).show();
                                         }
                                         //recyclerView.setAdapter(adapter);
                                     }
@@ -107,22 +99,22 @@ public class AssembliesActivity extends AppCompatActivity {
 
         }
 
-        public void bindAssemblies(Assemblies assemblies)
-        {
+        public void bindAssemblies(Assemblies assemblies) {
             txtDescription.setText(assemblies.getDescription());
         }
     }
 
-    private class AssembliesAdapter extends RecyclerView.Adapter<AssembliesHolder>
-    {
+    private class AssembliesAdapter extends RecyclerView.Adapter<AssembliesHolder> {
 
         private List<Assemblies> list;
 
-        public AssembliesAdapter(List<Assemblies> assemblies){list=assemblies;}
+        public AssembliesAdapter(List<Assemblies> assemblies) {
+            list = assemblies;
+        }
 
         @Override
         public AssembliesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view   = getLayoutInflater().inflate(R.layout.categories_list_item, parent, false);
+            View view = getLayoutInflater().inflate(R.layout.categories_list_item, parent, false);
             return new AssembliesHolder(view);
         }
 
@@ -167,9 +159,13 @@ public class AssembliesActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                edit=false;
+                edit = false;
                 Intent i = new Intent(AssembliesActivity.this, AddAssemblyActivity.class);
                 startActivity(i);
+                if (AddAssemblyActivity.saveState) {
+                    adapter = new AssembliesAdapter(inventory.getAllAssemblies());
+                    recyclerView.setAdapter(adapter);
+                }
             }
         });
 
