@@ -9,10 +9,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +43,7 @@ public class client extends AppCompatActivity {
         private TextView firstname;
         private TextView id;
 
-        public CustomersHolder(View itemView) {
+        public CustomersHolder(final View itemView) {
             super(itemView);
             lastname = (TextView) itemView.findViewById(R.id.txtlastname);
             firstname = (TextView) itemView.findViewById(R.id.txtfirstname);
@@ -51,14 +53,40 @@ public class client extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final int pos = getAdapterPosition();
-                    CharSequence options[] = new CharSequence[]{"Modificar", "Eliminar"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(client.this);
-                    builder.setCancelable(true);
-                    builder.setTitle("Elige una opción: ");
-                    builder.setItems(options, new DialogInterface.OnClickListener() {
+
+                    PopupMenu popupMenu = new PopupMenu(client.this,itemView);
+                    popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == 0) {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().length()== "Eliminar".length()){
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(client.this);
+                                builder1.setTitle("¿Deseas borrar este cliente?");
+                                builder1.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        Inventory inventory = new Inventory(client.this);
+                                        if(inventory.deleteCustomer(CustomersonRV.get(pos)))
+                                        {
+                                            Toast.makeText(client.this,"Se eliminó exitosamente " +
+                                                    "el cliente",Toast.LENGTH_SHORT).show();
+                                            adapter = new client.CustomersAdapter(inventory.getAllCustomers());
+                                            recyclerView.setAdapter(adapter);
+                                            CustomersonRV =inventory.getAllCustomers();
+
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(client.this,"No se pudo eliminar  el cliente. " +
+                                                    "Existen pedidos ",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                                builder1.show();
+                            }
+                            else{
                                 final Dialog dialog1 = new Dialog(client.this);
                                 dialog1.setTitle("Editar Cliente");
                                 dialog1.setContentView(R.layout.add_client_design);
@@ -187,67 +215,35 @@ public class client extends AppCompatActivity {
                                         dialog1.cancel();
                                     }
                                 });
-                               btn_Editclient.setOnClickListener(new View.OnClickListener() {
-                                   @Override
-                                   public void onClick(View v) {
-                                       String AuxPhone1 = "";
-                                       String AuxPhone2="";
-                                       String AuxPhone3="";
-                                       String AuxEmail = "";
-                                       if(ChB_phone1.isChecked()==false){AuxPhone1=null;}else{AuxPhone1 = "'"+EditText_phone1_lada.getText().toString()+"-"+EditText_phone1.getText().toString()+"'";}
-                                       if(ChB_phone2.isChecked()==false){AuxPhone2=null;}else{AuxPhone2 = "'"+EditText_phone2_lada.getText().toString()+"-"+EditText_phone2.getText().toString()+"'";}
-                                       if(ChB_phone3.isChecked()==false){AuxPhone3=null;}else{AuxPhone3 = "'"+EditText_phone3_lada.getText().toString()+"-"+EditText_phone3.getText().toString()+"'";}
-                                       if(ChB_e_mail.isChecked()==false){AuxEmail=null;}else{AuxEmail= "'"+EditText_Email.getText().toString()+"'";}
-                                       Customers customerU = new Customers(CustomersonRV.get(pos).getId(),
-                                               EditText_FirstName.getText().toString(),EditText_LastName.getText().toString(),
-                                               EditText_Address.getText().toString(),AuxPhone1,AuxPhone2,AuxPhone3,AuxEmail);
-                                       inventory2.updateCustomer(customerU);
-                                       Toast.makeText(getApplicationContext(),"El cliente fue actualizado",Toast.LENGTH_SHORT).show();
-                                       adapter = new CustomersAdapter(inventory2.getAllCustomers());
-                                       CustomersonRV = inventory2.getAllCustomers();
-                                       recyclerView.setAdapter(adapter);
-                                       dialog1.cancel();
-                                   }
-                               });
-                            } else if (which == 1) {
-
-                                AlertDialog.Builder builder1 = new AlertDialog.Builder(client.this);
-                                builder1.setTitle("¿Deseas borrar este cliente?");
-                                builder1.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-
+                                btn_Editclient.setOnClickListener(new View.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                                        Inventory inventory = new Inventory(client.this);
-                                        if(inventory.deleteCustomer(CustomersonRV.get(pos)))
-                                        {
-                                            Toast.makeText(client.this,"Se eliminó exitosamente " +
-                                                    "el cliente",Toast.LENGTH_SHORT).show();
-                                            adapter = new client.CustomersAdapter(inventory.getAllCustomers());
-                                            recyclerView.setAdapter(adapter);
-                                            CustomersonRV =inventory.getAllCustomers();
-
-                                        }
-                                        else
-                                        {
-                                            Toast.makeText(client.this,"No se pudo eliminar  el cliente. " +
-                                                    "Existen pedidos ",Toast.LENGTH_SHORT).show();
-                                        }
+                                    public void onClick(View v) {
+                                        String AuxPhone1 = "";
+                                        String AuxPhone2="";
+                                        String AuxPhone3="";
+                                        String AuxEmail = "";
+                                        if(ChB_phone1.isChecked()==false){AuxPhone1=null;}else{AuxPhone1 = "'"+EditText_phone1_lada.getText().toString()+"-"+EditText_phone1.getText().toString()+"'";}
+                                        if(ChB_phone2.isChecked()==false){AuxPhone2=null;}else{AuxPhone2 = "'"+EditText_phone2_lada.getText().toString()+"-"+EditText_phone2.getText().toString()+"'";}
+                                        if(ChB_phone3.isChecked()==false){AuxPhone3=null;}else{AuxPhone3 = "'"+EditText_phone3_lada.getText().toString()+"-"+EditText_phone3.getText().toString()+"'";}
+                                        if(ChB_e_mail.isChecked()==false){AuxEmail=null;}else{AuxEmail= "'"+EditText_Email.getText().toString()+"'";}
+                                        Customers customerU = new Customers(CustomersonRV.get(pos).getId(),
+                                                EditText_FirstName.getText().toString(),EditText_LastName.getText().toString(),
+                                                EditText_Address.getText().toString(),AuxPhone1,AuxPhone2,AuxPhone3,AuxEmail);
+                                        inventory2.updateCustomer(customerU);
+                                        Toast.makeText(getApplicationContext(),"El cliente fue actualizado",Toast.LENGTH_SHORT).show();
+                                        adapter = new CustomersAdapter(inventory2.getAllCustomers());
+                                        CustomersonRV = inventory2.getAllCustomers();
+                                        recyclerView.setAdapter(adapter);
+                                        dialog1.cancel();
                                     }
                                 });
-                                builder1.show();
-
                             }
+                            return true;
                         }
                     });
-                    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                    popupMenu.show();
 
-                        }
-                    });
-                    builder.show();
-                    //Toast.makeText(getApplicationContext(), String.valueOf(CustomersonRV.get(pos).getId()),Toast.LENGTH_SHORT).show();
+
                 }
             });
         }
@@ -312,16 +308,16 @@ public class client extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         findclientebtn = (ImageButton) findViewById(R.id.Imagebtn_findclient);
 
-        if (savedInstanceState !=null) {
-            searchwasclick = savedInstanceState.getBoolean(KEY_FINDCLIENTSWASCLICK, false);
-            Toast.makeText(getApplicationContext(),"Hay algo guardado",Toast.LENGTH_SHORT).show();
-            if(searchwasclick==true){
-                //ShowClientes(CustomersonRV);
-                adapter = new CustomersAdapter(CustomersonRV);
-                recyclerView.setAdapter(adapter);
-                Toast.makeText(getApplicationContext(),String.valueOf(CustomersonRV.size()),Toast.LENGTH_SHORT).show();
-            }
-        }
+      //  if (savedInstanceState !=null) {
+      //      searchwasclick = savedInstanceState.getBoolean(KEY_FINDCLIENTSWASCLICK, false);
+      //      Toast.makeText(getApplicationContext(),"Hay algo guardado",Toast.LENGTH_SHORT).show();
+      //      if(searchwasclick==true){
+      //          //ShowClientes(CustomersonRV);
+      //          adapter = new CustomersAdapter(CustomersonRV);
+      //          recyclerView.setAdapter(adapter);
+      //          Toast.makeText(getApplicationContext(),String.valueOf(CustomersonRV.size()),Toast.LENGTH_SHORT).show();
+      //      }
+      //  }
 
         spinner = (MultiSelectionSpinner) findViewById(R.id.mySpinner1);
         final List<String> Items_Spinners = new ArrayList<String>();
@@ -371,10 +367,10 @@ public class client extends AppCompatActivity {
                 }
                 List<Customers> clientsfounded = new ArrayList<Customers>();
                 clientsfounded = inventory1.findby(firstname, lastname, address, phone, email, descrip);
+                int i= clientsfounded.size();
                 adapter = new CustomersAdapter(clientsfounded);
                 recyclerView.setAdapter(adapter);
                 CustomersonRV = clientsfounded;
-                Toast.makeText(getApplicationContext(), String.valueOf(CustomersonRV.size()),Toast.LENGTH_SHORT).show();
 
               
             }
@@ -408,7 +404,7 @@ public class client extends AppCompatActivity {
                 final CheckBox ChB_phone2 = (CheckBox) dialog.findViewById(R.id.CheckBox_phone2);
                 final CheckBox ChB_phone3 = (CheckBox) dialog.findViewById(R.id.CheckBox_phone3);
                 final CheckBox ChB_e_mail = (CheckBox) dialog.findViewById(R.id.CheckBox_e_mail);
-                Button btn_addclient = (Button) dialog.findViewById(R.id.btn_confirm);
+                final Button btn_addclient = (Button) dialog.findViewById(R.id.btn_confirm);
                 Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
 
 
@@ -463,6 +459,7 @@ public class client extends AppCompatActivity {
                 btn_addclient.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         String firstname = "";
                         String lastname = "";
                         String address = "";
