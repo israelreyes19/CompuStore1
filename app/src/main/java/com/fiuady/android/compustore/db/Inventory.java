@@ -71,6 +71,30 @@ class OrdersCursor extends CursorWrapper {
         return new Order(id,status_id,customer_id,date,change_log);
     }
 }
+class Order_statusCursor extends CursorWrapper {
+    public Order_statusCursor(Cursor cursor) {
+        super(cursor);
+    }
+
+    private int    id;
+    private int    description;
+    private int    editable;
+    private String previous;
+    private String next;
+
+
+
+    public Order_status getOrders(){
+        Cursor cursor = getWrappedCursor();
+        id  =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.id));
+        description  = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.description));
+        editable  =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.editable));
+        previous  =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.previous));
+        next  =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.next));
+        return new Order_status(id,description,editable,previous,next);
+    }
+}
+
 class ProductCursor extends CursorWrapper
 {
     public ProductCursor(Cursor cursor) {
@@ -655,8 +679,7 @@ public boolean check_product(String description)
             String or2 = "";
             String or3 = "";
             String or4 = "";
-           //SELECT * FROM customers c WHERE c.first_name or c.last_name
-           // or c.address or c.phone1 or c.phone2 or c.phone3 or c.e_mail like "m%" order by c.last_name
+
             Boolean flag0= false;
             Boolean flag1= false;
             Boolean flag2= false;
@@ -805,5 +828,101 @@ public boolean check_product(String description)
         cursor.close();
         return list;
     }
+    public List<Order> getAllordersWithSpecificsStatusOrders(boolean pending,boolean cancel,boolean confirmed, boolean ontransit,  boolean finished) {
+        ArrayList<Order> list = new ArrayList<Order>();
+        if (pending || cancel || confirmed || ontransit || finished == true){
+            String statusid1 ="";
+            String statusid2 = "";
+            String statusid3 = "";
+            String statusid4 = "";
+            String statusid0 = "";
 
+            String or1 ="";
+            String or2 = "";
+            String or3 = "";
+            String or4 = "";
+
+            Boolean flag0= false;
+            Boolean flag1= false;
+            Boolean flag2= false;
+            Boolean flag3= false;
+            Boolean flag4= false;
+
+            if (pending){flag0 = true; statusid0 = "status_id = 0 ";}else {flag0 = false;statusid0 ="";}
+            if (cancel){flag1 = true; statusid1= "status_id = 1 ";}else {flag1 = false;statusid1 ="";}
+            if (confirmed){flag2 = true; statusid2= "status_id = 2 ";}else {flag2 = false;statusid2 ="";}
+            if (ontransit){flag3 = true; statusid3= "status_id = 3 ";}else {flag3 = false;statusid3 ="";}
+            if (finished){flag4 = true; statusid4= "status_id = 4 ";}else {flag4 = false;statusid4 ="";}
+
+            if (flag0==true) {if (flag1 ||flag2||flag3||flag4 ){or1 = "or";} }
+            if (flag1==true) {if (flag2||flag3||flag4 ){or2 = "or";} }
+            if (flag2==true) {if (flag3||flag4 ){or3 = "or";} }
+            if (flag3==true) {if (flag4 ){or4 = "or";} }
+
+            String aux ="SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
+                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4;
+            OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
+                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4, null));// SELECT * FROM orders where customer_id = 2
+            while (cursor.moveToNext()) {
+                list.add(cursor.getOrders());
+            }
+            cursor.close();
+        }
+
+        return list;
+    }
+
+    public List<Order> getSpecificiOrdersWithCustomerandStatus(boolean pending,boolean cancel,boolean confirmed, boolean ontransit,  boolean finished,int id) {
+        ArrayList<Order> list = new ArrayList<Order>();
+        if (pending || cancel || confirmed || ontransit || finished == true){
+            String statusid1 ="";
+            String statusid2 = "";
+            String statusid3 = "";
+            String statusid4 = "";
+            String statusid0 = "";
+
+            String or1 ="";
+            String or2 = "";
+            String or3 = "";
+            String or4 = "";
+
+            Boolean flag0= false;
+            Boolean flag1= false;
+            Boolean flag2= false;
+            Boolean flag3= false;
+            Boolean flag4= false;
+
+            if (pending){flag0 = true; statusid0 = "(status_id = 0 and customer_id="+String.valueOf(id)+" )";}else {flag0 = false;statusid0 ="";}
+            if (cancel){flag1 = true; statusid1= "(status_id = 1 and customer_id="+String.valueOf(id)+" )";}else {flag1 = false;statusid1 ="";}
+            if (confirmed){flag2 = true; statusid2= "(status_id = 2 and customer_id="+String.valueOf(id)+" )";}else {flag2 = false;statusid2 ="";}
+            if (ontransit){flag3 = true; statusid3= "(status_id = 3 and customer_id="+String.valueOf(id)+" )";}else {flag3 = false;statusid3 ="";}
+            if (finished){flag4 = true; statusid4= "(status_id = 4 and customer_id="+String.valueOf(id)+" )";}else {flag4 = false;statusid4 ="";}
+
+            if (flag0==true) {if (flag1 ||flag2||flag3||flag4 ){or1 = "or";} }
+            if (flag1==true) {if (flag2||flag3||flag4 ){or2 = "or";} }
+            if (flag2==true) {if (flag3||flag4 ){or3 = "or";} }
+            if (flag3==true) {if (flag4 ){or4 = "or";} }
+            //SELECT * FROM orders where status_id = 4 and customer_id=2
+
+            String aux ="SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
+                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4;
+            OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
+                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4, null));// SELECT * FROM orders where customer_id = 2
+            while (cursor.moveToNext()) {
+                list.add(cursor.getOrders());
+            }
+            cursor.close();
+        }
+
+        return list;
+    }
+    public List<Order_status> getAllOrder_Status() {
+        ArrayList<Order_status> list = new ArrayList<Order_status>();
+        Order_statusCursor cursor = new Order_statusCursor(db.rawQuery("SELECT * FROM order_status ", null));// ORDER BY last_name
+        while (cursor.moveToNext()) {
+            list.add(cursor.getOrders());
+        }
+        cursor.close();
+        return list;
+    }
 }

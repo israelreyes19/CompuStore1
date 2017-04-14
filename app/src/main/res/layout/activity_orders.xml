@@ -47,7 +47,7 @@
                     android:textSize="20sp" />
 
                 <ImageButton
-                    android:id="@+id/imageButtonBack"
+                    android:id="@+id/BackActivy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#00000000"
@@ -60,20 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Buscar: "/>
-                <SearchView
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/SearchViewOrders">
 
-                </SearchView>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -82,6 +69,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/Txt_status_order"
                     android:text="Estado de orden:"/>
                 <Spinner
                     android:layout_width="match_parent"
@@ -101,7 +89,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clientes: "/>
+                android:text="@string/Order_client"/>
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -124,13 +112,14 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/ChB_oldDate"
                     android:text="Fecha\nantigua"
-                    android:checked="true"/>
+                    android:checked="false"/>
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/Btn_Selectolddate"
-                    android:text="Fecha"/>
+                    android:text="Fecha"
+                    android:enabled="false"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -141,13 +130,14 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/ChB_newDate"
                     android:text="Fecha\ncercana"
-                    android:checked="true"/>
+                    android:checked="false"/>
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/Btn_SelectNewdate"
-                    android:text="Fecha"/>
+                    android:text="Fecha"
+                    android:enabled="false"/>
             </LinearLayout>
 
 
