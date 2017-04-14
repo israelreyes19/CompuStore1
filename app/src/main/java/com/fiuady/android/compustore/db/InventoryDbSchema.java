@@ -41,7 +41,36 @@ public final class InventoryDbSchema {
         }
 
     }
+    public static final class OrdersTable {
+        public static final String Name = "orders";
 
+        public static final class Columns
+        {
+            public static final String id ="id";
+            public static final String status_id="status_id";
+            public static final String customer_id= "customer_id";
+            public static final String date = "date";
+            public static final String change_log = "change_log";
+            //INSERT INTO orders (id, status_id, customer_id, date, change_log) VALUES (8, 0, 3, '18-03-2017', NULL);
+
+        }
+
+    }
+    public static final class OrdersStatusTable {
+        public static final String Name = "order_status";
+
+        public static final class Columns
+        {
+            public static final String id ="id";
+            public static final String description="description";
+            public static final String editable= "editable";
+            public static final String previous = "previous";
+            public static final String next = "next";
+            // INSERT INTO order_status (id, description, editable, previous, next) VALUES (4, 'Finalizado', 0, '-', '-');
+
+        }
+
+    }
     public static class AssembliesTable
     {
         public static final String Name = "assemblies";

@@ -48,7 +48,29 @@ class CustomersCursor extends CursorWrapper {
     }
 }
 
+class OrdersCursor extends CursorWrapper {
+    public OrdersCursor(Cursor cursor) {
+        super(cursor);
+    }
 
+
+    private int id;
+    private int status_id;
+    private int customer_id;
+    private String date;
+    private String change_log;
+
+
+    public Order getOrders(){
+        Cursor cursor = getWrappedCursor();
+        id =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.id));
+        status_id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.status_id));
+        customer_id=cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.customer_id));
+        date =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.date));
+        change_log =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.change_log));
+        return new Order(id,status_id,customer_id,date,change_log);
+    }
+}
 class ProductCursor extends CursorWrapper
 {
     public ProductCursor(Cursor cursor) {
@@ -693,10 +715,7 @@ public boolean check_product(String description)
 
     }
     public boolean deleteCustomer(Customers customer){
-        boolean val;
-        String prove = "SELECT c.id from " +
-                "customers c INNER JOIN orders o ON (c.id = o.customer_id) " +
-                "GROUP BY c.id HAVING c.id = "+ String.valueOf(customer.getId())+";";
+
         Cursor cursor = db.rawQuery("SELECT c.id from " +
                 "customers c INNER JOIN orders o ON (c.id = o.customer_id) " +
                 "GROUP BY c.id HAVING c.id = "+ String.valueOf(customer.getId())+";", new String[]{});
@@ -719,8 +738,7 @@ public boolean check_product(String description)
         }
 
     }
-    public void updateCustomer(Customers customer)
-    {
+    public void updateCustomer(Customers customer) {
         String aux = "UPDATE customers SET  first_name = '"+ customer.getFirst_name()+
                 "' , last_name = '"+ customer.getLast_name()+
                 "' , address = '"+ customer.getAddress()+
@@ -745,4 +763,47 @@ public boolean check_product(String description)
 
 
     }
+    public boolean canudeletecustomer (Customers customer){
+
+        Cursor cursor = db.rawQuery("SELECT c.id from " +
+                "customers c INNER JOIN orders o ON (c.id = o.customer_id) " +
+                "GROUP BY c.id HAVING c.id = "+ String.valueOf(customer.getId())+";", new String[]{});
+        if (cursor==null)
+        {
+
+            return true;
+        }
+        else if(!cursor.moveToFirst())
+        {
+
+            cursor.close();
+            return true;
+
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+    }
+    //For orders
+    public List<Order> getAllOrders() {
+        ArrayList<Order> list = new ArrayList<Order>();
+        OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders ", null));// ORDER BY last_name
+        while (cursor.moveToNext()) {
+            list.add(cursor.getOrders());
+        }
+        cursor.close();
+        return list;
+    }
+    public List<Order> getSpecificClientOrders(int i) {
+        ArrayList<Order> list = new ArrayList<Order>();
+        OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where customer_id ="+String.valueOf(i), null));// SELECT * FROM orders where customer_id = 2
+        while (cursor.moveToNext()) {
+            list.add(cursor.getOrders());
+        }
+        cursor.close();
+        return list;
+    }
+
 }

@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">CompuStore</string>
     <string name="title_activity_add_new_product">AddNewProductActivity</string>
+    <string name="Order_Tag">Número de orden: </string>
+    <string name="Order_status">Estado de orden: </string>
+    <string name="Order_client">Cliente : </string>
+    <string name="Order_date">Fecha: </string>
+
+    <string-array name="spinnerItems">
+        <item>Estados</item>
+    </string-array>
+    <string-array name="spinnerClientsItems">
+        <item>Todos</item>
+    </string-array>
 </resources>

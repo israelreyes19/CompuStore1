@@ -56,6 +56,9 @@ public class client extends AppCompatActivity {
 
                     PopupMenu popupMenu = new PopupMenu(client.this,itemView);
                     popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
+
+                    if (inventory2.canudeletecustomer(CustomersonRV.get(pos))==false){popupMenu.getMenu().clear();popupMenu.getMenu().add("Editar");}
+
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
@@ -330,9 +333,6 @@ public class client extends AppCompatActivity {
 
         spinner.setItems(Items_Spinners);
         List<Customers> listprove = new ArrayList<Customers>();
-        listprove = inventory.getAllCustomers();
-
-        adapter = new CustomersAdapter(listprove);
         //recyclerView.setAdapter(adapter);
 
         findclientebtn.setOnClickListener(new View.OnClickListener() {
