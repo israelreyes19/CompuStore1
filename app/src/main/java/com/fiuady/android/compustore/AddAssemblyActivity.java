@@ -69,10 +69,9 @@ public class AddAssemblyActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         picker.getValue();
                                         Inventory inventory = new Inventory(AddAssemblyActivity.this);
-                                        inventory.updateProductInAssembly(AssembliesActivity.selectedAssembly, product, picker.getValue());
-                                        //Toast.makeText(AddAssemblyActivity.this, AssembliesActivity.selectedAssembly.getDescription()+" "+product.getDescription() +" "+ picker.getValue(),Toast.LENGTH_SHORT).show();
+                                        inventory.updateProductInAssembly(auxAssembly, product, picker.getValue());
 
-                                        adapter = new ProductsAdapter(inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly));
+                                        adapter = new ProductsAdapter(inventory.getAssemblyProducts(auxAssembly));
                                         recyclerView.setAdapter(adapter);
                                     }
                                 });
@@ -92,9 +91,9 @@ public class AddAssemblyActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Inventory inventory = new Inventory(AddAssemblyActivity.this);
-                                        inventory.deleteProductInAssembly(AssembliesActivity.selectedAssembly, products);
+                                        inventory.deleteProductInAssembly(auxAssembly, products);
                                         Toast.makeText(AddAssemblyActivity.this, "Se ha eliminado el producto", Toast.LENGTH_SHORT).show();
-                                        adapter = new ProductsAdapter(inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly));
+                                        adapter = new ProductsAdapter(inventory.getAssemblyProducts(auxAssembly));
                                         recyclerView.setAdapter(adapter);
                                     }
                                 });
@@ -159,6 +158,9 @@ public class AddAssemblyActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProductsAdapter adapter;
 
+    private List<Products> list;
+
+    private Assemblies auxAssembly;
     private EditText assemblyDescription;
     private ImageButton arrowButton;
     private ImageButton addButton;
@@ -177,6 +179,11 @@ public class AddAssemblyActivity extends AppCompatActivity {
             Inventory inventory = new Inventory(AddAssemblyActivity.this);
             inventory.emptyNDeleteAux();
         }
+        else if(AssembliesActivity.edit)
+        {
+            Inventory inventory = new Inventory(AddAssemblyActivity.this);
+            inventory.emptyNDeleteAux();
+        }
         //setResult(RESULT_OK);
     }
 
@@ -186,7 +193,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
         if(RESULT_OK==resultCode)
         {
             Inventory inventory = new Inventory(AddAssemblyActivity.this);
-            adapter = new ProductsAdapter(inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly));
+            adapter = new ProductsAdapter(inventory.getAssemblyProducts(auxAssembly));
             recyclerView.setAdapter(adapter);
         }
     }
@@ -210,7 +217,21 @@ public class AddAssemblyActivity extends AppCompatActivity {
             //Toast.makeText(getApplicationContext(), "Editando", Toast.LENGTH_SHORT).show();
             //assemblyDescription.setEnabled(false);
             title.setText("Editar ensamble");
-            adapter = new ProductsAdapter(inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly));
+
+
+            //adapter = new ProductsAdapter(inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly));
+            //recyclerView.setAdapter(adapter);
+            list = inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly);
+            //AssembliesActivity.selectedAssembly.setDescription("");
+            //AssembliesActivity.selectedAssembly.setId(9999);
+            auxAssembly = new Assemblies(9999, "");
+            inventory.addAuxAssembly(auxAssembly);
+            for(Products products : list)
+            {
+                inventory.addProductInAssemblyWithQty(products, auxAssembly);
+            }
+
+            adapter = new ProductsAdapter(inventory.getAssemblyProducts(auxAssembly));
             recyclerView.setAdapter(adapter);
 
         } else if (!AssembliesActivity.edit) // Agregar nuevo ensamble
@@ -231,13 +252,20 @@ public class AddAssemblyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (AssembliesActivity.edit) {
                     if (inventory.updateAssembly(AssembliesActivity.selectedAssembly, assemblyDescription.getText().toString())) {
-                        Toast.makeText(AddAssemblyActivity.this, "Se actualizó la información del ensamble", Toast.LENGTH_SHORT).show();
+                        //setResult(RESULT_OK);
+                        Toast.makeText(AddAssemblyActivity.this, AssembliesActivity.selectedAssembly.getDescription(), Toast.LENGTH_SHORT).show();
+
+                        inventory.transferProductsToAnotherAssembly(AssembliesActivity.selectedAssembly);
+                        inventory.deleteAux();
                         setResult(RESULT_OK);
-                        finish();
+                        Toast.makeText(AddAssemblyActivity.this, "Se actualizó la información del ensamble", Toast.LENGTH_SHORT).show();
+
+
                     } else {
                         Toast.makeText(AddAssemblyActivity.this, "ERROR: El nuevo nombre del ensamble ya esta asignado a otro ensamble", Toast.LENGTH_LONG).show();
-                        finish();
+
                     }
+                    finish();
                 }
                 else
                 {

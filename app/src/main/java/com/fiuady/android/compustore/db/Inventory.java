@@ -517,6 +517,27 @@ public boolean check_product(String description)
         }
     }
 
+    public boolean addProductInAssemblyWithQty(Products product, Assemblies assembly)
+    {
+        Cursor cursor = db.rawQuery("SELECT id FROM assembly_products ap WHERE ap.id=" + String.valueOf(assembly.getId())+
+                " AND ap.product_id=" + String.valueOf(product.getId())+
+                ";",new String[]{});
+        if(!cursor.moveToFirst())
+        {
+            db.execSQL("INSERT INTO assembly_products (id, product_id, qty) VALUES ("+String.valueOf(assembly.getId()) +
+                    ", " + String.valueOf(product.getId())+
+                    ", " + String.valueOf(product.getQty())+
+                    ");");
+            cursor.close();
+            return true;
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+    }
+
     public boolean addAssembly(Assemblies assemblies)
     {
         int mx=-1;
@@ -583,6 +604,15 @@ public boolean check_product(String description)
             db.execSQL("UPDATE assembly_products SET id = " +String.valueOf( mx)+
                     " WHERE id=9999");
         }
+    }
+
+
+    public void transferProductsToAnotherAssembly(Assemblies assemblies)
+    {
+        db.execSQL("DELETE From assembly_products WHERE id="+ String.valueOf(assemblies.getId()) +
+                ";");
+        db.execSQL("UPDATE assembly_products SET id = " +String.valueOf(assemblies.getId())+
+                " WHERE id=9999");
     }
 
 

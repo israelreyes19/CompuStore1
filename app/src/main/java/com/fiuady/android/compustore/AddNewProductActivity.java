@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fiuady.android.compustore.db.Assemblies;
 import com.fiuady.android.compustore.db.Category;
 import com.fiuady.android.compustore.db.Inventory;
 import com.fiuady.android.compustore.db.Products;
@@ -73,7 +74,8 @@ public class AddNewProductActivity extends AppCompatActivity {
                             if (which == 0)
                             {
 
-                                if(inventory.addProductInAssembly(productos,AssembliesActivity.selectedAssembly))
+                                Assemblies assemblies = new Assemblies(9999,"");
+                                if(inventory.addProductInAssembly(productos,assemblies))
                                 {
                                     Toast.makeText(AddNewProductActivity.this,"Se agregó el producto al ensamble",Toast.LENGTH_SHORT).show();
                                 }
