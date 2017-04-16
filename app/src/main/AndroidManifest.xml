@@ -18,8 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".CategoriesActivity" />
-        <activity android:name=".ProductosActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".ProductosActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".client"
             android:windowSoftInputMode="stateHidden" />
@@ -27,15 +28,17 @@
         <activity
             android:name=".AddAssemblyActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".orders"
-            android:windowSoftInputMode="stateHidden"></activity>
-        <activity android:name=".ReportesActivity"></activity>
+        <activity
+            android:name=".orders"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".ReportesActivity" />
         <activity
             android:name=".AddNewProductActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_add_new_product"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".add_order"></activity>
     </application>
 
 </manifest>

@@ -6,6 +6,10 @@
     <string name="Order_client">Cliente : </string>
     <string name="Order_date">Fecha: </string>
     <string name="modify_order_status">Modificar Estado</string>
+    <string name="Add_order_tittle">Agregar Orden </string>
+    <string name="Confirm_order"> Confirmar </string>
+    <string name="Cancel_order">Cancelar </string>
+
 
     <string-array name="spinnerItems">
         <item>Estados</item>

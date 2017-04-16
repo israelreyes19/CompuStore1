@@ -2,12 +2,14 @@ package com.fiuady.android.compustore;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -30,8 +32,11 @@ import com.fiuady.android.compustore.db.Inventory;
 import com.fiuady.android.compustore.db.Order;
 import com.fiuady.android.compustore.db.Order_status;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class orders extends AppCompatActivity {
@@ -55,21 +60,31 @@ public class orders extends AppCompatActivity {
                     final int pos = getAdapterPosition();
                     final PopupMenu popupMenu = new PopupMenu(orders.this, itemView);
                     popupMenu.getMenuInflater().inflate(R.menu.pop_menu_order, popupMenu.getMenu());
-                    if (OrdersOnRV.get(pos).getStatus_id() == order_status.get(0).getId()) {popupMenu.getMenu().add("Modificar Orden");}
+                    if (OrdersOnRV.get(pos).getStatus_id() == order_status.get(0).getId()) {
+                        popupMenu.getMenu().add("Modificar Orden");
+                    }
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getTitle().length()== "Modificar Estado".length()){
+                            if (item.getTitle().length() == "Modificar Estado".length()) {
                                 PopupMenu popupMenu1 = new PopupMenu(orders.this, itemView);
                                 popupMenu1.getMenuInflater().inflate(R.menu.popup_menu_modify_status, popupMenu1.getMenu());
 
-                                if (OrdersOnRV.get(pos).getStatus_id()==0){popupMenu1.getMenu().add("Confirmado");popupMenu1.getMenu().add("Cancelado");}
-                                else  if (OrdersOnRV.get(pos).getStatus_id()==1){popupMenu1.getMenu().add("Pendiente");}
-                                else  if (OrdersOnRV.get(pos).getStatus_id()==2){popupMenu1.getMenu().add("En transito");}
-                                else  if (OrdersOnRV.get(pos).getStatus_id()==3){popupMenu1.getMenu().add("Finalizado");}
+                                if (OrdersOnRV.get(pos).getStatus_id() == 0) {
+                                    popupMenu1.getMenu().add("Confirmado");
+                                    popupMenu1.getMenu().add("Cancelado");
+                                } else if (OrdersOnRV.get(pos).getStatus_id() == 1) {
+                                    popupMenu1.getMenu().add("Pendiente");
+                                } else if (OrdersOnRV.get(pos).getStatus_id() == 2) {
+                                    popupMenu1.getMenu().add("En transito");
+                                } else if (OrdersOnRV.get(pos).getStatus_id() == 3) {
+                                    popupMenu1.getMenu().add("Finalizado");
+                                }
                                 popupMenu1.show();
-                            }
-                            else { // se seleccionó modificar Orden
+                                
+
+                            } else { // se seleccionó modificar Orden
+
 
                             }
                             return false;
@@ -216,46 +231,13 @@ public class orders extends AppCompatActivity {
                             entransito_IsSel = ChB_EnTransito.isChecked();
                             finalizado_IsSel = ChB_Finalizado.isChecked();
                             String auxS = "";
-                            if (pendiente_IsSel) {
-                                auxS = auxS + "Pendiente/ ";
-                            }
-                            if (cancelado_IsSel) {
-                                auxS = auxS + "Cancelado/ ";
-                            }
-                            if (confirmado_IsSel) {
-                                auxS = auxS + "Confirmado/ ";
-                            }
-                            if (entransito_IsSel) {
-                                auxS = auxS + "En transito/ ";
-                            }
-                            if (finalizado_IsSel) {
-                                auxS = auxS + "Finalizado ";
-                            }
+                            if (pendiente_IsSel) {auxS = auxS + "Pendiente/ ";}
+                            if (cancelado_IsSel) {auxS = auxS + "Cancelado/ ";}
+                            if (confirmado_IsSel) {auxS = auxS + "Confirmado/ ";}
+                            if (entransito_IsSel) {auxS = auxS + "En transito/ ";}
+                            if (finalizado_IsSel) {auxS = auxS + "Finalizado ";}
                             txt_status_order.setText(auxS);
-                            if (spinner_clients.getSelectedItem().toString().equals("TODOS")) {
-                                if (pendiente_IsSel && cancelado_IsSel && confirmado_IsSel && entransito_IsSel) {
-                                    OrdersAdapter = new OrdersAdapter(inventory.getAllOrders());
-                                    recyclerView.setAdapter(OrdersAdapter);
-                                    OrdersOnRV = inventory.getAllOrders();
-                                } else {
-                                    OrdersAdapter = new OrdersAdapter(inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel));
-                                    recyclerView.setAdapter(OrdersAdapter);
-                                    OrdersOnRV = inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel);
-                                }
-                            } else {
-                                int aux;
-                                for (Customers customer : clientsfounded) {
-                                    if (spinner_clients.getSelectedItem().toString().equals((customer.getLast_name() + " " + customer.getFirst_name()))) {
-                                        aux = customer.getId();
-                                        OrdersAdapter = new OrdersAdapter(inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux));
-                                        recyclerView.setAdapter(OrdersAdapter);
-                                        OrdersOnRV = inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux);
-
-                                    }
-                                }
-
-
-                            }
+                            ShowOrders();
 
                             dialog.cancel();
                         }
@@ -283,6 +265,7 @@ public class orders extends AppCompatActivity {
                 oldDate_YearX = c.get(Calendar.YEAR);
 
                 new DatePickerDialog(orders.this, listener, oldDate_YearX, oldDate_MonthX, oldDate_DayX).show();
+                ShowOrders();
             }
         });
         btn_newDate.setOnClickListener(new View.OnClickListener() {
@@ -294,6 +277,7 @@ public class orders extends AppCompatActivity {
                 oldDate_YearX = c.get(Calendar.YEAR);
 
                 new DatePickerDialog(orders.this, listener1, oldDate_YearX, oldDate_MonthX, oldDate_DayX).show();
+                ShowOrders();
 
             }
         });
@@ -306,6 +290,8 @@ public class orders extends AppCompatActivity {
                 } else {
                     btn_newDate.setEnabled(false);
                 }
+                ShowOrders();
+
             }
         });
         ChB_oldDate.setOnClickListener(new View.OnClickListener() {
@@ -316,6 +302,7 @@ public class orders extends AppCompatActivity {
                 } else {
                     btn_oldDate.setEnabled(false);
                 }
+                ShowOrders();
 
 
             }
@@ -326,30 +313,7 @@ public class orders extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
                         Object item = parent.getItemAtPosition(pos);
-                        if (spinner_clients.getSelectedItem().toString().equals("TODOS")) {
-                            if (pendiente_IsSel && cancelado_IsSel && confirmado_IsSel && entransito_IsSel) {
-                                OrdersAdapter = new OrdersAdapter(inventory.getAllOrders());
-                                recyclerView.setAdapter(OrdersAdapter);
-                                OrdersOnRV = inventory.getAllOrders();
-                            } else {
-                                OrdersAdapter = new OrdersAdapter(inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel));
-                                recyclerView.setAdapter(OrdersAdapter);
-                                OrdersOnRV = inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel);
-
-                            }
-                        } else {
-                            int aux;
-                            for (Customers customer : clientsfounded) {
-                                if (spinner_clients.getSelectedItem().toString().equals((customer.getLast_name() + " " + customer.getFirst_name()))) {
-                                    aux = customer.getId();
-                                    OrdersAdapter = new OrdersAdapter(inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux));
-                                    recyclerView.setAdapter(OrdersAdapter);
-                                    OrdersOnRV = inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux);
-                                }
-                            }
-
-
-                        }
+                        ShowOrders();
 
                     }
 
@@ -362,20 +326,28 @@ public class orders extends AppCompatActivity {
                 finish();
             }
         });
+        add_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(orders.this, add_order.class);
+                startActivity(i);
+            }
+        });
     }
 
     DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             if (month < 10 && dayOfMonth < 10) {
-                btn_oldDate.setText("0" + dayOfMonth + "-0" + month + "-" + year);
+                btn_oldDate.setText("0" + dayOfMonth + "-0" + (month + 1) + "-" + year);
             } else if (dayOfMonth < 10) {
-                btn_oldDate.setText("0" + dayOfMonth + "-" + month + "-" + year);
+                btn_oldDate.setText("0" + dayOfMonth + "-" + (month + 1) + "-" + year);
             } else if (month < 10) {
-                btn_oldDate.setText(dayOfMonth + "-0" + month + "-" + year);
+                btn_oldDate.setText(dayOfMonth + "-0" + (month + 1) + "-" + year);
             } else {
-                btn_oldDate.setText(dayOfMonth + "-" + month + "-" + year);
+                btn_oldDate.setText(dayOfMonth + "-" + (month + 1) + "-" + year);
             }
+            ShowOrders();
 
         }
     };
@@ -383,15 +355,15 @@ public class orders extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             if (month < 10 && dayOfMonth < 10) {
-                btn_newDate.setText("0" + dayOfMonth + "-0" + month + "-" + year);
+                btn_newDate.setText("0" + dayOfMonth + "-0" + (month + 1) + "-" + year);
             } else if (dayOfMonth < 10) {
-                btn_newDate.setText("0" + dayOfMonth + "-" + month + "-" + year);
+                btn_newDate.setText("0" + dayOfMonth + "-" + (month + 1) + "-" + year);
             } else if (month < 10) {
-                btn_newDate.setText(dayOfMonth + "-0" + month + "-" + year);
+                btn_newDate.setText(dayOfMonth + "-0" + (month + 1) + "-" + year);
             } else {
-                btn_newDate.setText(dayOfMonth + "-" + month + "-" + year);
+                btn_newDate.setText(dayOfMonth + "-" + (month + 1) + "-" + year);
             }
-
+            ShowOrders();
         }
     };
 
@@ -405,15 +377,77 @@ public class orders extends AppCompatActivity {
         return ord;
     }
 
-    public String StatusDescription(int id_status)
-    {
-        String aux=null;
-        if (id_status == 0){aux = "Pendiente";}
-        else if (id_status == 1){aux = "Cancelado";}
-        else if (id_status == 2){aux = "Confirmado";}
-        else if (id_status == 3){aux = "En transito";}
-        else if (id_status == 4){aux = "Finalizado";}
-        else {aux = "No existe";}
+    public String StatusDescription(int id_status) {
+        String aux = null;
+        if (id_status == 0) {
+            aux = "Pendiente";
+        } else if (id_status == 1) {
+            aux = "Cancelado";
+        } else if (id_status == 2) {
+            aux = "Confirmado";
+        } else if (id_status == 3) {
+            aux = "En transito";
+        } else if (id_status == 4) {
+            aux = "Finalizado";
+        } else {
+            aux = "No existe";
+        }
         return aux;
+    }
+
+    public boolean BuyDateIsonLimits(boolean ChB_oldateIsChecked,boolean ChB_newdateIsChecked,String Buydate, String oldDate,String newDate)
+    {
+        boolean aux = false;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date Date_buyDate = new Date();try {Date_buyDate = sdf.parse(Buydate);}catch (ParseException e){e.printStackTrace();}
+        Date Date_olddate = new Date();try {Date_olddate = sdf.parse(oldDate);} catch (ParseException e) {e.printStackTrace();}
+        Date Date_newdate = new Date();try {Date_newdate = sdf.parse(newDate);} catch (ParseException e) {e.printStackTrace();}
+
+        if(ChB_newdateIsChecked && ChB_oldateIsChecked) {if ((Date_buyDate.compareTo(Date_olddate)>=0)&&(Date_buyDate.compareTo(Date_newdate)<=0)){aux = true;}}
+        else if ((ChB_newdateIsChecked==true) && (ChB_oldateIsChecked==false)) {if (Date_buyDate.compareTo(Date_newdate)<=0){aux = true;}}
+        else if ((ChB_newdateIsChecked==false) && (ChB_oldateIsChecked==true)){if (Date_buyDate.compareTo(Date_olddate)>=0){aux = true;}}
+        return aux;
+    }
+
+    public void ShowOrders(){
+        if (spinner_clients.getSelectedItem().toString().equals("TODOS")) {
+            if (pendiente_IsSel && cancelado_IsSel && confirmado_IsSel && entransito_IsSel && finalizado_IsSel) {
+                OrdersAdapter = new OrdersAdapter(inventory.getAllOrders());
+                recyclerView.setAdapter(OrdersAdapter);
+                OrdersOnRV = inventory.getAllOrders();
+            }
+            else {
+                OrdersAdapter = new OrdersAdapter(inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel));
+                recyclerView.setAdapter(OrdersAdapter);
+                OrdersOnRV = inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel);
+
+            }
+        } else {
+            int aux;
+            for (Customers customer : clientsfounded) {
+                if (spinner_clients.getSelectedItem().toString().equals((customer.getLast_name() + " " + customer.getFirst_name()))) {
+                    aux = customer.getId();
+                    OrdersAdapter = new OrdersAdapter(inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux));
+                    recyclerView.setAdapter(OrdersAdapter);
+                    OrdersOnRV = inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux);
+                }
+            }
+
+
+        }
+        if(ChB_oldDate.isChecked() || ChB_newDate.isChecked())
+        {
+            List<Order> AuxList = new ArrayList<Order>();
+            for (Order order : OrdersOnRV)
+            {
+                if(BuyDateIsonLimits(ChB_oldDate.isChecked(),ChB_newDate.isChecked(),order.getDate(),String.valueOf(btn_oldDate.getText()),String.valueOf(btn_newDate.getText())))
+                {
+                    AuxList.add(order);
+                }
+            }
+            OrdersOnRV = AuxList;
+            OrdersAdapter = new OrdersAdapter(OrdersOnRV);
+            recyclerView.setAdapter(OrdersAdapter);
+        }
     }
 }

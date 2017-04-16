@@ -28,7 +28,7 @@
 
 
                 <ImageButton
-                    android:id="@+id/imageButtonAddOrder"
+                    android:id="@+id/imageButtonAddAssambly_add_order"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -43,11 +43,11 @@
                     android:layout_toRightOf="@+id/imageButtonBack"
                     android:paddingLeft="100dp"
                     android:paddingTop="10dp"
-                    android:text="Ordenes"
+                    android:text="@string/Add_order_tittle"
                     android:textSize="20sp" />
 
                 <ImageButton
-                    android:id="@+id/BackActivy"
+                    android:id="@+id/BackActivy_add_order"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#00000000"
@@ -56,32 +56,7 @@
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Txt_status_order"
-                    android:text="Estado de orden:"/>
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/SpinerStatus"
-                    android:entries="@array/spinnerItems">
-                </Spinner>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,58 +68,16 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinner_clients"
+                android:id="@+id/spinner_clients_add_order"
                 android:entries="@array/spinnerClientsItems"
                 >
 
             </Spinner>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ChB_oldDate"
-                    android:text="Fecha\nantigua"
-                    android:checked="false"/>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Btn_Selectolddate"
-                    android:text="01-01-1990"
-                    android:enabled="false"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ChB_newDate"
-                    android:text="Fecha\ncercana"
-                    android:checked="false"/>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Btn_SelectNewdate"
-                    android:text="01-01-2018"
-                    android:enabled="false"/>
-            </LinearLayout>
-
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -152,16 +85,29 @@
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/orders_recyclerview">
+                    android:id="@+id/recyclerview_assamblys_add_order">
 
                 </android.support.v7.widget.RecyclerView>
             </GridLayout>
 
+
         </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_confirm_add_order"
+                android:text="@string/Confirm_order"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_cancel_add_order"
+                android:text="@string/Cancel_order"/>
+        </LinearLayout>
     </LinearLayout>
-
-
 
 
 </LinearLayout>
