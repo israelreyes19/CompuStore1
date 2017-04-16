@@ -9,6 +9,13 @@
     <string name="Add_order_tittle">Agregar Orden </string>
     <string name="Confirm_order"> Confirmar </string>
     <string name="Cancel_order">Cancelar </string>
+    <string name="Commentaries">Comentarios de la actualización:</string>
+    <string name="add_Commentaries">Agregar comentarios...</string>
+    <string name="actualization">Actualizaciones anteriores:</string>
+
+
+
+    Comentarios de la actulización
 
 
     <string-array name="spinnerItems">

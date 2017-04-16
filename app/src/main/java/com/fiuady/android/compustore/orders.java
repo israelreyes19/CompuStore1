@@ -80,6 +80,70 @@ public class orders extends AppCompatActivity {
                                 } else if (OrdersOnRV.get(pos).getStatus_id() == 3) {
                                     popupMenu1.getMenu().add("Finalizado");
                                 }
+                                else if (OrdersOnRV.get(pos).getStatus_id()==4){
+                                    Toast.makeText(getApplicationContext(),"La compra ha finalizado exitosamente",Toast.LENGTH_SHORT).show();
+
+                                }
+
+                                popupMenu1.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        final Dialog dialog = new Dialog(orders.this);
+                                        dialog.setTitle("Cambiar estado del pedido");
+                                        dialog.setContentView(R.layout.change_order_state);
+                                        dialog.show();
+                                        final TextView txt_change_log = (TextView) dialog.findViewById(R.id.txt_change_log_changeorderstate);
+                                        final TextView txt_currentdate = (TextView) dialog.findViewById(R.id.txt_currentdate_changeorderstate);
+                                        final EditText EdTxt_New_Change_log = (EditText) dialog.findViewById(R.id.Edtxt_addcomentaries_changeorderstatus);
+                                        final Button btn_confirm_log_change = (Button)dialog.findViewById(R.id.btn_confirm_changestatusorder);
+                                        final Button btn_cancel_log_change = (Button)dialog.findViewById(R.id.btn_cancel_changestatusorder);
+                                        txt_change_log.setText(OrdersOnRV.get(pos).getChange_log());
+                                        txt_currentdate.setText("Fecha actual: "+getTodayCalendar());
+                                        if(item.getTitle().toString().equals("Confirmado"))
+                                        {
+                                            i=2;
+                                        }
+                                        if(item.getTitle().toString().equals("Cancelado"))
+                                        {
+                                            i=1;
+                                        }
+                                        if(item.getTitle().toString().equals("Pendiente"))
+                                        {
+                                            i=0;
+                                        }
+                                        if(item.getTitle().toString().equals("En transito"))
+                                        {
+                                            i=3;
+                                        }
+                                        if(item.getTitle().toString().equals("Finalizado"))
+                                        {
+                                            i=4;
+                                        }
+                                        //  (0, 'Pendiente',
+                                        //  (1, 'Cancelado',
+                                        //  (2, 'Confirmado',
+                                        // (3, 'En tránsito'
+                                        // (4, 'Finalizado',
+                                        btn_confirm_log_change.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                String get_newchangelog="";
+                                                get_newchangelog = String.valueOf(txt_change_log.getText());
+
+                                                get_newchangelog= get_newchangelog +" "+ EdTxt_New_Change_log.getText().toString()+"-"+getTodayCalendar()+"\n";
+                                                inventory.UpdateOrder_status(OrdersOnRV.get(pos).getId(),i,get_newchangelog);
+                                                Toast.makeText(getApplicationContext(),"Se ha actualizado correctamente",Toast.LENGTH_SHORT).show();
+                                                ShowOrders();
+                                                dialog.cancel();
+                                            }
+                                        });
+                                        btn_cancel_log_change.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {dialog.cancel();}
+                                        });
+                                        return false;
+                                    }
+                                });
                                 popupMenu1.show();
                                 
 
@@ -117,11 +181,7 @@ public class orders extends AppCompatActivity {
             id_order.setText(String.valueOf(order.getId()));
             client_name.setText(String.valueOf(order.getCustomer_id()));
             date_name.setText(String.valueOf(order.getDate()));
-            //  (0, 'Pendiente',
-            //  (1, 'Cancelado',
-            //  (2, 'Confirmado',
-            // (3, 'En tránsito'
-            // (4, 'Finalizado',
+
         }
     }
 
@@ -159,7 +219,7 @@ public class orders extends AppCompatActivity {
     private CheckBox ChB_oldDate, ChB_newDate;
     List<Customers> clientsfounded = new ArrayList<Customers>();
     private boolean pendiente_IsSel = false, cancelado_IsSel = false, confirmado_IsSel = false, entransito_IsSel = false, finalizado_IsSel = false;
-    private int oldDate_DayX, oldDate_MonthX, oldDate_YearX, i;
+    private int oldDate_DayX, oldDate_MonthX, oldDate_YearX,i;
     private TextView txt_status_order;
     private List<Order> OrdersOnRV = new ArrayList<Order>();
     private List<Order_status> order_status = new ArrayList<Order_status>();
@@ -412,14 +472,16 @@ public class orders extends AppCompatActivity {
     public void ShowOrders(){
         if (spinner_clients.getSelectedItem().toString().equals("TODOS")) {
             if (pendiente_IsSel && cancelado_IsSel && confirmado_IsSel && entransito_IsSel && finalizado_IsSel) {
-                OrdersAdapter = new OrdersAdapter(inventory.getAllOrders());
-                recyclerView.setAdapter(OrdersAdapter);
                 OrdersOnRV = inventory.getAllOrders();
+                Order_ordersbydate();
+                OrdersAdapter = new OrdersAdapter(OrdersOnRV);
+                recyclerView.setAdapter(OrdersAdapter);
             }
             else {
-                OrdersAdapter = new OrdersAdapter(inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel));
-                recyclerView.setAdapter(OrdersAdapter);
                 OrdersOnRV = inventory.getAllordersWithSpecificsStatusOrders(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel);
+                Order_ordersbydate();
+                OrdersAdapter = new OrdersAdapter(OrdersOnRV);
+                recyclerView.setAdapter(OrdersAdapter);
 
             }
         } else {
@@ -427,9 +489,11 @@ public class orders extends AppCompatActivity {
             for (Customers customer : clientsfounded) {
                 if (spinner_clients.getSelectedItem().toString().equals((customer.getLast_name() + " " + customer.getFirst_name()))) {
                     aux = customer.getId();
-                    OrdersAdapter = new OrdersAdapter(inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux));
-                    recyclerView.setAdapter(OrdersAdapter);
                     OrdersOnRV = inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux);
+                    //OrdersAdapter = new OrdersAdapter(inventory.getSpecificiOrdersWithCustomerandStatus(pendiente_IsSel, cancelado_IsSel, confirmado_IsSel, entransito_IsSel, finalizado_IsSel, aux));
+                    Order_ordersbydate();
+                    OrdersAdapter = new OrdersAdapter(OrdersOnRV);
+                    recyclerView.setAdapter(OrdersAdapter);
                 }
             }
 
@@ -446,8 +510,48 @@ public class orders extends AppCompatActivity {
                 }
             }
             OrdersOnRV = AuxList;
+            Order_ordersbydate();
             OrdersAdapter = new OrdersAdapter(OrdersOnRV);
             recyclerView.setAdapter(OrdersAdapter);
         }
+    }
+
+    public void Order_ordersbydate()
+    {
+        for(int i = 0; i < OrdersOnRV.size() - 1; i++)
+        {
+            for(int j = 0; j < OrdersOnRV.size() - 1; j++)
+            {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                Date Date1 = new Date();try {Date1 = sdf.parse(String.valueOf(OrdersOnRV.get(j).getDate()));}catch (ParseException e){e.printStackTrace();}
+                Date Date2 = new Date();try {Date2 = sdf.parse(String.valueOf(OrdersOnRV.get(j+1).getDate()));}catch (ParseException e){e.printStackTrace();}
+                if (Date1.compareTo(Date2)<0){
+                    Order tmp = OrdersOnRV.get(j+1);
+                    OrdersOnRV.set(j+1,OrdersOnRV.get(j));
+                    OrdersOnRV.set(j,tmp);
+                }
+
+            }
+        }
+    }
+    public String getTodayCalendar()
+    {
+        String aux = "";
+        final Calendar c = Calendar.getInstance();
+        oldDate_DayX = c.get(Calendar.DAY_OF_MONTH);
+        oldDate_MonthX = c.get(Calendar.MONTH);
+        oldDate_YearX = c.get(Calendar.YEAR);
+        if (oldDate_MonthX < 10 && oldDate_DayX < 10) {
+            aux ="0" + oldDate_DayX + "-0" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
+        } else if (oldDate_DayX < 10) {
+            aux = "0" + oldDate_DayX + "-" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
+        } else if (oldDate_MonthX < 10) {
+            aux = oldDate_DayX + "-0" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
+        } else {
+            aux=oldDate_DayX + "-" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
+        }
+
+
+        return aux;
     }
 }

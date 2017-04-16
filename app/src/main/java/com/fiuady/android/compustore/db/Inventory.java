@@ -955,4 +955,9 @@ public boolean check_product(String description)
         cursor.close();
         return list;
     }
+    public void UpdateOrder_status (int order_id,int to_status,String change_log)
+    {
+        //UPDATE orders SET status_id=2, change_log = 'Se cambio ahora al siguiente estado'  WHERE id = 9;
+        db.execSQL("UPDATE orders SET status_id="+String.valueOf(to_status)+", change_log = '"+change_log+"'  WHERE id = "+String.valueOf(order_id)+";");
+    }
 }
