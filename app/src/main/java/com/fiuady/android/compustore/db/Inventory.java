@@ -1047,8 +1047,10 @@ public final class Inventory {
     }
     public void AddOrder_assembly(int id,int assembly_id,int qty)
     {
+        String aux = "INSERT INTO order_assemblies (id, assembly_id, qty) " +
+                "VALUES ("+id+", "+assembly_id+","+qty+")";
         db.execSQL("INSERT INTO order_assemblies (id, assembly_id, qty) " +
-                "VALUES ("+id+", "+assembly_id+","+qty+")");
+                "VALUES ("+String.valueOf(id)+", "+String.valueOf(assembly_id)+","+String.valueOf(qty)+")");
         //INSERT INTO order_assemblies (id, assembly_id, qty) VALUES (0, 0, 2);
     }
     public List<Order_assemblies> getOrderAssemblies_for_an_Order(int id_order)
@@ -1062,5 +1064,14 @@ public final class Inventory {
         cursor.close();
         return list;
         //SELECT * FROM order_assemblies WHERE id=6
+    }
+    public void UpdateOrderAssemblyQty(Order_assemblies oa)
+    {
+        db.execSQL("UPDATE order_assemblies SET qty="+String.valueOf(oa.getQty())+"  WHERE (id = "+String.valueOf(oa.getId())+" and assembly_id="+String.valueOf(oa.getAssembly_id())+");");
+
+    }
+    public void DeleteOrderAssembly(Order_assemblies oa)
+    {
+        db.execSQL("DELETE from order_assemblies WHERE (id ="+oa.getId()+" and assembly_id="+oa.getAssembly_id()+")");
     }
 }

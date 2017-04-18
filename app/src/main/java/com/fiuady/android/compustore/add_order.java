@@ -101,6 +101,15 @@ public class add_order extends AppCompatActivity {
                             }
                             else{
                                 Toast.makeText(getApplicationContext(),"Fue removido "+String.valueOf(AssembliesOnRV.get(pos).getDescription()),Toast.LENGTH_SHORT).show();
+
+                                    for (Order_assemblies oa: OrderAssembliesOnRV)
+                                    {
+                                        if(AssembliesOnRV.get(pos).getId()==oa.getAssembly_id())
+                                        {
+                                            OrderAssembliesOnRV.remove(oa);
+                                        }
+                                    }
+
                                 AssembliesOnRV.remove(pos);
                                 showAssembliesonRV(AssembliesOnRV);
 
@@ -252,7 +261,15 @@ public class add_order extends AppCompatActivity {
 
                 if (AssembliesOnRV.size()==0)
                 {
-                    Toast.makeText(getApplicationContext(), "No has agregado ningún ensamble a la orden", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(add_order.this);
+                    dialogo1.setTitle("Importante");
+                    dialogo1.setMessage("AGREGA UN ENSAMBLE A LA ORDEN");
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton("OK?-OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                        }
+                    });
+                    dialogo1.show();
 
                 }
                 else {
@@ -327,4 +344,5 @@ public class add_order extends AppCompatActivity {
         }
         return c;
     }
+
 }
