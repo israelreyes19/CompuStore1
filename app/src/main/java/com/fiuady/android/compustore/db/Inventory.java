@@ -1,7 +1,6 @@
 package com.fiuady.android.compustore.db;
 
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,18 +20,18 @@ class CustomersCursor extends CursorWrapper {
     }
 
     private int id;
-    private String first_name="";
-    private String last_name="";
-    private String address="";
-    private String phone1="";
-    private String phone2="";
-    private String phone3="";
-    private String e_mail="";
+    private String first_name = "";
+    private String last_name = "";
+    private String address = "";
+    private String phone1 = "";
+    private String phone2 = "";
+    private String phone3 = "";
+    private String e_mail = "";
 
     public Customers getCustomer() {
         Cursor cursor = getWrappedCursor();
-        id =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.id));
-        first_name =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.first_name));
+        id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.id));
+        first_name = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.first_name));
         last_name = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.last_name));
         address = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.address));
         phone1 = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.Phone1));
@@ -44,7 +43,7 @@ class CustomersCursor extends CursorWrapper {
         e_mail = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CustomersTable.Columns.e_mail));
         // if (e_mail == null){e_mail="";}
 
-        return new Customers(id,first_name,last_name,address,phone1,phone2 ,phone3 ,e_mail );
+        return new Customers(id, first_name, last_name, address, phone1, phone2, phone3, e_mail);
     }
 }
 
@@ -61,79 +60,93 @@ class OrdersCursor extends CursorWrapper {
     private String change_log;
 
 
-    public Order getOrders(){
+    public Order getOrders() {
         Cursor cursor = getWrappedCursor();
-        id =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.id));
+        id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.id));
         status_id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.status_id));
-        customer_id=cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.customer_id));
-        date =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.date));
-        change_log =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.change_log));
-        return new Order(id,status_id,customer_id,date,change_log);
+        customer_id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.customer_id));
+        date = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.date));
+        change_log = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersTable.Columns.change_log));
+        return new Order(id, status_id, customer_id, date, change_log);
     }
 }
+
+class OrdersAssembliesCursor extends CursorWrapper {
+    public OrdersAssembliesCursor(Cursor cursor) {
+        super(cursor);
+    }
+
+    private int id;
+    private int assembly_id;
+    private int qty;
+
+    public Order_assemblies getOrderAsemblie() {
+        Cursor cursor = getWrappedCursor();
+        id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrderAssembliesTable.Columns.id));
+        assembly_id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrderAssembliesTable.Columns.assembly_id));
+        qty = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrderAssembliesTable.Columns.qty));
+        return new Order_assemblies(id,assembly_id,qty);
+    }
+}
+
 class Order_statusCursor extends CursorWrapper {
     public Order_statusCursor(Cursor cursor) {
         super(cursor);
     }
 
-    private int    id;
-    private int    description;
-    private int    editable;
+    private int id;
+    private int description;
+    private int editable;
     private String previous;
     private String next;
 
 
-
-    public Order_status getOrders(){
+    public Order_status getOrders() {
         Cursor cursor = getWrappedCursor();
-        id  =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.id));
-        description  = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.description));
-        editable  =cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.editable));
-        previous  =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.previous));
-        next  =  cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.next));
-        return new Order_status(id,description,editable,previous,next);
+        id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.id));
+        description = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.description));
+        editable = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.editable));
+        previous = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.previous));
+        next = cursor.getString(cursor.getColumnIndex(InventoryDbSchema.OrdersStatusTable.Columns.next));
+        return new Order_status(id, description, editable, previous, next);
     }
 }
 
-class ProductCursor extends CursorWrapper
-{
+class ProductCursor extends CursorWrapper {
     public ProductCursor(Cursor cursor) {
         super(cursor);
     }
 
 
-    public Products getProduct()
-    {
+    public Products getProduct() {
 
         Cursor cursor = getWrappedCursor();
-        return  new Products(cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.ID))), cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.CATEGORY_ID))),
-                cursor.getString(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.DESCRIPTION))),cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.PRICE))),cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.QUANTITY))));
+        return new Products(cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.ID))), cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.CATEGORY_ID))),
+                cursor.getString(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.DESCRIPTION))), cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.PRICE))), cursor.getInt(cursor.getColumnIndex((InventoryDbSchema.ProductTable.Columns.QUANTITY))));
 
     }
 
 }
 
 
-class CategoryCursor extends CursorWrapper
-{
+class CategoryCursor extends CursorWrapper {
     public CategoryCursor(Cursor cursor) {
         super(cursor);
     }
 
-    public Category getCategory()
-    {
+    public Category getCategory() {
         Cursor cursor = getWrappedCursor();
         return new Category(cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.CategoriesTable.Columns.ID)),
                 cursor.getString(cursor.getColumnIndex(InventoryDbSchema.CategoriesTable.Columns.DESCRIPTION)));
     }
 }
 
-class AssembliesCursor extends CursorWrapper
-{
-    public AssembliesCursor(Cursor cursor) {super(cursor);}
+class AssembliesCursor extends CursorWrapper {
+    public AssembliesCursor(Cursor cursor) {
+        super(cursor);
+    }
 
-    public Assemblies getAssembly()
-    {
+    public Assemblies getAssembly() {
         Cursor cursor = getWrappedCursor();
         return new Assemblies(cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.AssembliesTable.Columns.ID)),
                 cursor.getString(cursor.getColumnIndex(AssembliesTable.Columns.DESCRIPTION)));
@@ -147,19 +160,18 @@ public final class Inventory {
 
     private SQLiteDatabase db;
 
-    public Inventory(Context context){
+    public Inventory(Context context) {
         //InventoryHelper.backupDatabaseFile(context);
         inventoryHelper = new InventoryHelper(context);
         db = inventoryHelper.getWritableDatabase();
     }
 
 
-    public List<Products> getallProducts()
-    {
+    public List<Products> getallProducts() {
         List<Products> list = new ArrayList<Products>();
         //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
         ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * FROM products ORDER BY description", null)));
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
             //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
             list.add((cursor.getProduct()));  // metodo wrappcursor
@@ -168,8 +180,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Products> getallProductsineverycategory(String description)
-    {
+    public List<Products> getallProductsineverycategory(String description) {
         List<Products> list = new ArrayList<Products>();
 
 
@@ -177,10 +188,10 @@ public final class Inventory {
 
         ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT * " +
                 "FROM products p " +
-                "WHERE p.description LIKE'"   + description +  "%' " +
-              " ORDER BY p.description"  , null)));
+                "WHERE p.description LIKE'" + description + "%' " +
+                " ORDER BY p.description", null)));
 
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
 
             //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
             //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
@@ -193,8 +204,7 @@ public final class Inventory {
     }
 
 
-    public List<Products> getoneProducts(String categroydescription, String productdescription)
-    {
+    public List<Products> getoneProducts(String categroydescription, String productdescription) {
         List<Products> list = new ArrayList<Products>();
 
 
@@ -204,10 +214,10 @@ public final class Inventory {
                 "FROM products p " +
                 "INNER JOIN product_categories c ON (p.category_id = c.id) " +
                 "WHERE c.description LIKE '" + categroydescription + "'" +
-                "AND p.description LIKE '" + productdescription +"%" + "' " +
+                "AND p.description LIKE '" + productdescription + "%" + "' " +
                 " ORDER BY p.description", null)));
 
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
 
             //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
             //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
@@ -220,8 +230,7 @@ public final class Inventory {
     }
 
 
-    public  List<Products> getonecategoryproduct(String categroy_description)
-    {
+    public List<Products> getonecategoryproduct(String categroy_description) {
         List<Products> list = new ArrayList<Products>();
 
 
@@ -230,9 +239,9 @@ public final class Inventory {
         ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT p.id, p.category_id, p.description, p.price, p.qty " +
                 "FROM products p " +
                 "INNER JOIN product_categories c ON (p.category_id = c.id) " +
-                "WHERE c.description LIKE '" + categroy_description + "' ORDER BY p.description" , null)));
+                "WHERE c.description LIKE '" + categroy_description + "' ORDER BY p.description", null)));
 
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
 
             //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
             //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
@@ -244,8 +253,7 @@ public final class Inventory {
         return list;
     }
 
-    public int return_categroty_id(String descritpion)
-    {
+    public int return_categroty_id(String descritpion) {
 
         Cursor cursor = db.rawQuery("select p.id from product_categories p " +
                 "Where p.description = '" + descritpion + "'", new String[]{});
@@ -254,93 +262,80 @@ public final class Inventory {
 
         int test = cursor.getInt(0);
 
-      //  int cat_id = 0;
+        //  int cat_id = 0;
 
-      //  for (Category c : getAllCategories()) {
-         //   if (descritpion == c.getDescription()) {
-            //    cat_id = c.getId();
-           // }
+        //  for (Category c : getAllCategories()) {
+        //   if (descritpion == c.getDescription()) {
+        //    cat_id = c.getId();
+        // }
 
-      //  }
+        //  }
 
         return test;
     }
 
-    public void addProduct(int id, String cat_id, String descritpion, String price, String qty )
-    {
-        int mx=-1;
+    public void addProduct(int id, String cat_id, String descritpion, String price, String qty) {
+        int mx = -1;
         Cursor cursor = db.rawQuery("SELECT max(ID) from products", new String[]{});
-        if (cursor!=null)
-        {
-            if(cursor.moveToFirst())
-            {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 mx = cursor.getInt(0);
             }
             cursor.close();
-        }
-        else
-        {
+        } else {
             mx = -1;
         }
-        if(mx!=-1){
+        if (mx != -1) {
             //ContentValues values = new ContentValues();
             //values.put(CategoriesTable.Columns.DESCRIPTION, category.getDescription());
 
-            db.execSQL("INSERT INTO products (id, category_id, description, price, qty) VALUES ("+String.valueOf(mx+1)+"," + cat_id + ",'"+descritpion+"'," + price +","+ qty +");");
+            db.execSQL("INSERT INTO products (id, category_id, description, price, qty) VALUES (" + String.valueOf(mx + 1) + "," + cat_id + ",'" + descritpion + "'," + price + "," + qty + ");");
         }
     }
 
-    public boolean DeleteProduct(String id)
-    {
+    public boolean DeleteProduct(String id) {
         Cursor cursor = db.rawQuery("SELECT p.id from " +
                 "products p INNER JOIN assembly_products ap ON (p.id = ap.product_id) " +
-                "GROUP BY p.id HAVING p.id = "+ id + ";", new String[]{});
-        if (cursor==null)
-        {
+                "GROUP BY p.id HAVING p.id = " + id + ";", new String[]{});
+        if (cursor == null) {
             db.execSQL("DELETE from products WHERE id = " + id + ";");
             return true;
-        }
-        else if(!cursor.moveToFirst())
-        {
+        } else if (!cursor.moveToFirst()) {
             db.execSQL("DELETE from products WHERE id = " + id + ";");
             cursor.close();
             return true;
 
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
 
     }
 
-public void add_stock(String id, String qty)
-{
+    public void add_stock(String id, String qty) {
 
-    ContentValues values = new ContentValues();
+        ContentValues values = new ContentValues();
 
-    values.put(ProductTable.Columns.QUANTITY, qty);
-    db.update(ProductTable.Name,
-            values,
-            ProductTable.Columns.ID + "= ?",
-            new String[]{id}
-    );
+        values.put(ProductTable.Columns.QUANTITY, qty);
+        db.update(ProductTable.Name,
+                values,
+                ProductTable.Columns.ID + "= ?",
+                new String[]{id}
+        );
 
-           //  db.rawQuery("UPDATE products " +
-                  //   "SET qty = "+  qty + "" +
-                  //   " WHERE id = "+ id  , null);
-}
+        //  db.rawQuery("UPDATE products " +
+        //   "SET qty = "+  qty + "" +
+        //   " WHERE id = "+ id  , null);
+    }
 
-    public void Update_product(String id, String category_id,String description, String price, String qty)
-    {
+    public void Update_product(String id, String category_id, String description, String price, String qty) {
 
         ContentValues values = new ContentValues();
 
         //values.put(ProductTable.Columns.QUANTITY, qty);
-        values.put(ProductTable.Columns.DESCRIPTION,description);
-        values.put(ProductTable.Columns.CATEGORY_ID,category_id);
-        values.put(ProductTable.Columns.PRICE,price);
+        values.put(ProductTable.Columns.DESCRIPTION, description);
+        values.put(ProductTable.Columns.CATEGORY_ID, category_id);
+        values.put(ProductTable.Columns.PRICE, price);
         db.update(ProductTable.Name,
                 values,
                 ProductTable.Columns.ID + "= ?",
@@ -353,72 +348,59 @@ public void add_stock(String id, String qty)
 
     }
 
-public boolean check_product(String description)
-{
-    Cursor cursor = db.rawQuery("SELECT p.id from " +
-            "products p " +
-            " GROUP BY p.id HAVING p.description = '"+ description + "';", new String[]{});
-    if (cursor==null)
-    {
+    public boolean check_product(String description) {
+        Cursor cursor = db.rawQuery("SELECT p.id from " +
+                "products p " +
+                " GROUP BY p.id HAVING p.description = '" + description + "';", new String[]{});
+        if (cursor == null) {
 
-        return true;
+            return true;
+        } else if (!cursor.moveToFirst()) {
+
+            cursor.close();
+            return true;
+
+        } else {
+            cursor.close();
+            return false;
+        }
     }
-    else if(!cursor.moveToFirst())
-    {
-
-        cursor.close();
-        return true;
-
-    }
-    else
-    {
-        cursor.close();
-        return false;
-    }
-}
 
 
-    public List<Category> getAllCategories()
-    {
+    public List<Category> getAllCategories() {
         ArrayList<Category> list = new ArrayList<Category>();
         CategoryCursor cursor = new CategoryCursor(db.rawQuery("SELECT * FROM product_categories ORDER BY description", null));
-        while(cursor.moveToNext())
-        {
+        while (cursor.moveToNext()) {
             list.add(cursor.getCategory());
         }
         cursor.close();
         return list;
     }
 
-    public List<Assemblies> getAllAssemblies()
-    {
+    public List<Assemblies> getAllAssemblies() {
         ArrayList<Assemblies> list = new ArrayList<Assemblies>();
         AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies ORDER BY description;", null));
-        while(cursor.moveToNext())
-        {
+        while (cursor.moveToNext()) {
             list.add(cursor.getAssembly());
         }
         cursor.close();
         return list;
     }
 
-    public List<Products> getAssemblyProducts(Assemblies assembly)
-    {
+    public List<Products> getAssemblyProducts(Assemblies assembly) {
         List<Products> list = new ArrayList<Products>();
         ProductCursor cursor = new ProductCursor(db.rawQuery("SELECT p.id, p.category_id, p.description, p.price, ap.qty FROM assemblies a " +
                 "INNER JOIN assembly_products ap ON (a.id = ap.id) " +
                 "INNER JOIN products p ON (ap.product_id=p.id) " +
                 "WHERE a.id=" + String.valueOf(assembly.getId()) +
-                " ORDER BY p.description;",null));
-        while(cursor.moveToNext())
-        {
+                " ORDER BY p.description;", null));
+        while (cursor.moveToNext()) {
             list.add(cursor.getProduct());
         }
         return list;
     }
 
-    public void updateCategory(Category category)
-    {
+    public void updateCategory(Category category) {
         ContentValues values = new ContentValues();
 
         values.put(CategoriesTable.Columns.DESCRIPTION, category.getDescription());
@@ -430,144 +412,116 @@ public boolean check_product(String description)
 
     }
 
-    public void updateProductInAssembly(Assemblies assembly, Products product, int qty)
-    {
-        db.execSQL("UPDATE assembly_products SET qty = " + String.valueOf(qty)+
-                " WHERE (id=" +String.valueOf(assembly.getId())+
-                ") AND (product_id=" + String.valueOf(product.getId())+
+    public void updateProductInAssembly(Assemblies assembly, Products product, int qty) {
+        db.execSQL("UPDATE assembly_products SET qty = " + String.valueOf(qty) +
+                " WHERE (id=" + String.valueOf(assembly.getId()) +
+                ") AND (product_id=" + String.valueOf(product.getId()) +
                 ");");
     }
 
-    public void deleteProductInAssembly(Assemblies assembly, Products product)
-    {
-        db.execSQL("DELETE FROM assembly_products WHERE (product_id="+ String.valueOf(product.getId()) +
-                ") AND (id="+ String.valueOf(assembly.getId()) +
+    public void deleteProductInAssembly(Assemblies assembly, Products product) {
+        db.execSQL("DELETE FROM assembly_products WHERE (product_id=" + String.valueOf(product.getId()) +
+                ") AND (id=" + String.valueOf(assembly.getId()) +
                 ");");
     }
 
-    public boolean updateAssembly(Assemblies assembly, String description)
-    {
-        if(assembly.getDescription().equals(description))
-        {
+    public boolean updateAssembly(Assemblies assembly, String description) {
+        if (assembly.getDescription().equals(description)) {
             //db.execSQL("");
             return true;
         }
         Cursor cursor = db.rawQuery("SELECT id FROM assemblies  where description = '" +
                 description +
                 "';", new String[]{});
-        if(!cursor.moveToFirst())
-        {
+        if (!cursor.moveToFirst()) {
             db.execSQL("UPDATE assemblies  SET description = '" +
                     description +
-                    "' WHERE id="+String.valueOf(assembly.getId()) +
+                    "' WHERE id=" + String.valueOf(assembly.getId()) +
                     ";");
             cursor.close();
             return true;
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
         //return true;
     }
 
-    public void addCategory(Category category)
-    {
-        int mx=-1;
+    public void addCategory(Category category) {
+        int mx = -1;
         Cursor cursor = db.rawQuery("SELECT max(ID) from product_categories", new String[]{});
-        if (cursor!=null)
-        {
-            if(cursor.moveToFirst())
-            {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 mx = cursor.getInt(0);
             }
             cursor.close();
-        }
-        else
-        {
+        } else {
             mx = -1;
         }
-        if(mx!=-1){
+        if (mx != -1) {
             //ContentValues values = new ContentValues();
             //values.put(CategoriesTable.Columns.DESCRIPTION, category.getDescription());
 
-            db.execSQL("INSERT INTO product_categories (id, description) VALUES ("+String.valueOf(mx+1)+", '"+category.getDescription()+"');");
+            db.execSQL("INSERT INTO product_categories (id, description) VALUES (" + String.valueOf(mx + 1) + ", '" + category.getDescription() + "');");
         }
     }
 
 
-    public boolean addProductInAssembly(Products product, Assemblies assembly)
-    {
-        Cursor cursor = db.rawQuery("SELECT id FROM assembly_products ap WHERE ap.id=" + String.valueOf(assembly.getId())+
-                " AND ap.product_id=" + String.valueOf(product.getId())+
-                ";",new String[]{});
-        if(!cursor.moveToFirst())
-        {
-            db.execSQL("INSERT INTO assembly_products (id, product_id, qty) VALUES ("+String.valueOf(assembly.getId()) +
-                    ", " + String.valueOf(product.getId())+
+    public boolean addProductInAssembly(Products product, Assemblies assembly) {
+        Cursor cursor = db.rawQuery("SELECT id FROM assembly_products ap WHERE ap.id=" + String.valueOf(assembly.getId()) +
+                " AND ap.product_id=" + String.valueOf(product.getId()) +
+                ";", new String[]{});
+        if (!cursor.moveToFirst()) {
+            db.execSQL("INSERT INTO assembly_products (id, product_id, qty) VALUES (" + String.valueOf(assembly.getId()) +
+                    ", " + String.valueOf(product.getId()) +
                     ", 1);");
             cursor.close();
             return true;
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
     }
 
-    public boolean addProductInAssemblyWithQty(Products product, Assemblies assembly)
-    {
-        Cursor cursor = db.rawQuery("SELECT id FROM assembly_products ap WHERE ap.id=" + String.valueOf(assembly.getId())+
-                " AND ap.product_id=" + String.valueOf(product.getId())+
-                ";",new String[]{});
-        if(!cursor.moveToFirst())
-        {
-            db.execSQL("INSERT INTO assembly_products (id, product_id, qty) VALUES ("+String.valueOf(assembly.getId()) +
-                    ", " + String.valueOf(product.getId())+
-                    ", " + String.valueOf(product.getQty())+
+    public boolean addProductInAssemblyWithQty(Products product, Assemblies assembly) {
+        Cursor cursor = db.rawQuery("SELECT id FROM assembly_products ap WHERE ap.id=" + String.valueOf(assembly.getId()) +
+                " AND ap.product_id=" + String.valueOf(product.getId()) +
+                ";", new String[]{});
+        if (!cursor.moveToFirst()) {
+            db.execSQL("INSERT INTO assembly_products (id, product_id, qty) VALUES (" + String.valueOf(assembly.getId()) +
+                    ", " + String.valueOf(product.getId()) +
+                    ", " + String.valueOf(product.getQty()) +
                     ");");
             cursor.close();
             return true;
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
     }
 
-    public boolean addAssembly(Assemblies assemblies)
-    {
-        int mx=-1;
+    public boolean addAssembly(Assemblies assemblies) {
+        int mx = -1;
         Cursor cursor = db.rawQuery("SELECT max(ID) from assemblies;", new String[]{});
-        if (cursor!=null)
-        {
-            if(cursor.moveToFirst())
-            {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 mx = cursor.getInt(0);
             }
             cursor.close();
-        }
-        else
-        {
+        } else {
             mx = -1;
         }
-        if(mx!=-1){ // Editado
+        if (mx != -1) { // Editado
             Cursor cursor1 = db.rawQuery("SELECT id FROM assemblies  where description = '" +
                     assemblies.getDescription() +
                     "';", new String[]{});
-            if(!cursor1.moveToFirst())
-            {
-                db.execSQL("INSERT INTO assemblies (id, description) VALUES (" +String.valueOf(mx+1) +
+            if (!cursor1.moveToFirst()) {
+                db.execSQL("INSERT INTO assemblies (id, description) VALUES (" + String.valueOf(mx + 1) +
                         ", '" + assemblies.getDescription() +
                         "');");
                 cursor1.close();
                 return true;
-            }
-            else
-            {
+            } else {
                 cursor1.close();
                 return false;
             }
@@ -577,103 +531,82 @@ public boolean check_product(String description)
 
     }
 
-    public void addAuxAssembly(Assemblies assemblies)
-    {
-        db.execSQL("INSERT INTO assemblies (id, description) VALUES (" +String.valueOf(assemblies.getId()) +
+    public void addAuxAssembly(Assemblies assemblies) {
+        db.execSQL("INSERT INTO assemblies (id, description) VALUES (" + String.valueOf(assemblies.getId()) +
                 ", '" + assemblies.getDescription() +
                 "');");
     }
 
-    public void transferProductsToDefinitiveAssembly()
-    {
-        int mx=-1;
+    public void transferProductsToDefinitiveAssembly() {
+        int mx = -1;
         Cursor cursor = db.rawQuery("SELECT max(ID) from assemblies;", new String[]{});
-        if (cursor!=null)
-        {
-            if(cursor.moveToFirst())
-            {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 mx = cursor.getInt(0);
             }
             cursor.close();
-        }
-        else
-        {
+        } else {
             mx = -1;
         }
-        if(mx!=-1){
-            db.execSQL("UPDATE assembly_products SET id = " +String.valueOf( mx)+
+        if (mx != -1) {
+            db.execSQL("UPDATE assembly_products SET id = " + String.valueOf(mx) +
                     " WHERE id=9999");
         }
     }
 
 
-    public void transferProductsToAnotherAssembly(Assemblies assemblies)
-    {
-        db.execSQL("DELETE From assembly_products WHERE id="+ String.valueOf(assemblies.getId()) +
+    public void transferProductsToAnotherAssembly(Assemblies assemblies) {
+        db.execSQL("DELETE From assembly_products WHERE id=" + String.valueOf(assemblies.getId()) +
                 ";");
-        db.execSQL("UPDATE assembly_products SET id = " +String.valueOf(assemblies.getId())+
+        db.execSQL("UPDATE assembly_products SET id = " + String.valueOf(assemblies.getId()) +
                 " WHERE id=9999");
     }
 
 
-    public  void  deleteAux()
-    {
+    public void deleteAux() {
         db.execSQL("DELETE FROM assemblies where id=9999");
     }
 
 
-    public void emptyNDeleteAux()
-    {
+    public void emptyNDeleteAux() {
         db.execSQL("DELETE From assembly_products WHERE id=9999;");
         db.execSQL("DELETE FROM assemblies where id=9999;");
     }
 
-    public boolean  deleteCategory(Category category)
-    {
+    public boolean deleteCategory(Category category) {
         Cursor cursor = db.rawQuery("SELECT pc.id from " +
                 "product_categories pc INNER JOIN products p ON (pc.id = p.category_id) " +
-                "GROUP BY pc.id HAVING pc.id = "+ String.valueOf(category.getId())+";", new String[]{});
-        if (cursor==null)
-        {
+                "GROUP BY pc.id HAVING pc.id = " + String.valueOf(category.getId()) + ";", new String[]{});
+        if (cursor == null) {
             db.execSQL("DELETE from product_categories WHERE id = " + String.valueOf(category.getId()) + ";");
             return true;
-        }
-        else if(!cursor.moveToFirst())
-        {
+        } else if (!cursor.moveToFirst()) {
             db.execSQL("DELETE from product_categories WHERE id = " + String.valueOf(category.getId()) + ";");
             cursor.close();
             return true;
 
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
     }
 
-    public boolean deleteAssemblies(Assemblies assemblies)
-    {
+    public boolean deleteAssemblies(Assemblies assemblies) {
         Cursor cursor = db.rawQuery("SELECT a.id FROM assemblies a " +
                 "INNER JOIN order_assemblies oa ON (a.id = oa.assembly_id) " +
                 "GROUP BY a.id HAVING a.id = " + String.valueOf(assemblies.getId()) +
                 ";", new String[]{});
-        if (cursor == null)
-        {
+        if (cursor == null) {
             db.execSQL("DELETE from assemblies WHERE id = " + String.valueOf(assemblies.getId()) + ";");
             return true;
-        }
-        else if(!cursor.moveToFirst())
-        {
-            db.execSQL("DELETE From assembly_products WHERE id = " + String.valueOf(assemblies.getId())+
+        } else if (!cursor.moveToFirst()) {
+            db.execSQL("DELETE From assembly_products WHERE id = " + String.valueOf(assemblies.getId()) +
                     ";");
             db.execSQL("DELETE from assemblies WHERE id = " + String.valueOf(assemblies.getId()) + ";");
             cursor.close();
             return true;
 
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
@@ -689,11 +622,11 @@ public boolean check_product(String description)
         cursor.close();
         return list;
     }
+
     public List<Customers> findby(String firstname, String lastname, String address, String phone, String email, String descrip) {
         ArrayList<Customers> list = new ArrayList<Customers>();
 
-        if (firstname.length() + lastname.length() + address.length() + phone.length() + email.length() == 0)
-        {
+        if (firstname.length() + lastname.length() + address.length() + phone.length() + email.length() == 0) {
             CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers ORDER BY last_name", null));// ORDER BY last_name
             while (cursor.moveToNext()) {
                 list.add(cursor.getCustomer());
@@ -701,48 +634,95 @@ public boolean check_product(String description)
             }
             cursor.close();
             return list;
-        }
-        else
-        {
-            String _firsname,_lastname, _address, _phones, _email;
-            String or1 ="";
+        } else {
+            String _firsname, _lastname, _address, _phones, _email;
+            String or1 = "";
             String or2 = "";
             String or3 = "";
             String or4 = "";
 
-            Boolean flag0= false;
-            Boolean flag1= false;
-            Boolean flag2= false;
-            Boolean flag3= false;
-            Boolean flag4= false;
+            Boolean flag0 = false;
+            Boolean flag1 = false;
+            Boolean flag2 = false;
+            Boolean flag3 = false;
+            Boolean flag4 = false;
 
-            if (firstname.length()>0){flag0 = true; _firsname= "first_name ";}else {flag0 = false;_firsname ="";}
-            if(lastname.length()>0) {flag1 = true; _lastname= " last_name ";}else {flag1 = false;_lastname="";}
-            if (address.length()>0){flag2 = true; _address =" address ";}else{flag2 = false;_address ="";}
-            if(phone.length()>0) {flag3 = true;_phones = " phone1 or phone2 or phone3";}else {flag3 = false;_phones="";}
-            if(email.length()>0){flag4= true; _email = " e_mail";}else {flag4 = false;_email ="";}
+            if (firstname.length() > 0) {
+                flag0 = true;
+                _firsname = "first_name ";
+            } else {
+                flag0 = false;
+                _firsname = "";
+            }
+            if (lastname.length() > 0) {
+                flag1 = true;
+                _lastname = " last_name ";
+            } else {
+                flag1 = false;
+                _lastname = "";
+            }
+            if (address.length() > 0) {
+                flag2 = true;
+                _address = " address ";
+            } else {
+                flag2 = false;
+                _address = "";
+            }
+            if (phone.length() > 0) {
+                flag3 = true;
+                _phones = " phone1 or phone2 or phone3";
+            } else {
+                flag3 = false;
+                _phones = "";
+            }
+            if (email.length() > 0) {
+                flag4 = true;
+                _email = " e_mail";
+            } else {
+                flag4 = false;
+                _email = "";
+            }
 
-            if (flag0==true) {if (flag1 ||flag2||flag3||flag4 ){or1 = "or";} }
-            if (flag1==true) {if (flag2||flag3||flag4 ){or2 = "or";} }
-            if (flag2==true) {if (flag3||flag4 ){or3 = "or";} }
-            if (flag3==true) {if (flag4 ){or4 = "or";} }
-            if (descrip.length() == 0){descrip= "holajeje.jpg";}
+            if (flag0 == true) {
+                if (flag1 || flag2 || flag3 || flag4) {
+                    or1 = "or";
+                }
+            }
+            if (flag1 == true) {
+                if (flag2 || flag3 || flag4) {
+                    or2 = "or";
+                }
+            }
+            if (flag2 == true) {
+                if (flag3 || flag4) {
+                    or3 = "or";
+                }
+            }
+            if (flag3 == true) {
+                if (flag4) {
+                    or4 = "or";
+                }
+            }
+            if (descrip.length() == 0) {
+                descrip = "holajeje.jpg";
+            }
 
-            String aux = "SELECT * FROM customers WHERE "+_firsname+" "+or1+" "+_lastname+" " + // this only get the last or
-                    or2+" "+_address+" "+or3+" "+_phones+" "+or4+" "+_email+" like \""+descrip+"%\" order by last_name";
+            String aux = "SELECT * FROM customers WHERE " + _firsname + " " + or1 + " " + _lastname + " " + // this only get the last or
+                    or2 + " " + _address + " " + or3 + " " + _phones + " " + or4 + " " + _email + " like \"" + descrip + "%\" order by last_name";
             CustomersCursor cursor = new CustomersCursor(db.rawQuery(aux, null));
-           while (cursor.moveToNext()) {
-               list.add(cursor.getCustomer());
+            while (cursor.moveToNext()) {
+                list.add(cursor.getCustomer());
 
-           }
-           cursor.close();
-           return list;
+            }
+            cursor.close();
+            return list;
 
 
         }
 
     }
-    public void addCustomer(String firstname, String lastname, String address,String phone1,String phone2,String phone3,String email){
+
+    public void addCustomer(String firstname, String lastname, String address, String phone1, String phone2, String phone3, String email) {
         ArrayList<Customers> list = new ArrayList<Customers>();
         CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers ", null));// ORDER BY last_name
         while (cursor.moveToNext()) {
@@ -751,94 +731,76 @@ public boolean check_product(String description)
         }
         cursor.close();
         int id_prove = 0;
-        for (Customers client: list)
-        {
-            if (client.getId() >id_prove)
-            {
-                id_prove=client.getId();
+        for (Customers client : list) {
+            if (client.getId() > id_prove) {
+                id_prove = client.getId();
             }
         }
-         id_prove = id_prove+1;
+        id_prove = id_prove + 1;
 
         //db.execSQL("INSERT INTO product_categories (id, description) VALUES ("+String.valueOf(mx+1)+
-          //      ", '"+category.getDescription()+"');");
+        //      ", '"+category.getDescription()+"');");
         db.execSQL("INSERT INTO customers (id, first_name, last_name, address, phone1, phone2, phone3, e_mail)" +
-        "VALUES ("+id_prove+", '"+firstname+"', '"+lastname+"', '"+address+"', "+phone1+", "+phone2+", "+phone3+", "+email+")");
+                "VALUES (" + id_prove + ", '" + firstname + "', '" + lastname + "', '" + address + "', " + phone1 + ", " + phone2 + ", " + phone3 + ", " + email + ")");
 
 
     }
-    public boolean deleteCustomer(Customers customer){
+
+    public boolean deleteCustomer(Customers customer) {
 
         Cursor cursor = db.rawQuery("SELECT c.id from " +
                 "customers c INNER JOIN orders o ON (c.id = o.customer_id) " +
-                "GROUP BY c.id HAVING c.id = "+ String.valueOf(customer.getId())+";", new String[]{});
-        if (cursor==null)
-        {
-            db.execSQL("DELETE from customers WHERE id = " + String.valueOf(customer.getId())+ ";");
+                "GROUP BY c.id HAVING c.id = " + String.valueOf(customer.getId()) + ";", new String[]{});
+        if (cursor == null) {
+            db.execSQL("DELETE from customers WHERE id = " + String.valueOf(customer.getId()) + ";");
             return true;
-        }
-        else if(!cursor.moveToFirst())
-        {
+        } else if (!cursor.moveToFirst()) {
             db.execSQL("DELETE from customers WHERE id = " + String.valueOf(customer.getId()) + ";");
             cursor.close();
             return true;
 
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
 
     }
+
     public void updateCustomer(Customers customer) {
-        String aux = "UPDATE customers SET  first_name = '"+ customer.getFirst_name()+
-                "' , last_name = '"+ customer.getLast_name()+
-                "' , address = '"+ customer.getAddress()+
-                "' , phone1 = '"+ customer.getPhone1()+
-                "' , phone2 = '"+ customer.getPhone2()+
-                "' , phone3 = '"+ customer.getPhone3()+
-                "' , e_mail = '"+ customer.getE_mail()+
-                "' WHERE id = "+
-                String.valueOf(customer.getId())+";";
 
 
-        db.execSQL("UPDATE customers SET  first_name = '"+ customer.getFirst_name()+
-                "' , last_name = '"+ customer.getLast_name()+
-                "' , address = '"+ customer.getAddress()+
-                "' , phone1 = "+ customer.getPhone1()+
-                " , phone2 = "+ customer.getPhone2()+
-                " , phone3 = "+ customer.getPhone3()+
-                " , e_mail = "+ customer.getE_mail()+
-                " WHERE id = "+
-                String.valueOf(customer.getId())+";");
-
+        db.execSQL("UPDATE customers SET  first_name = '" + customer.getFirst_name() +
+                "' , last_name = '" + customer.getLast_name() +
+                "' , address = '" + customer.getAddress() +
+                "' , phone1 = " + customer.getPhone1() +
+                " , phone2 = " + customer.getPhone2() +
+                " , phone3 = " + customer.getPhone3() +
+                " , e_mail = " + customer.getE_mail() +
+                " WHERE id = " +
+                String.valueOf(customer.getId()) + ";");
 
 
     }
-    public boolean canudeletecustomer (Customers customer){
+
+    public boolean canudeletecustomer(Customers customer) {
 
         Cursor cursor = db.rawQuery("SELECT c.id from " +
                 "customers c INNER JOIN orders o ON (c.id = o.customer_id) " +
-                "GROUP BY c.id HAVING c.id = "+ String.valueOf(customer.getId())+";", new String[]{});
-        if (cursor==null)
-        {
+                "GROUP BY c.id HAVING c.id = " + String.valueOf(customer.getId()) + ";", new String[]{});
+        if (cursor == null) {
 
             return true;
-        }
-        else if(!cursor.moveToFirst())
-        {
+        } else if (!cursor.moveToFirst()) {
 
             cursor.close();
             return true;
 
-        }
-        else
-        {
+        } else {
             cursor.close();
             return false;
         }
     }
+
     //For orders
     public List<Order> getAllOrders() {
         ArrayList<Order> list = new ArrayList<Order>();
@@ -849,50 +811,98 @@ public boolean check_product(String description)
         cursor.close();
         return list;
     }
+
     public List<Order> getSpecificClientOrders(int i) {
         ArrayList<Order> list = new ArrayList<Order>();
-        OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where customer_id ="+String.valueOf(i), null));// SELECT * FROM orders where customer_id = 2
+        OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where customer_id =" + String.valueOf(i), null));// SELECT * FROM orders where customer_id = 2
         while (cursor.moveToNext()) {
             list.add(cursor.getOrders());
         }
         cursor.close();
         return list;
     }
-    public List<Order> getAllordersWithSpecificsStatusOrders(boolean pending,boolean cancel,boolean confirmed, boolean ontransit,  boolean finished) {
+
+    public List<Order> getAllordersWithSpecificsStatusOrders(boolean pending, boolean cancel, boolean confirmed, boolean ontransit, boolean finished) {
         ArrayList<Order> list = new ArrayList<Order>();
-        if (pending || cancel || confirmed || ontransit || finished == true){
-            String statusid1 ="";
+        if (pending || cancel || confirmed || ontransit || finished == true) {
+            String statusid1 = "";
             String statusid2 = "";
             String statusid3 = "";
             String statusid4 = "";
             String statusid0 = "";
 
-            String or1 ="";
+            String or1 = "";
             String or2 = "";
             String or3 = "";
             String or4 = "";
 
-            Boolean flag0= false;
-            Boolean flag1= false;
-            Boolean flag2= false;
-            Boolean flag3= false;
-            Boolean flag4= false;
+            Boolean flag0 = false;
+            Boolean flag1 = false;
+            Boolean flag2 = false;
+            Boolean flag3 = false;
+            Boolean flag4 = false;
 
-            if (pending){flag0 = true; statusid0 = "status_id = 0 ";}else {flag0 = false;statusid0 ="";}
-            if (cancel){flag1 = true; statusid1= "status_id = 1 ";}else {flag1 = false;statusid1 ="";}
-            if (confirmed){flag2 = true; statusid2= "status_id = 2 ";}else {flag2 = false;statusid2 ="";}
-            if (ontransit){flag3 = true; statusid3= "status_id = 3 ";}else {flag3 = false;statusid3 ="";}
-            if (finished){flag4 = true; statusid4= "status_id = 4 ";}else {flag4 = false;statusid4 ="";}
+            if (pending) {
+                flag0 = true;
+                statusid0 = "status_id = 0 ";
+            } else {
+                flag0 = false;
+                statusid0 = "";
+            }
+            if (cancel) {
+                flag1 = true;
+                statusid1 = "status_id = 1 ";
+            } else {
+                flag1 = false;
+                statusid1 = "";
+            }
+            if (confirmed) {
+                flag2 = true;
+                statusid2 = "status_id = 2 ";
+            } else {
+                flag2 = false;
+                statusid2 = "";
+            }
+            if (ontransit) {
+                flag3 = true;
+                statusid3 = "status_id = 3 ";
+            } else {
+                flag3 = false;
+                statusid3 = "";
+            }
+            if (finished) {
+                flag4 = true;
+                statusid4 = "status_id = 4 ";
+            } else {
+                flag4 = false;
+                statusid4 = "";
+            }
 
-            if (flag0==true) {if (flag1 ||flag2||flag3||flag4 ){or1 = "or";} }
-            if (flag1==true) {if (flag2||flag3||flag4 ){or2 = "or";} }
-            if (flag2==true) {if (flag3||flag4 ){or3 = "or";} }
-            if (flag3==true) {if (flag4 ){or4 = "or";} }
+            if (flag0 == true) {
+                if (flag1 || flag2 || flag3 || flag4) {
+                    or1 = "or";
+                }
+            }
+            if (flag1 == true) {
+                if (flag2 || flag3 || flag4) {
+                    or2 = "or";
+                }
+            }
+            if (flag2 == true) {
+                if (flag3 || flag4) {
+                    or3 = "or";
+                }
+            }
+            if (flag3 == true) {
+                if (flag4) {
+                    or4 = "or";
+                }
+            }
 
-            String aux ="SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
-                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4;
-            OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
-                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4, null));// SELECT * FROM orders where customer_id = 2
+            String aux = "SELECT * FROM orders where " + statusid0 + " " + or1 + " " + statusid1 + " " + or2 + " " +
+                    " " + statusid2 + " " + or3 + " " + statusid3 + " " + or4 + " " + statusid4;
+            OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where " + statusid0 + " " + or1 + " " + statusid1 + " " + or2 + " " +
+                    " " + statusid2 + " " + or3 + " " + statusid3 + " " + or4 + " " + statusid4, null));// SELECT * FROM orders where customer_id = 2
             while (cursor.moveToNext()) {
                 list.add(cursor.getOrders());
             }
@@ -902,42 +912,88 @@ public boolean check_product(String description)
         return list;
     }
 
-    public List<Order> getSpecificiOrdersWithCustomerandStatus(boolean pending,boolean cancel,boolean confirmed, boolean ontransit,  boolean finished,int id) {
+    public List<Order> getSpecificiOrdersWithCustomerandStatus(boolean pending, boolean cancel, boolean confirmed, boolean ontransit, boolean finished, int id) {
         ArrayList<Order> list = new ArrayList<Order>();
-        if (pending || cancel || confirmed || ontransit || finished == true){
-            String statusid1 ="";
+        if (pending || cancel || confirmed || ontransit || finished == true) {
+            String statusid1 = "";
             String statusid2 = "";
             String statusid3 = "";
             String statusid4 = "";
             String statusid0 = "";
 
-            String or1 ="";
+            String or1 = "";
             String or2 = "";
             String or3 = "";
             String or4 = "";
 
-            Boolean flag0= false;
-            Boolean flag1= false;
-            Boolean flag2= false;
-            Boolean flag3= false;
-            Boolean flag4= false;
+            Boolean flag0 = false;
+            Boolean flag1 = false;
+            Boolean flag2 = false;
+            Boolean flag3 = false;
+            Boolean flag4 = false;
 
-            if (pending){flag0 = true; statusid0 = "(status_id = 0 and customer_id="+String.valueOf(id)+" )";}else {flag0 = false;statusid0 ="";}
-            if (cancel){flag1 = true; statusid1= "(status_id = 1 and customer_id="+String.valueOf(id)+" )";}else {flag1 = false;statusid1 ="";}
-            if (confirmed){flag2 = true; statusid2= "(status_id = 2 and customer_id="+String.valueOf(id)+" )";}else {flag2 = false;statusid2 ="";}
-            if (ontransit){flag3 = true; statusid3= "(status_id = 3 and customer_id="+String.valueOf(id)+" )";}else {flag3 = false;statusid3 ="";}
-            if (finished){flag4 = true; statusid4= "(status_id = 4 and customer_id="+String.valueOf(id)+" )";}else {flag4 = false;statusid4 ="";}
+            if (pending) {
+                flag0 = true;
+                statusid0 = "(status_id = 0 and customer_id=" + String.valueOf(id) + " )";
+            } else {
+                flag0 = false;
+                statusid0 = "";
+            }
+            if (cancel) {
+                flag1 = true;
+                statusid1 = "(status_id = 1 and customer_id=" + String.valueOf(id) + " )";
+            } else {
+                flag1 = false;
+                statusid1 = "";
+            }
+            if (confirmed) {
+                flag2 = true;
+                statusid2 = "(status_id = 2 and customer_id=" + String.valueOf(id) + " )";
+            } else {
+                flag2 = false;
+                statusid2 = "";
+            }
+            if (ontransit) {
+                flag3 = true;
+                statusid3 = "(status_id = 3 and customer_id=" + String.valueOf(id) + " )";
+            } else {
+                flag3 = false;
+                statusid3 = "";
+            }
+            if (finished) {
+                flag4 = true;
+                statusid4 = "(status_id = 4 and customer_id=" + String.valueOf(id) + " )";
+            } else {
+                flag4 = false;
+                statusid4 = "";
+            }
 
-            if (flag0==true) {if (flag1 ||flag2||flag3||flag4 ){or1 = "or";} }
-            if (flag1==true) {if (flag2||flag3||flag4 ){or2 = "or";} }
-            if (flag2==true) {if (flag3||flag4 ){or3 = "or";} }
-            if (flag3==true) {if (flag4 ){or4 = "or";} }
+            if (flag0 == true) {
+                if (flag1 || flag2 || flag3 || flag4) {
+                    or1 = "or";
+                }
+            }
+            if (flag1 == true) {
+                if (flag2 || flag3 || flag4) {
+                    or2 = "or";
+                }
+            }
+            if (flag2 == true) {
+                if (flag3 || flag4) {
+                    or3 = "or";
+                }
+            }
+            if (flag3 == true) {
+                if (flag4) {
+                    or4 = "or";
+                }
+            }
             //SELECT * FROM orders where status_id = 4 and customer_id=2
 
-            String aux ="SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
-                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4;
-            OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where "+statusid0+" "+or1+" "+statusid1+" "+or2+" " +
-                    " "+statusid2+" "+or3+" "+statusid3+" "+or4+" "+ statusid4, null));// SELECT * FROM orders where customer_id = 2
+            String aux = "SELECT * FROM orders where " + statusid0 + " " + or1 + " " + statusid1 + " " + or2 + " " +
+                    " " + statusid2 + " " + or3 + " " + statusid3 + " " + or4 + " " + statusid4;
+            OrdersCursor cursor = new OrdersCursor(db.rawQuery("SELECT * FROM orders where " + statusid0 + " " + or1 + " " + statusid1 + " " + or2 + " " +
+                    " " + statusid2 + " " + or3 + " " + statusid3 + " " + or4 + " " + statusid4, null));// SELECT * FROM orders where customer_id = 2
             while (cursor.moveToNext()) {
                 list.add(cursor.getOrders());
             }
@@ -946,6 +1002,7 @@ public boolean check_product(String description)
 
         return list;
     }
+
     public List<Order_status> getAllOrder_Status() {
         ArrayList<Order_status> list = new ArrayList<Order_status>();
         Order_statusCursor cursor = new Order_statusCursor(db.rawQuery("SELECT * FROM order_status ", null));// ORDER BY last_name
@@ -955,9 +1012,55 @@ public boolean check_product(String description)
         cursor.close();
         return list;
     }
-    public void UpdateOrder_status (int order_id,int to_status,String change_log)
-    {
+
+    public void UpdateOrder_status(int order_id, int to_status, String change_log) {
         //UPDATE orders SET status_id=2, change_log = 'Se cambio ahora al siguiente estado'  WHERE id = 9;
-        db.execSQL("UPDATE orders SET status_id="+String.valueOf(to_status)+", change_log = '"+change_log+"'  WHERE id = "+String.valueOf(order_id)+";");
+        db.execSQL("UPDATE orders SET status_id=" + String.valueOf(to_status) + ", change_log = '" + change_log + "'  WHERE id = " + String.valueOf(order_id) + ";");
+    }
+
+    //For order_assemblies
+    public List<Assemblies> getAssembliesbyDescription(String description) {
+        ArrayList<Assemblies> list = new ArrayList<Assemblies>();
+        if(description.length()==0){description="asdasljdsadaslkj";}
+        AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies where description like \""+description+"%\" ORDER BY description;", null));
+        while (cursor.moveToNext()) {
+            list.add(cursor.getAssembly());
+        }
+        cursor.close();
+        return list;
+    }
+    public Assemblies getAssembliebyId(int id_Aux) {
+        Assemblies assembly = new Assemblies(0,"");
+        AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies where id = "+String.valueOf(id_Aux)+" ORDER BY description;", null));
+        while (cursor.moveToNext()) {
+            assembly = cursor.getAssembly();
+        }
+        cursor.close();
+        return assembly;
+    }
+    public void AddOrder(int id,int customer_id,String date)
+    {
+        db.execSQL("INSERT INTO orders (id, status_id, customer_id, date, change_log) " +
+                "VALUES ("+String.valueOf(id)+", 0, "+String.valueOf(customer_id)+", '"+date+"', NULL)");
+
+                //INSERT INTO orders (id, status_id, customer_id, date, change_log) VALUES (8, 0, 3, '18-03-2017', NULL);
+    }
+    public void AddOrder_assembly(int id,int assembly_id,int qty)
+    {
+        db.execSQL("INSERT INTO order_assemblies (id, assembly_id, qty) " +
+                "VALUES ("+id+", "+assembly_id+","+qty+")");
+        //INSERT INTO order_assemblies (id, assembly_id, qty) VALUES (0, 0, 2);
+    }
+    public List<Order_assemblies> getOrderAssemblies_for_an_Order(int id_order)
+    {
+        ArrayList<Order_assemblies> list = new ArrayList<Order_assemblies>();
+        OrdersAssembliesCursor cursor = new OrdersAssembliesCursor(db.rawQuery("SELECT * FROM order_assemblies" +
+                " WHERE id="+String.valueOf(id_order), null));
+        while (cursor.moveToNext()) {
+            list.add(cursor.getOrderAsemblie());
+        }
+        cursor.close();
+        return list;
+        //SELECT * FROM order_assemblies WHERE id=6
     }
 }

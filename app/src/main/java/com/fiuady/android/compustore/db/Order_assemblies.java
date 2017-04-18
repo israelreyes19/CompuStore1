@@ -2,8 +2,8 @@ package com.fiuady.android.compustore.db;
 
 
 public final class Order_assemblies {
-    private int id;
-    private int assembly_id;
+    private int id; // for order Id
+    private int assembly_id; // for assembly id
     private int qty;
 
     public Order_assemblies(int id, int assembly_id, int qty) {

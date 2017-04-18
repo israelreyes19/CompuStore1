@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
@@ -26,11 +25,10 @@ import com.fiuady.android.compustore.db.Order;
 import com.fiuady.android.compustore.db.Order_assemblies;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-public class add_order extends AppCompatActivity {
+public class modify_order extends AppCompatActivity {
 
     public class AssembliesHolder extends RecyclerView.ViewHolder {
         private TextView txtDescription;
@@ -46,7 +44,7 @@ public class add_order extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final int pos = getAdapterPosition();
-                    final PopupMenu popupMenu = new PopupMenu(add_order.this, itemView);
+                    final PopupMenu popupMenu = new PopupMenu(modify_order.this, itemView);
                     popupMenu.getMenuInflater().inflate(R.menu.popup_menu_modify_status, popupMenu.getMenu());
                     popupMenu.getMenu().clear();
                     popupMenu.getMenu().add("Modificar");
@@ -54,18 +52,16 @@ public class add_order extends AppCompatActivity {
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            if(item.getTitle().equals("Modificar")){
-                                AlertDialog.Builder builder1 = new AlertDialog.Builder(add_order.this);
+                            if (item.getTitle().equals("Modificar")) {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(modify_order.this);
                                 builder1.setTitle("¿Cuantas unidades desea que tenga el ensamble?");
                                 View product_view = getLayoutInflater().inflate(R.layout.add_product_quantity, null);
-                                final NumberPicker agregar_cantidad = (NumberPicker)product_view.findViewById(R.id.qty_numberPicker);
+                                final NumberPicker agregar_cantidad = (NumberPicker) product_view.findViewById(R.id.qty_numberPicker);
                                 int qty_actual = 1;
-                                for (Order_assemblies oa: OrderAssembliesOnRV)
-                                {
-                                    if (oa.getAssembly_id()==AssembliesOnRV.get(pos).getId())
-                                    {
+                                for (Order_assemblies oa : OrderAssembliesOnRV) {
+                                    if (oa.getAssembly_id() == AssembliesOnRV.get(pos).getId()) {
                                         //qty_actual=oa.getQty();
-                                        Toast.makeText(getApplicationContext(),"Cantidad actual "+String.valueOf(oa.getQty()),Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Cantidad actual " + String.valueOf(oa.getQty()), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 agregar_cantidad.setMinValue(qty_actual);
@@ -77,10 +73,8 @@ public class add_order extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
                                         String qty_nueva = String.valueOf(agregar_cantidad.getValue());
-                                        for (Order_assemblies oa: OrderAssembliesOnRV)
-                                        {
-                                            if (oa.getAssembly_id()==AssembliesOnRV.get(pos).getId())
-                                            {
+                                        for (Order_assemblies oa : OrderAssembliesOnRV) {
+                                            if (oa.getAssembly_id() == AssembliesOnRV.get(pos).getId()) {
                                                 oa.setQty(Integer.valueOf(qty_nueva));
                                             }
                                         }
@@ -98,9 +92,8 @@ public class add_order extends AppCompatActivity {
                                 builder1.setView(product_view);
 
                                 builder1.show();
-                            }
-                            else{
-                                Toast.makeText(getApplicationContext(),"Fue removido "+String.valueOf(AssembliesOnRV.get(pos).getDescription()),Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Fue removido " + String.valueOf(AssembliesOnRV.get(pos).getDescription()), Toast.LENGTH_SHORT).show();
                                 AssembliesOnRV.remove(pos);
                                 showAssembliesonRV(AssembliesOnRV);
 
@@ -147,49 +140,51 @@ public class add_order extends AppCompatActivity {
     }
 
 
-
     private ImageButton ImBtn_backactivity, ImBtn_add_assembly;
-    private Spinner Spnr_clients;
     private RecyclerView RV_Asemblies;
-    private Button btn_confirm,btn_cancel;
+    private Button btn_confirm, btn_cancel;
     private AssembliesAdapter adapter;
     private Inventory inventory;
     private int id_assembly_receive_aux;
     List<Customers> clientsfounded = new ArrayList<Customers>();
-    private List<Assemblies> AssembliesOnRV = new ArrayList<Assemblies>();
+    private List<Order> AllOrders = new ArrayList<Order>();
     private List<Order_assemblies> OrderAssembliesOnRV = new ArrayList<Order_assemblies>();
-    //new Order_assemblie(order_id,assembly_id,qty)
+    private List<Assemblies> AssembliesOnRV = new ArrayList<Assemblies>();
+
+    private TextView Txt_NameClient;
+    private Customers client_order;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(RESULT_OK==resultCode)
-        {
-            id_assembly_receive_aux = data.getIntExtra("Aux_id_assembly1",50);
-            Inventory inventory2= new Inventory(getApplicationContext());
-            Assemblies assemblieAux =inventory2.getAssembliebyId(id_assembly_receive_aux);
+        if (RESULT_OK == resultCode) {
+            id_assembly_receive_aux = data.getIntExtra("Aux_id_assembly1", 50);
+            Inventory inventory2 = new Inventory(getApplicationContext());
+            Assemblies assemblieAux = inventory2.getAssembliebyId(id_assembly_receive_aux);
 
 
-
-            boolean flag=false;
-            for (Assemblies assembly: AssembliesOnRV)
-            {
+            boolean flag = false;
+            for (Assemblies assembly : AssembliesOnRV) {
                 if (assembly.getId() == assemblieAux.getId()) // ya hay un ensamble de ese tipo
                 {
-                    for (Order_assemblies Order_a :OrderAssembliesOnRV )
-                    {
-                        if (Order_a.getAssembly_id()==assemblieAux.getId())
-                        {
-                            flag=true;
+                    for (Order_assemblies Order_a : OrderAssembliesOnRV) {
+                        if (Order_a.getAssembly_id() == assemblieAux.getId()) {
+                            flag = true;
                         }
                     }
 
                 }
             }
-            if(flag ==true) // se agrega mas uno
-            {for (Order_assemblies oa: OrderAssembliesOnRV){if (oa.getAssembly_id()==assemblieAux.getId()){oa.setQty(oa.getQty()+1);}}}
-            else {
+            if (flag == true) // se agrega mas uno
+            {
+                for (Order_assemblies oa : OrderAssembliesOnRV) {
+                    if (oa.getAssembly_id() == assemblieAux.getId()) {
+                        oa.setQty(oa.getQty() + 1);
+                    }
+                }
+            } else {
                 AssembliesOnRV.add(assemblieAux);
-                Order_assemblies new_oa = new Order_assemblies(inventory.getAllOrders().size(),assemblieAux.getId(),1);
+                Order_assemblies new_oa = new Order_assemblies(inventory.getAllOrders().size(), assemblieAux.getId(), 1);
                 OrderAssembliesOnRV.add(new_oa);
             }
             AlphabeticOrder();
@@ -198,46 +193,55 @@ public class add_order extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_order);
+        setContentView(R.layout.activity_modify_order);
         //declarar componentes gráficos
-        ImBtn_backactivity= (ImageButton)findViewById(R.id.BackActivy_add_order);
-        ImBtn_add_assembly= (ImageButton)findViewById(R.id.imageButtonAddAssambly_add_order);
-        Spnr_clients = (Spinner)findViewById(R.id.spinner_clients_add_order);
-        RV_Asemblies = (RecyclerView)findViewById(R.id.recyclerview_assamblys_add_order);
+        ImBtn_backactivity = (ImageButton) findViewById(R.id.BackActivy_modify_order);
+        ImBtn_add_assembly = (ImageButton) findViewById(R.id.imageButtonAddAssambly_modify_order);
+        RV_Asemblies = (RecyclerView) findViewById(R.id.recyclerview_assamblys_add_order);
         RV_Asemblies.setLayoutManager(new LinearLayoutManager(this));
-        btn_confirm = (Button)findViewById(R.id.btn_confirm_add_order);
-        btn_cancel= (Button)findViewById(R.id.btn_cancel_add_order);
+        btn_confirm = (Button) findViewById(R.id.btn_confirm_modify_order);
+        btn_cancel = (Button) findViewById(R.id.btn_cancel_modify_order);
+        Txt_NameClient = (TextView) findViewById(R.id.Txt_ClientName_modifyorder);
 
         //declarar componentesaux
-        inventory= new Inventory(getApplicationContext());
+        inventory = new Inventory(getApplicationContext());
         clientsfounded = inventory.getAllCustomers();
-        List<String> spinnerArray = new ArrayList<String>();
+        AllOrders = inventory.getAllOrders();
+        int order_id = getIntent().getIntExtra("Order_Id", 50);
 
-        //Llenar los componentes
-        for (Customers customer : clientsfounded) {
-            spinnerArray.add(String.valueOf(customer.getLast_name()) + " " + String.valueOf(customer.getFirst_name()));
+        for (Order order : AllOrders) {
+            if (order.getId() == order_id) {
+                for (Customers client : clientsfounded) {
+                    if (order.getCustomer_id() == client.getId()) {
+                        Txt_NameClient.setText(client.getLast_name() + client.getFirst_name());
+                        client_order = client;
+                    }
+                }
+            }
+
         }
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spnr_clients.setAdapter(adapter);
+        OrderAssembliesOnRV = inventory.getOrderAssemblies_for_an_Order(order_id);
+        for (Order_assemblies oa : OrderAssembliesOnRV) {
+            AssembliesOnRV.add(inventory.getAssembliebyId(oa.getAssembly_id()));
 
-        //eventos de los componentes
+        }
+        AlphabeticOrder();
+        showAssembliesonRV(AssembliesOnRV);
+        //Eventos de los componentes
+        ImBtn_add_assembly.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(modify_order.this, addassembly_orderassemblies.class);
+                startActivityForResult(i, 2);
+            }
+        });
         ImBtn_backactivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-        ImBtn_add_assembly.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(add_order.this, addassembly_orderassemblies.class);
-                //i.putExtra("Aux_id_assembly",id_assembly_receive_aux);
-                startActivityForResult(i,2);
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -250,45 +254,25 @@ public class add_order extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (AssembliesOnRV.size()==0)
-                {
-                    Toast.makeText(getApplicationContext(), "No has agregado ningún ensamble a la orden", Toast.LENGTH_SHORT).show();
-
-                }
-                else {
-                    inventory.AddOrder(inventory.getAllOrders().size(), getCustomerOnSpinner().getId(), getTodayCalendar());
-                    for (Order_assemblies oa : OrderAssembliesOnRV) {
-                        inventory.AddOrder_assembly(oa.getId(), oa.getAssembly_id(), oa.getQty());
-                    }
-                    Toast.makeText(getApplicationContext(), "Se ha agregado correctamente la orden", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
-
             }
         });
-
     }
+
     public void showAssembliesonRV(List<Assemblies> List) {
         adapter = new AssembliesAdapter(List);
         RV_Asemblies.setAdapter(adapter);
     }
-    public void AlphabeticOrder()
-    {
-        List<String > stringaux = new ArrayList<>();
+
+    public void AlphabeticOrder() {
+        List<String> stringaux = new ArrayList<>();
         List<Assemblies> assembliesaux = new ArrayList<Assemblies>();
-        for (Assemblies assemblies :AssembliesOnRV)
-        {
+        for (Assemblies assemblies : AssembliesOnRV) {
             stringaux.add(assemblies.getDescription());
         }
         Collections.sort(stringaux); // ya acomodo por orden alfabetico
-        for (String aux: stringaux)
-        {
-            for (Assemblies assemblie: AssembliesOnRV)
-            {
-                if (aux.equals(assemblie.getDescription()))
-                {
+        for (String aux : stringaux) {
+            for (Assemblies assemblie : AssembliesOnRV) {
+                if (aux.equals(assemblie.getDescription())) {
                     assembliesaux.add(assemblie);
                 }
             }
@@ -296,35 +280,5 @@ public class add_order extends AppCompatActivity {
 
         AssembliesOnRV = assembliesaux;
     }
-    public String getTodayCalendar()
-    {   int oldDate_DayX,oldDate_MonthX,oldDate_YearX;
-        String aux = "";
-        final Calendar c = Calendar.getInstance();
-        oldDate_DayX = c.get(Calendar.DAY_OF_MONTH);
-        oldDate_MonthX = c.get(Calendar.MONTH);
-        oldDate_YearX = c.get(Calendar.YEAR);
-        if (oldDate_MonthX < 10 && oldDate_DayX < 10) {
-            aux ="0" + oldDate_DayX + "-0" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
-        } else if (oldDate_DayX < 10) {
-            aux = "0" + oldDate_DayX + "-" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
-        } else if (oldDate_MonthX < 10) {
-            aux = oldDate_DayX + "-0" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
-        } else {
-            aux=oldDate_DayX + "-" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
-        }
 
-
-        return aux;
-    }
-    public Customers getCustomerOnSpinner()
-    {
-        Customers c= new Customers(123,"","","","","","","");
-        for (Customers customer : clientsfounded) {
-            if (Spnr_clients.getSelectedItem().toString().equals((customer.getLast_name() + " " + customer.getFirst_name()))) {
-                c= customer;
-
-            }
-        }
-        return c;
-    }
 }

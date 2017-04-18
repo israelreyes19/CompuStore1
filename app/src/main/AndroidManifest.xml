@@ -38,7 +38,9 @@
             android:label="@string/title_activity_add_new_product"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".add_order"></activity>
+        <activity android:name=".add_order" />
+        <activity android:name=".addassembly_orderassemblies" />
+        <activity android:name=".modify_order"></activity>
     </application>
 
 </manifest>
