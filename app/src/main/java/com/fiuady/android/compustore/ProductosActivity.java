@@ -36,6 +36,7 @@ public class ProductosActivity extends AppCompatActivity {
     private EditText EditorProductos;
     public String item;
     public String texto_escrito;
+    public boolean chk_empty_list;
     private ImageButton Addproductbtn;
     private final String KEY_A0= "R0";
     private final String KEY_A1= "R1";
@@ -140,6 +141,7 @@ public class ProductosActivity extends AppCompatActivity {
                                     add_adapter.add(c.getDescription());
                                 }
                                 nombre.setText(productos.getDescription());
+                                final String aux_text = productos.getDescription();
 
                                 double aux1 = productos.getPrice();
                                 double division = (aux1)/100;
@@ -173,26 +175,35 @@ public class ProductosActivity extends AppCompatActivity {
                                         }
 
 
-                                        if(!nombre.getText().toString().isEmpty() && !precio.getText().toString().isEmpty())
+                                        if(!nombre.getText().toString().isEmpty() && !precio.getText().toString().isEmpty() && !aux2.equals("000"))
                                         {
-                                            if(inventory.check_product(valor_nombre)){
+                                            if(valor_nombre.equals(aux_text)){
                                                 inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
 
                                                 Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
                                                 update_recyclerview();
-                                            }
-                                            else
+                                        }
+                                        else
                                             {
-                                                Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
-                                                        "Ya existe un producto con ese nombre " ,Toast.LENGTH_SHORT).show();
-                                            }
 
+                                                if(inventory.check_product(valor_nombre) && aux2 != "000"){
+                                                    inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
+
+                                                    Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                    update_recyclerview();
+                                                }
+                                                else
+                                                {
+                                                    Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
+                                                            "Ya existe un producto con ese nombre " ,Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
                                         }
 
                                         else
                                         {
                                             Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
-                                                    "Debe llenar todos los campos", Toast.LENGTH_SHORT).show();
+                                                    "Debe llenar todos los campos y el precio no puede ser 0.00", Toast.LENGTH_SHORT).show();
                                         }
 
                                     }
@@ -350,8 +361,8 @@ public class ProductosActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //update_recyclerview();
-       //adapter2 = new ProductsAdapter(products);
-      //  recyclerView.setAdapter(adapter2);
+       adapter2 = new ProductsAdapter(products);
+        recyclerView.setAdapter(adapter2);
 
 
         backbuttonp.setOnClickListener(new View.OnClickListener() {
@@ -368,6 +379,14 @@ public class ProductosActivity extends AppCompatActivity {
                 // On selecting a spinner item
                 item = parent.getItemAtPosition(position).toString();
 /*
+                if(adapter2.getItemCount() == 0)
+                {
+                    chk_empty_list = true;
+                }
+                else {
+                    chk_empty_list = false;
+                }
+
                 if(item == "Todos")
                 {
                     adapter2 = new ProductsAdapter(inventory.getallProducts());
@@ -462,7 +481,7 @@ public class ProductosActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                      if(!nombre.getText().toString().isEmpty() && !precio.getText().toString().isEmpty())
+                      if(!nombre.getText().toString().isEmpty() && !precio.getText().toString().isEmpty() )
                       {
                           String text = catgeorias_posibles.getSelectedItem().toString();
                           int aux = inventory.return_categroty_id(text);
@@ -483,15 +502,17 @@ public class ProductosActivity extends AppCompatActivity {
                               aux2 = aux2 + "00";
                           }
 
-                          if(inventory.check_product(valor_nombre)){
+                          if(inventory.check_product(valor_nombre) && !aux2.equals("000")){
                               inventory.addProduct(999,categoria,valor_nombre,aux2,cantidad);
                               Toast.makeText(ProductosActivity.this,"Producto guardado exitosamente", Toast.LENGTH_SHORT).show();
+                              adapter2 = new ProductsAdapter(inventory.getallProductsineverycategory(valor_nombre));
+                              recyclerView.setAdapter(adapter2);
                           }
                           else
                           {
 
                               Toast.makeText(ProductosActivity.this," Operación no exitosa. " +
-                                      "Ya existe un producto con ese nombre " ,Toast.LENGTH_SHORT).show();
+                                      "Ya existe un producto con ese nombre o puso un precio de 0.00" ,Toast.LENGTH_SHORT).show();
 
                           }
 
@@ -526,8 +547,12 @@ public class ProductosActivity extends AppCompatActivity {
 
             item =savedInstanceState.getString(KEY_A0,"");
             texto_escrito =savedInstanceState.getString(KEY_A1,"");
+            chk_empty_list= savedInstanceState.getBoolean(KEY_A2,false);
 
-            update_recyclerview();
+            if(chk_empty_list == false)
+            {
+                update_recyclerview();
+            }
             //txtOther.setText("Haciendo " + counter + " click(s) en Android");
 
         }
@@ -578,7 +603,7 @@ public class ProductosActivity extends AppCompatActivity {
         Log.d("Test app", "OnSaveInstanceState...");
         outState.putString(KEY_A0,item);
         outState.putString(KEY_A1,texto_escrito);
-
+        outState.putBoolean(KEY_A2,chk_empty_list);
     }
 
 }
