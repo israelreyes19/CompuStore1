@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+
+import com.fiuady.android.compustore.db.Sales;
 import com.fiuady.android.compustore.db.InventoryDbSchema.*;
 
 class CustomersCursor extends CursorWrapper {
@@ -127,6 +129,37 @@ class ProductCursor extends CursorWrapper {
     }
 
 }
+
+class SalesCursor extends CursorWrapper {
+    public SalesCursor(Cursor cursor) {
+        super(cursor);
+    }
+
+
+    public Sales getSales() {
+
+        Cursor cursor = getWrappedCursor();
+        return new Sales(cursor.getString(cursor.getColumnIndex((SalesTable.Columns.date))), cursor.getInt(cursor.getColumnIndex((SalesTable.Columns.total_cost))) );
+
+    }
+
+}
+
+class Order_SalesCursor extends CursorWrapper {
+    public Order_SalesCursor(Cursor cursor) {
+        super(cursor);
+    }
+
+    public Order_Sales getOrderSales() {
+
+        Cursor cursor = getWrappedCursor();
+        return new Order_Sales(cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.first_name))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.last_name))),
+                cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.date))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.status))), cursor.getInt(cursor.getColumnIndex((OrderSalesTable.Columns.cost))));
+
+    }
+
+}
+
 
 
 class CategoryCursor extends CursorWrapper {
@@ -376,6 +409,85 @@ public final class Inventory {
         cursor.close();
         return list;
     }
+
+    public List<Products> getmisssingProducts()
+    {
+
+        List<Products> list = new ArrayList<Products>();
+
+
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+
+        ProductCursor cursor = new ProductCursor((db.rawQuery("select p.id,p.category_id,p.description,p.price ,(sum(oa.qty * ap.qty)- p.qty) AS qty " +
+                "from order_assemblies oa " +
+                "inner join orders o on (oa.id = o.id)" +
+                "inner join assemblies a on (oa.assembly_id = a.id) " +
+                "inner join assembly_products ap on (a.id = ap.id) " +
+                "inner join products p on (ap.product_id = p.id) " +
+                "WHERE o.status_id = \"4\" or o.status_id=\"3\" or o.status_id = \"2\"" +
+                "group by ap.product_id HAVING (sum(oa.qty * ap.qty)- p.qty) > 0 " +
+                "order by qty desc", null)));
+
+        while (cursor.moveToNext()) {
+
+            list.add((cursor.getProduct()));  // metodo wrappcursor
+
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<Sales> getSales()
+    {
+
+        List<Sales> list = new ArrayList<Sales>();
+
+        SalesCursor cursor = new SalesCursor((db.rawQuery("SELECT o.date, SUM(oa.qty * ap.qty * p.price) AS total_cost " +
+                "FROM orders o " +
+                "INNER JOIN order_assemblies oa ON (o.id = oa.id) " +
+                "INNER JOIN assemblies a ON (oa.assembly_id = a.id) " +
+                "INNER JOIN assembly_products ap ON (a.id = ap.id) " +
+                "INNER JOIN products p ON (ap.product_id = p.id) " +
+                "WHERE o.status_id = \"4\" or o.status_id=\"3\" or o.status_id = \"2\"" +
+                "GROUP BY oa.id,o.date " +
+                "ORDER BY total_cost DESC", null)));
+
+        while (cursor.moveToNext()) {
+
+            list.add((cursor.getSales()));
+
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<Order_Sales> getOrderSales(String date_value)
+    {
+
+        List<Order_Sales> list = new ArrayList<Order_Sales>();
+
+        Order_SalesCursor cursor = new Order_SalesCursor((db.rawQuery("SELECT c.first_name, c.last_name, o.date, ords.description, SUM(oa.qty * ap.qty * p.price) AS total_cost\n" +
+                "FROM orders o\n" +
+                "INNER JOIN order_status ords ON (o.status_id = ords.id)\n" +
+                "INNER JOIN customers c ON (o.customer_id = c.id)\n" +
+                "INNER JOIN order_assemblies oa ON (o.id = oa.id)\n" +
+                "INNER JOIN assemblies a ON (oa.assembly_id = a.id)\n" +
+                "INNER JOIN assembly_products ap ON (a.id = ap.id)\n" +
+                "INNER JOIN products p ON (ap.product_id = p.id)\n" +
+                "WHERE (o.status_id = \"4\" or o.status_id=\"3\" or o.status_id = \"2\") AND o.date like '%" + date_value + "%'" +
+                "GROUP BY oa.id,o.date\n" +
+                "ORDER BY total_cost DESC", null)));
+
+        while (cursor.moveToNext()) {
+
+            list.add((cursor.getOrderSales()));
+        }
+        cursor.close();
+        return list;
+    }
+
+
+
 
     public List<Assemblies> getAllAssemblies() {
         ArrayList<Assemblies> list = new ArrayList<Assemblies>();

@@ -40,7 +40,10 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".add_order" />
         <activity android:name=".addassembly_orderassemblies" />
-        <activity android:name=".modify_order"></activity>
+        <activity android:name=".modify_order" />
+        <activity android:name=".MissingStockActivity" />
+        <activity android:name=".SalesActivity" />
+        <activity android:name=".SalesOrdersActivity"></activity>
     </application>
 
 </manifest>

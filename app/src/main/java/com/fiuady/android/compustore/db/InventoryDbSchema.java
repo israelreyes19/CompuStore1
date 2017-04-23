@@ -40,6 +40,31 @@ public final class InventoryDbSchema {
 
     }
 
+    public static final class SalesTable {
+        public static final String Name = "sales";
+
+        public static final class Columns {
+            public static final String date= "date";
+            public static final String total_cost= "total_cost";
+
+        }
+
+    }
+
+    public static final class OrderSalesTable {
+        public static final String Name = "order_sales";
+
+        public static final class Columns {
+            public static final String first_name= "first_name";
+            public static final String last_name= "last_name";
+            public static final String date= "date";
+            public static final String status= "description";
+            public static final String cost= "total_cost";
+        }
+
+    }
+
+
     public static final class OrdersTable {
         public static final String Name = "orders";
 
