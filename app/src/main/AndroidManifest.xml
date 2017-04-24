@@ -43,7 +43,8 @@
         <activity android:name=".modify_order" />
         <activity android:name=".MissingStockActivity" />
         <activity android:name=".SalesActivity" />
-        <activity android:name=".SalesOrdersActivity"></activity>
+        <activity android:name=".SalesOrdersActivity" />
+        <activity android:name=".ConfirmOrderActivity"></activity>
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -91,6 +92,7 @@ public class MissingStockActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ProductsAdapter adapter3;
+    private ImageButton backbuttonp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +100,23 @@ public class MissingStockActivity extends AppCompatActivity {
         setContentView(R.layout.activity_missing_stock);
 
         inventory = new Inventory(getApplicationContext());
+        backbuttonp = (ImageButton) findViewById(R.id.imageButtonBackSalesStock);
+
+
 
         recyclerView = (RecyclerView) findViewById(R.id.Missing_products_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter3 = new ProductsAdapter(inventory.getmisssingProducts());
         recyclerView.setAdapter(adapter3);
+
+        backbuttonp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
     }
 }

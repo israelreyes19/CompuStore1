@@ -85,6 +85,8 @@ public class SalesOrdersActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProductsAdapter adapter3;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

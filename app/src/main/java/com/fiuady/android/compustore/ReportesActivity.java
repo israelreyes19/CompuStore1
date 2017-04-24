@@ -41,6 +41,14 @@ public class ReportesActivity extends AppCompatActivity {
             }
         });
 
+        Confrim_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ReportesActivity.this, ConfirmOrderActivity.class);
+                startActivity(i);
+            }
+        });
+
 
     }
 }
