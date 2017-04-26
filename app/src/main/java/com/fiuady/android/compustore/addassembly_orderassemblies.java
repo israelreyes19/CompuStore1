@@ -43,6 +43,8 @@ public class addassembly_orderassemblies extends AppCompatActivity {
                 public void onClick(View v) {
                     final int pos = getAdapterPosition();
                     final PopupMenu popupMenu = new PopupMenu(addassembly_orderassemblies.this, itemView);
+                    wastouched = true;
+                    item_touched=pos;
                     popupMenu.getMenuInflater().inflate(R.menu.popup_menu_modify_status, popupMenu.getMenu());
                     popupMenu.getMenu().add("Agregar");
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -123,7 +125,11 @@ public class addassembly_orderassemblies extends AppCompatActivity {
     private CheckBox ChB_ShowAllAssemblies;
     private ImageButton Img_btn_backActivity;
     private List<Assemblies> AssembliesOnRV = new ArrayList<Assemblies>();
-
+    //Componentes auxiliares para la reanudacion
+    private int p_aux,item_touched;
+    private String Key_p_aux= "PANTALLA_AUXILIAR", Key_Search_ALL_CH="SEARCHALLASSEMBLYS", query_aux = "", Key_query_aux="KEYQUERYAUX",Key_wastouched="KEYWASTOUCHED";
+    private String Key_item_touched ="KEYITEMTOUCHED";
+    private boolean SearchAllWasChecked= false,wastouched;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +142,8 @@ public class addassembly_orderassemblies extends AppCompatActivity {
         ChB_ShowAllAssemblies = (CheckBox) findViewById(R.id.ChB_ShowAllAssemblies);
         //Componentes auxiliares
         inventory = new Inventory(getApplicationContext());
+        //Para saber en que parte de la app esta
+
 
         //eventos componentes
         Img_btn_backActivity.setOnClickListener(new View.OnClickListener() {
@@ -147,12 +155,17 @@ public class addassembly_orderassemblies extends AppCompatActivity {
         ChB_ShowAllAssemblies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SearchAllWasChecked= ChB_ShowAllAssemblies.isChecked();
                 if (ChB_ShowAllAssemblies.isChecked()) {
+                    p_aux=2;
                     AssembliesOnRV = inventory.getAllAssemblies();
                     showAssembliesonRV(AssembliesOnRV);
                 }
+                else {p_aux=1;}
             }
         });
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -163,15 +176,58 @@ public class addassembly_orderassemblies extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 // do something when text changes
+                query_aux =String.valueOf(searchView.getQuery());
                 AssembliesOnRV = inventory.getAssembliesbyDescription(String.valueOf(searchView.getQuery()));
                 showAssembliesonRV(AssembliesOnRV);
                 return false;
             }
         });
+        if (savedInstanceState !=null) {
+            p_aux = savedInstanceState.getInt(Key_p_aux);
+            SearchAllWasChecked = savedInstanceState.getBoolean(Key_Search_ALL_CH);
+            AssembliesOnRV = inventory.getAllAssemblies();
+            query_aux = savedInstanceState.getString(Key_query_aux);
+            wastouched=savedInstanceState.getBoolean(Key_wastouched);
+            item_touched=savedInstanceState.getInt(Key_item_touched,0);
+            showAssembliesonRV(AssembliesOnRV);
+            if(p_aux==2){ // case 2
+                if (SearchAllWasChecked) {
+                    ChB_ShowAllAssemblies.setChecked(SearchAllWasChecked);
+                    p_aux=3;
+                    AssembliesOnRV = inventory.getAllAssemblies();
+                    showAssembliesonRV(AssembliesOnRV);
+                    //for (Assemblies a: AssembliesOnRV){Toast.makeText(getApplicationContext(),a.getDescription(),Toast.LENGTH_SHORT).show();}
+                }
+                else{
+                    ChB_ShowAllAssemblies.setChecked(SearchAllWasChecked);
+                    AssembliesOnRV = inventory.getAllAssemblies();
+                    showAssembliesonRV(AssembliesOnRV);
+                }
+            }
+            else if(p_aux==3)
+            {
+                AssembliesOnRV = inventory.getAssembliesbyDescription(String.valueOf(query_aux));
+                showAssembliesonRV(AssembliesOnRV);
+            }
+
+        }
     }
 
     public void showAssembliesonRV(List<Assemblies> List) {
         adapter = new AssembliesAdapter(List);
         recyclerView.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Key_p_aux,p_aux);
+        outState.putBoolean(Key_Search_ALL_CH,SearchAllWasChecked);
+        outState.putString(Key_query_aux,query_aux);
+        outState.putInt(Key_item_touched,item_touched);
+        outState.putBoolean(Key_wastouched,wastouched);
+
+
     }
 }

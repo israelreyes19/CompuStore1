@@ -512,27 +512,11 @@ public class client extends AppCompatActivity {
         adapter = new CustomersAdapter(customers);
         recyclerView.setAdapter(adapter);
     }
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-       outState.putBoolean(KEY_FINDCLIENTSWASCLICK,searchwasclick);
-       // outState.putInt(KEY_A0, answers[0]);
-       // outState.putInt(KEY_A1, answers[1]);
-       // outState.putInt(KEY_A2, answers[2]);
-       // outState.putInt(KEY_A3, answers[3]);
-       // outState.putInt(KEY_A4, answers[4]);
-       // outState.putInt(KEY_A5, answers[5]);
-       // outState.putInt(KEY_A6, answers[6]);
-       // outState.putInt(KEY_A7, answers[7]);
-       // outState.putBoolean(KEY_C0, ischeated[0]);
-       // outState.putBoolean(KEY_C1, ischeated[1]);
-       // outState.putBoolean(KEY_C2, ischeated[2]);
-       // outState.putBoolean(KEY_C3, ischeated[3]);
-       // outState.putBoolean(KEY_C4, ischeated[4]);
-       // outState.putBoolean(KEY_C5, ischeated[5]);
-       // outState.putBoolean(KEY_C6, ischeated[6]);
-       // outState.putBoolean(KEY_C7, ischeated[7]);
+  // @Override
+  // protected void onSaveInstanceState(Bundle outState) {
+  //     super.onSaveInstanceState(outState);
+  //    outState.putBoolean(KEY_FINDCLIENTSWASCLICK,searchwasclick);
 
 
-    }
+  // }
 }

@@ -27,24 +27,13 @@
                 android:layout_height="42dp"
                 android:orientation="horizontal">
 
-
-                <ImageButton
-                    android:id="@+id/imageButtonAddOrder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="#00000000"
-                    android:paddingEnd="@dimen/activity_horizontal_margin"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/plus" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/imageButtonBack"
                     android:paddingLeft="100dp"
                     android:paddingTop="10dp"
-                    android:text="Ordenes"
+                    android:text="Simulador"
                     android:textSize="20sp" />
 
                 <ImageButton
@@ -71,11 +60,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/Txt_status_order"
-                    android:text="Monto de venta:"/>
+                    android:text="Buscar por :"/>
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/SpinerCost"
+                    android:id="@+id/Spinner_Simulator"
                     >
                 </Spinner>
 
@@ -83,66 +72,7 @@
 
 
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Order_client"/>
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner_clients"
-                android:entries="@array/spinnerClientsItems"
-                >
 
-            </Spinner>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ChB_oldDate"
-                    android:text="Fecha\nantigua"
-                    android:checked="false"/>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Btn_Selectolddate"
-                    android:text="01-01-1990"
-                    android:enabled="false"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ChB_newDate"
-                    android:text="Fecha\ncercana"
-                    android:checked="false"/>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Btn_SelectNewdate"
-                    android:text="01-01-2018"
-                    android:enabled="false"/>
-            </LinearLayout>
-
-
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -153,7 +83,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/orders_recyclerview">
+                    android:id="@+id/RecyclerView_Simulator">
 
                 </android.support.v7.widget.RecyclerView>
             </GridLayout>

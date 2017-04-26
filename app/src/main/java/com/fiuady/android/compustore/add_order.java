@@ -330,7 +330,7 @@ public class add_order extends AppCompatActivity {
             aux=oldDate_DayX + "-" + (oldDate_MonthX + 1) + "-" + oldDate_YearX;
         }
 
-
+// failed to open zip file gradle´s dependency cache may be corrupt
         return aux;
     }
     public Customers getCustomerOnSpinner()

@@ -113,11 +113,6 @@ public class orders extends AppCompatActivity {
                                         if (item.getTitle().toString().equals("Finalizado")) {
                                             i = 4;
                                         }
-                                        //  (0, 'Pendiente',
-                                        //  (1, 'Cancelado',
-                                        //  (2, 'Confirmado',
-                                        // (3, 'En tránsito'
-                                        // (4, 'Finalizado',
                                         btn_confirm_log_change.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {

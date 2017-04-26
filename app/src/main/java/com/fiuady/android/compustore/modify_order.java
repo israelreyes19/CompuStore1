@@ -1,6 +1,5 @@
 package com.fiuady.android.compustore;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -184,7 +182,6 @@ public class modify_order extends AppCompatActivity {
     private List<Order_assemblies> OAtoDelete = new ArrayList<Order_assemblies>();
 
     private TextView Txt_NameClient;
-    private Customers client_order;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -263,7 +260,6 @@ public class modify_order extends AppCompatActivity {
                 for (Customers client : clientsfounded) {
                     if (order.getCustomer_id() == client.getId()) {
                         Txt_NameClient.setText(client.getLast_name() + client.getFirst_name());
-                        client_order = client;
                     }
                 }
             }

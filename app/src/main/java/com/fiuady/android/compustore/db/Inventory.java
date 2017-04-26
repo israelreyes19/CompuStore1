@@ -1186,4 +1186,14 @@ public final class Inventory {
     {
         db.execSQL("DELETE from order_assemblies WHERE (id ="+oa.getId()+" and assembly_id="+oa.getAssembly_id()+")");
     }
+    public List<Order> GetAllPendingOrders()
+    {
+        ArrayList<Order> list = new ArrayList<Order>();
+        OrdersCursor cursor = new OrdersCursor(db.rawQuery("    SELECT * FROM orders WHERE status_id=0 ", null));
+        while (cursor.moveToNext()) {
+            list.add(cursor.getOrders());
+        }
+        cursor.close();
+        return list;
+    }
 }
