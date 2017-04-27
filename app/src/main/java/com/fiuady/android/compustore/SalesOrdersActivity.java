@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,7 @@ public class SalesOrdersActivity extends AppCompatActivity {
         private class ProductsHolder extends RecyclerView.ViewHolder
         {
 
-
+            private  TextView id;
             private TextView nombre;
             private TextView apellido;
             private  TextView fecha;
@@ -37,6 +38,7 @@ public class SalesOrdersActivity extends AppCompatActivity {
 
             public ProductsHolder(View itemView) {
                 super(itemView);
+                id = (TextView) itemView.findViewById(R.id.order_sales_id);
                 nombre = (TextView) itemView.findViewById(R.id.nombre_cliente);
                 apellido = (TextView) itemView.findViewById(R.id.apellido_cliente);
                 fecha = (TextView) itemView.findViewById(R.id.fecha);
@@ -46,7 +48,7 @@ public class SalesOrdersActivity extends AppCompatActivity {
 
             public void bindProducts(Order_Sales order_sales)
             {
-
+                id.setText(String.valueOf(order_sales.getID()));
                 double aux1 = order_sales.getCosto();
                 double division = (aux1)/100;
                 costo.setText(String.format("%.2f",division));
@@ -84,7 +86,7 @@ public class SalesOrdersActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ProductsAdapter adapter3;
-
+    private ImageButton backbuttonp;
 
 
     @Override
@@ -137,7 +139,7 @@ public class SalesOrdersActivity extends AppCompatActivity {
         String Year = intent.getStringExtra(Year_Value);
 
         String Total_date = Number_month +"-"+Year;
-
+        backbuttonp = (ImageButton) findViewById(R.id.imageButtonBackOrderSales);
         inventory = new Inventory(getApplicationContext());
 
         recyclerView = (RecyclerView) findViewById(R.id.order_sales_recyvlerview);
@@ -146,7 +148,16 @@ public class SalesOrdersActivity extends AppCompatActivity {
        adapter3 = new ProductsAdapter(inventory.getOrderSales(Total_date));
         recyclerView.setAdapter(adapter3);
 
-    //    Toast.makeText(SalesOrdersActivity.this, Total_date, Toast.LENGTH_SHORT).show();
+        backbuttonp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+
+        //    Toast.makeText(SalesOrdersActivity.this, Total_date, Toast.LENGTH_SHORT).show();
 
     }
 }

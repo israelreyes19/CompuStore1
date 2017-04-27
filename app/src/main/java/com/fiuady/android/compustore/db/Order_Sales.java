@@ -6,14 +6,15 @@ package com.fiuady.android.compustore.db;
 
 public class Order_Sales {
 
-
+        private int ID;
         private String Nombre;
         private String Apellido;
         private String Fecha;
         private String Status;
         private int Costo;
 
-        public Order_Sales(String Nombre, String Apellido, String Fecha, String Status, int Costo) {
+        public Order_Sales(int ID,String Nombre, String Apellido, String Fecha, String Status, int Costo) {
+            this.ID = ID;
             this.Nombre = Nombre;
             this.Apellido = Apellido;
             this.Fecha = Fecha;
@@ -21,7 +22,15 @@ public class Order_Sales {
             this.Costo = Costo;
         }
 
-        public String getNombre() {
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public String getNombre() {
             return Nombre;
         }
 

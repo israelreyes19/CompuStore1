@@ -180,7 +180,7 @@ public class ProductosActivity extends AppCompatActivity {
                                             if(valor_nombre.equals(aux_text)){
                                                 inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
 
-                                                Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ProductosActivity.this,"El producto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
                                                 update_recyclerview();
                                         }
                                         else
@@ -189,7 +189,7 @@ public class ProductosActivity extends AppCompatActivity {
                                                 if(inventory.check_product(valor_nombre) && aux2 != "000"){
                                                     inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
 
-                                                    Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(ProductosActivity.this,"El producto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
                                                     update_recyclerview();
                                                 }
                                                 else

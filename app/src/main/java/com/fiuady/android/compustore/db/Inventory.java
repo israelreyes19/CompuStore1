@@ -153,7 +153,7 @@ class Order_SalesCursor extends CursorWrapper {
     public Order_Sales getOrderSales() {
 
         Cursor cursor = getWrappedCursor();
-        return new Order_Sales(cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.first_name))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.last_name))),
+        return new Order_Sales(cursor.getInt(cursor.getColumnIndex((OrderSalesTable.Columns.id)))  ,cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.first_name))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.last_name))),
                 cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.date))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.status))), cursor.getInt(cursor.getColumnIndex((OrderSalesTable.Columns.cost))));
 
     }
@@ -466,7 +466,7 @@ public final class Inventory {
 
         List<Order_Sales> list = new ArrayList<Order_Sales>();
 
-        Order_SalesCursor cursor = new Order_SalesCursor((db.rawQuery("SELECT c.first_name, c.last_name, o.date, ords.description, SUM(oa.qty * ap.qty * p.price) AS total_cost\n" +
+        Order_SalesCursor cursor = new Order_SalesCursor((db.rawQuery("SELECT o.id, c.first_name, c.last_name, o.date, ords.description, SUM(oa.qty * ap.qty * p.price) AS total_cost\n" +
                 "FROM orders o\n" +
                 "INNER JOIN order_status ords ON (o.status_id = ords.id)\n" +
                 "INNER JOIN customers c ON (o.customer_id = c.id)\n" +
@@ -1196,4 +1196,119 @@ public final class Inventory {
         cursor.close();
         return list;
     }
+
+    public List<Order_Sales> GetAllPendingOrdersbycost()
+    {
+        List<Order_Sales> list = new ArrayList<Order_Sales>();
+
+        Order_SalesCursor cursor = new Order_SalesCursor((db.rawQuery("SELECT o.id, c.first_name, c.last_name, o.date, ords.description, SUM(oa.qty * ap.qty * p.price) AS total_cost\n" +
+                "FROM orders o\n" +
+                "INNER JOIN order_status ords ON (o.status_id = ords.id)\n" +
+                "INNER JOIN customers c ON (o.customer_id = c.id)\n" +
+                "INNER JOIN order_assemblies oa ON (o.id = oa.id)\n" +
+                "INNER JOIN assemblies a ON (oa.assembly_id = a.id)\n" +
+                "INNER JOIN assembly_products ap ON (a.id = ap.id)\n" +
+                "INNER JOIN products p ON (ap.product_id = p.id)\n" +
+                "WHERE o.status_id = \"0\"    \n" +
+                "GROUP BY oa.id\n" +
+                "ORDER BY total_cost DESC", null)));
+
+        while (cursor.moveToNext()) {
+
+            list.add((cursor.getOrderSales()));
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<Order_Sales> GetAllPendingOrdersbyclient()
+    {
+        List<Order_Sales> list = new ArrayList<Order_Sales>();
+
+        Order_SalesCursor cursor = new Order_SalesCursor((db.rawQuery("SELECT o.id, c.first_name, c.last_name, o.date, ords.description, SUM(oa.qty * ap.qty * p.price) AS total_cost\n" +
+                "FROM orders o\n" +
+                "INNER JOIN order_status ords ON (o.status_id = ords.id)\n" +
+                "INNER JOIN customers c ON (o.customer_id = c.id)\n" +
+                "INNER JOIN order_assemblies oa ON (o.id = oa.id)\n" +
+                "INNER JOIN assemblies a ON (oa.assembly_id = a.id)\n" +
+                "INNER JOIN assembly_products ap ON (a.id = ap.id)\n" +
+                "INNER JOIN products p ON (ap.product_id = p.id)\n" +
+                "WHERE o.status_id = \"0\"    \n" +
+                "GROUP BY oa.id\n" +
+                "ORDER BY c.last_name asc", null)));
+
+        while (cursor.moveToNext()) {
+
+            list.add((cursor.getOrderSales()));
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<Products> getallMissingProductsbyOrder(String id ) {
+        List<Products> list = new ArrayList<Products>();
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+        ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT p.id,p.category_id,p.description,p.price, (sum(oa.qty * ap.qty) - p.qty )  AS qty\n" +
+                "FROM orders o\n" +
+                "INNER JOIN order_status ords ON (o.status_id = ords.id)\n" +
+                "INNER JOIN customers c ON (o.customer_id = c.id)\n" +
+                "INNER JOIN order_assemblies oa ON (o.id = oa.id)\n" +
+                "INNER JOIN assemblies a ON (oa.assembly_id = a.id)\n" +
+                "INNER JOIN assembly_products ap ON (a.id = ap.id)\n" +
+                "INNER JOIN products p ON (ap.product_id = p.id)\n" +
+                "where o.id = '" + id + "'" +
+                "GROUP BY p.id Having (sum(oa.qty * ap.qty)- p.qty) > 0 \n" +
+                "ORDER BY qty DESC", null)));
+
+        while (cursor.moveToNext()) {
+            //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
+            //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
+            list.add((cursor.getProduct()));  // metodo wrappcursor
+        }
+        cursor.close();
+        return list;
+    }
+
+    public List<Products> getallnotMissingProductsbyOrder(String id ) {
+        List<Products> list = new ArrayList<Products>();
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+        ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT p.id,p.category_id,p.description,p.price, (p.qty  - sum(oa.qty * ap.qty ))  AS qty\n" +
+                "FROM orders o\n" +
+                "INNER JOIN order_status ords ON (o.status_id = ords.id)\n" +
+                "INNER JOIN customers c ON (o.customer_id = c.id)\n" +
+                "INNER JOIN order_assemblies oa ON (o.id = oa.id)\n" +
+                "INNER JOIN assemblies a ON (oa.assembly_id = a.id)\n" +
+                "INNER JOIN assembly_products ap ON (a.id = ap.id)\n" +
+                "INNER JOIN products p ON (ap.product_id = p.id)\n" +
+                "where o.id = '" + id + "'" +
+                "GROUP BY p.id Having (sum(oa.qty * ap.qty)- p.qty) <= 0 \n" +
+                "ORDER BY qty DESC", null)));
+
+        while (cursor.moveToNext()) {
+            //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
+            //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
+            list.add((cursor.getProduct()));  // metodo wrappcursor
+        }
+        cursor.close();
+        return list;
+    }
+
+    public void Update_productquantity(String id, String qty) {
+
+        ContentValues values = new ContentValues();
+
+        values.put(ProductTable.Columns.QUANTITY, qty);
+        db.update(ProductTable.Name,
+                values,
+                ProductTable.Columns.ID + "= ?",
+                new String[]{id}
+        );
+
+
+    }
+
+
+
+
+
 }

@@ -50,6 +50,8 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:gravity="right"
+                android:textSize="5mm"
+                android:textStyle="bold"
                 android:layout_alignBottom="@+id/textview_ventas"
                 android:layout_alignParentEnd="true">
             </Spinner>

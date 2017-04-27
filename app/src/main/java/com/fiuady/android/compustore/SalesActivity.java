@@ -613,7 +613,7 @@ public class SalesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private SalesActivity.ProductsAdapter adapter3;
-
+    private ImageButton backbuttonp;
 
 
     @Override
@@ -635,6 +635,8 @@ public class SalesActivity extends AppCompatActivity {
         list.add(new Meses("Noviembre"));
         list.add(new Meses("Diciembre"));
         Anio_ventas =  (Spinner)findViewById(R.id.spinner_ventas);
+
+        backbuttonp = (ImageButton) findViewById(R.id.imageButtonBackSales);
 
         inventory = new Inventory(getApplicationContext());
 
@@ -660,7 +662,12 @@ public class SalesActivity extends AppCompatActivity {
         adapter.add("2024");
         adapter.add("2025");
 
-
+        backbuttonp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
         Anio_ventas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
