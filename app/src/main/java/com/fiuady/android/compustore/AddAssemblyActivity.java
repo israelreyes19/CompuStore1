@@ -2,9 +2,11 @@ package com.fiuady.android.compustore;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -160,7 +162,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
 
     private List<Products> list;
 
-    private Assemblies auxAssembly;
+    private Assemblies auxAssembly = new Assemblies(9999, "");
     private EditText assemblyDescription;
     private ImageButton arrowButton;
     private ImageButton addButton;
@@ -204,12 +206,24 @@ public class AddAssemblyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_assembly);
         final Inventory inventory = new Inventory(getApplicationContext());
         recyclerView = (RecyclerView) findViewById(R.id.assemblies_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         arrowButton = (ImageButton) findViewById(R.id.imageButtonBack);
         addButton = (ImageButton) findViewById(R.id.imageButtonAdd);
         assemblyDescription = (EditText) findViewById(R.id.assemblyName_text);
         saveButton = (Button) findViewById(R.id.saveButton);
         title = (TextView) findViewById(R.id.title_add);
+
+
+        int display_mode = getResources().getConfiguration().orientation;
+
+        if (display_mode == Configuration.ORIENTATION_PORTRAIT) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        } else {
+            GridLayoutManager manager = new GridLayoutManager(AddAssemblyActivity.this,2);
+            recyclerView.setLayoutManager(manager);
+            Toast.makeText(AddAssemblyActivity.this, "El que lo lea", Toast.LENGTH_SHORT).show();
+        }
         if (AssembliesActivity.edit) //Editar ensamble
         {
             assemblyDescription.setText(AssembliesActivity.selectedAssembly.getDescription());
@@ -224,7 +238,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
             list = inventory.getAssemblyProducts(AssembliesActivity.selectedAssembly);
             //AssembliesActivity.selectedAssembly.setDescription("");
             //AssembliesActivity.selectedAssembly.setId(9999);
-            auxAssembly = new Assemblies(9999, "");
+
             inventory.addAuxAssembly(auxAssembly);
             for(Products products : list)
             {
