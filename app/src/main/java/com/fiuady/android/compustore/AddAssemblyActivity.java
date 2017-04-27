@@ -34,7 +34,10 @@ public class AddAssemblyActivity extends AppCompatActivity {
         private TextView txtProduct;
         private TextView txtPrice;
         private TextView txtQuantity;
-
+        private TextView txtIdTag;
+        private TextView txtCategoryTag;
+        private TextView txtPriceTag;
+        private TextView txtQuantityTag;
 
 
         public ProductHolder(View itemView) {
@@ -44,6 +47,21 @@ public class AddAssemblyActivity extends AppCompatActivity {
             txtProduct = (TextView) itemView.findViewById(R.id.txt_description);
             txtPrice = (TextView) itemView.findViewById(R.id.txt_price);
             txtQuantity = (TextView) itemView.findViewById(R.id.txt_qty);
+
+            txtCategoryTag = (TextView) itemView.findViewById(R.id.ID_TAG);
+            txtIdTag = (TextView) itemView.findViewById(R.id.category_TAG);
+            txtPriceTag = (TextView) itemView.findViewById(R.id.price_TAG);
+            txtQuantityTag = (TextView) itemView.findViewById(R.id.qty_TAG);
+
+            txtId.setVisibility(View.GONE);
+            txtCategory.setVisibility(View.GONE);
+            txtPrice.setVisibility(View.GONE);
+            txtQuantity.setVisibility(View.GONE);
+            txtIdTag.setVisibility(View.GONE);
+            txtCategoryTag.setVisibility(View.GONE);
+            txtPriceTag.setVisibility(View.GONE);
+            txtQuantityTag.setVisibility(View.GONE);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -220,7 +238,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
 
 
         } else {
-            GridLayoutManager manager = new GridLayoutManager(AddAssemblyActivity.this,2);
+            GridLayoutManager manager = new GridLayoutManager(AddAssemblyActivity.this,2,GridLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(manager);
             Toast.makeText(AddAssemblyActivity.this, "El que lo lea", Toast.LENGTH_SHORT).show();
         }
