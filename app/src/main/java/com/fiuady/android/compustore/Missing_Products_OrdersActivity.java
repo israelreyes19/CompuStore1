@@ -89,6 +89,7 @@ public class Missing_Products_OrdersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_missing__products__orders);
+        backbuttonp = (ImageButton) findViewById(R.id.BackActivyMissingProds);
         inventory = new Inventory(getApplicationContext());
 
         Intent intent = getIntent();
@@ -99,6 +100,13 @@ public class Missing_Products_OrdersActivity extends AppCompatActivity {
 
         adapter3 = new ProductsAdapter(inventory.getallMissingProductsbyOrder(ID));
         recyclerView.setAdapter(adapter3);
+
+        backbuttonp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 }

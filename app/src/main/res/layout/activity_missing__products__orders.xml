@@ -25,13 +25,23 @@
                 android:layout_height="42dp"
                 android:orientation="horizontal">
 
+                <ImageButton
+                    android:id="@+id/BackActivyMissingProds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:paddingTop="10dp"
+                    android:src="@drawable/arrow" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:paddingTop="10dp"
                     android:text="Productos faltantes de la orden "
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:layout_marginStart="10dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/BackActivyMissingProds" />
 
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>

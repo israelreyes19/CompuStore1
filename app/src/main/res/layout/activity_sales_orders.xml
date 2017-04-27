@@ -40,9 +40,10 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="16pt"
                 android:text="Ordenes por mes"
-                android:textSize="5mm"
+                android:textSize="20sp"
                 android:id="@+id/textview_ventas"
-                android:textStyle="bold" />
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
 
 
 

@@ -30,14 +30,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/imageButtonBack"
-                    android:paddingLeft="100dp"
+
                     android:paddingTop="10dp"
                     android:text="Simulador"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/BackActivysim"
+                    android:layout_marginStart="10dp" />
 
                 <ImageButton
-                    android:id="@+id/BackActivy"
+                    android:id="@+id/BackActivysim"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#00000000"

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -201,12 +202,13 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     private RecyclerView RV_Orders_sale;
     private List<Order> OrdersAux = new ArrayList<>();
     private ProductsAdapter adapter3;
+    private ImageButton backbuttonp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_order);
-
+        backbuttonp = (ImageButton) findViewById(R.id.BackActivysim);
         //declarar los componentes
         spinner_simulator = (Spinner) findViewById(R.id.Spinner_Simulator);
         RV_Orders_sale = (RecyclerView) findViewById(R.id.RecyclerView_Simulator);
@@ -253,6 +255,14 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
+
+        backbuttonp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
     }
 
