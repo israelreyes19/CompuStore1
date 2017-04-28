@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style = "?android:listSeparatorTextViewStyle"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Ensamble: "/>
+        <TextView
+
+            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:id="@+id/ensamble_nombre"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Cantidad: "/>
+
+        <TextView
+            android:id="@+id/cantidad_ensamble"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textSize="16dp" />
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Costo: "/>
+        <TextView
+
+            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:id="@+id/costo_ensamble"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

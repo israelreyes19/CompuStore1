@@ -44,6 +44,20 @@ public class SalesOrdersActivity extends AppCompatActivity {
                 fecha = (TextView) itemView.findViewById(R.id.fecha);
                 status = (TextView) itemView.findViewById(R.id.Estado);
                 costo = (TextView) itemView.findViewById(R.id.precio_orden);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final int pos = getAdapterPosition();
+                        final Order_Sales order_sales = adapter3.order_sales.get(pos);
+                        final String aux2 = String.valueOf(order_sales.getID());
+                        Intent intent = new Intent(SalesOrdersActivity.this, Assemblies_OrderActivity.class);
+                        intent.putExtra(Assemblies_OrderActivity.Order_ID,aux2);
+                        startActivity(intent);
+                    }
+                });
+
+
             }
 
             public void bindProducts(Order_Sales order_sales)

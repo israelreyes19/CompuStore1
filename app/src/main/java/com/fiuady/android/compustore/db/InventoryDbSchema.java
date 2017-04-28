@@ -51,6 +51,9 @@ public final class InventoryDbSchema {
 
     }
 
+
+
+
     public static final class OrderSalesTable {
         public static final String Name = "order_sales";
 
@@ -64,6 +67,17 @@ public final class InventoryDbSchema {
         }
 
     }
+
+    public static class AssembliesOrdersTable {
+        public static final String Name = "assemblies_orders";
+
+        public static final class Columns {
+            public static final String Name = "description";
+            public static final String qty = "qty";
+            public static final String cost= "total_cost";
+        }
+    }
+
 
 
     public static final class OrdersTable {

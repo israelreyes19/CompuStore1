@@ -160,7 +160,17 @@ class Order_SalesCursor extends CursorWrapper {
 
 }
 
+class AssembliesOrdersCursor extends CursorWrapper {
+    public AssembliesOrdersCursor(Cursor cursor) {
+        super(cursor);
+    }
 
+    public Assemblies_Orders getAssembliesOrders() {
+        Cursor cursor = getWrappedCursor();
+        return new Assemblies_Orders(cursor.getString(cursor.getColumnIndex(AssembliesOrdersTable.Columns.Name)),
+                cursor.getInt(cursor.getColumnIndex(AssembliesOrdersTable.Columns.qty)),cursor.getInt(cursor.getColumnIndex(AssembliesOrdersTable.Columns.cost)));
+    }
+}
 
 class CategoryCursor extends CursorWrapper {
     public CategoryCursor(Cursor cursor) {
@@ -1303,12 +1313,28 @@ public final class Inventory {
                 ProductTable.Columns.ID + "= ?",
                 new String[]{id}
         );
-
-
     }
+    public List<Assemblies_Orders> GetAssembliesbyorder(String id) {
 
+        List<Assemblies_Orders> list = new ArrayList<Assemblies_Orders>();
+        //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
+        AssembliesOrdersCursor cursor = new  AssembliesOrdersCursor ((db.rawQuery("select a.description, oa.qty, SUM(ap.qty * p.price) AS total_cost\n" +
+                "from orders o\n" +
+                "INNER JOIN order_assemblies oa ON (o.id = oa.id)\n" +
+                "inner join assembly_products ap on (oa.assembly_id = ap.id)\n" +
+                "inner join assemblies a on (ap.id = a.id)\n" +
+                "inner join products p on (ap.product_id = p.id)\n" +
+                "where o.id = '" + id + "'" +
+                "GROUP BY a.description\n" +
+                "order by total_cost", null)));
 
-
-
+        while (cursor.moveToNext()) {
+            //list.add(new Category(cursor.getInt(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.ID))),
+            //   cursor.getString(cursor.getColumnIndex((InventoryDBSchema.CategoriesTable.Columns.DESCRIPTION)))));
+            list.add((cursor.getAssembliesOrders()));  // metodo wrappcursor
+        }
+        cursor.close();
+        return list;
+    }
 
 }
