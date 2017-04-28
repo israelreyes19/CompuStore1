@@ -13,7 +13,7 @@
         <TextView
             android:id="@+id/description_TAG"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:text="Producto : "
             android:textSize="16dp"
             android:textStyle="bold" />
@@ -21,7 +21,7 @@
         <TextView
             android:id="@+id/txt_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:textSize="16dp"
             />
 

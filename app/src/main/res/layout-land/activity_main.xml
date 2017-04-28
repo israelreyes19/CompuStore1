@@ -62,7 +62,8 @@
         android:id="@+id/imageButtonCategories"
 
         android:src="@drawable/categorias1"
-
+            android:background="#00000000"
+            android:padding="@dimen/activity_horizontal_margin"
 
         />
 
@@ -71,6 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageButtonProducts"
+        android:background="#00000000"
+        android:padding="@dimen/activity_horizontal_margin"
         android:src="@drawable/productos"/>
 
 
@@ -90,7 +93,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButtonAssemblies"
-
+                android:background="#00000000"
+                android:padding="@dimen/activity_horizontal_margin"
                 android:src="@drawable/ensamble"/>
 
 
@@ -98,7 +102,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButtonClients"
-
+                android:background="#00000000"
+                android:padding="@dimen/activity_horizontal_margin"
                 android:src="@drawable/clientes"/>
         </LinearLayout>
 
@@ -116,7 +121,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButtonOrders"
-
+                android:background="#00000000"
+                android:padding="@dimen/activity_horizontal_margin"
                 android:src="@drawable/ordenes"/>
 
 
@@ -125,7 +131,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButtonReportes"
 
-
+                android:background="#00000000"
+                android:padding="@dimen/activity_horizontal_margin"
                 android:src="@drawable/reporte"/>
         </LinearLayout>
 

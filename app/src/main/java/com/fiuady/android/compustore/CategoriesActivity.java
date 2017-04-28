@@ -1,13 +1,13 @@
 package com.fiuady.android.compustore;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
 import com.fiuady.android.compustore.db.Category;
 import com.fiuady.android.compustore.db.Inventory;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -22,9 +22,7 @@ import java.util.List;
 public class CategoriesActivity extends AppCompatActivity {
 
 
-
-    private class CategoryHolder extends RecyclerView.ViewHolder
-    {
+    private class CategoryHolder extends RecyclerView.ViewHolder {
 
         private TextView txtDescription;
 
@@ -46,8 +44,7 @@ public class CategoriesActivity extends AppCompatActivity {
                             final Category category = adapter.categories.get(pos);
                             //Toast.makeText(getApplicationContext(), String.valueOf(which),Toast.LENGTH_SHORT).show();
 
-                            if(which == 0)
-                            {
+                            if (which == 0) {
 
                                 //Intent j = new Intent(CategoriesActivity.this, EditCActivity.class);
                                 //startActivity(j);
@@ -64,10 +61,22 @@ public class CategoriesActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         String value = input.getText().toString();
-                                        category.setDescription(value);
-                                        Inventory inventory = new Inventory(CategoriesActivity.this);
-                                        inventory.updateCategory(category);
-                                        recyclerView.setAdapter(adapter);
+                                        if (!value.equals(category.getDescription())) {
+                                            Category cat = new Category(category.getId(), value);
+                                            //category.setDescription(value);
+                                            Inventory inventory = new Inventory(CategoriesActivity.this);
+
+                                            if (inventory.updateCategory(cat)) {
+                                                Toast.makeText(CategoriesActivity.this, "Se actualizó la categoría", Toast.LENGTH_SHORT).show();
+                                                adapter = new CategoriesAdapter(inventory.getAllCategories());
+
+                                                recyclerView.setAdapter(adapter);
+                                            } else {
+                                                Toast.makeText(CategoriesActivity.this, "Error: El nombre de la categoría ya existe", Toast.LENGTH_LONG).show();
+                                            }
+
+                                        }
+
                                     }
                                 });
                                 builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -78,9 +87,7 @@ public class CategoriesActivity extends AppCompatActivity {
                                 });
 
                                 builder1.show();
-                            }
-                            else if(which ==1)
-                            {
+                            } else if (which == 1) {
 
                                 AlertDialog.Builder builder1 = new AlertDialog.Builder(CategoriesActivity.this);
                                 builder1.setTitle("¿Deseas borrar esta categoría?");
@@ -90,20 +97,17 @@ public class CategoriesActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
                                         Inventory inventory = new Inventory(CategoriesActivity.this);
-                                        if(inventory.deleteCategory(category))
-                                        {
+                                        if (inventory.deleteCategory(category)) {
                                             //recyclerView.setAdapter(adapter);
 
-                                            Toast.makeText(CategoriesActivity.this,"Se eliminó exitosamente " +
-                                                    "la categoría",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CategoriesActivity.this, "Se eliminó exitosamente " +
+                                                    "la categoría", Toast.LENGTH_SHORT).show();
                                             adapter = new CategoriesAdapter(inventory.getAllCategories());
                                             recyclerView.setAdapter(adapter);
 
-                                        }
-                                        else
-                                        {
-                                            Toast.makeText(CategoriesActivity.this,"No se pudo eliminar la categoría. " +
-                                                    "Existen productos de la categoría",Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(CategoriesActivity.this, "No se pudo eliminar la categoría. " +
+                                                    "Existen productos de la categoría", Toast.LENGTH_SHORT).show();
                                         }
                                         //recyclerView.setAdapter(adapter);
                                     }
@@ -133,21 +137,23 @@ public class CategoriesActivity extends AppCompatActivity {
             });
         }
 
-        public void bindCategory(Category category)
-        {
+        public void bindCategory(Category category) {
 
             txtDescription.setText(category.getDescription());
         }
     }
-    private class CategoriesAdapter extends RecyclerView.Adapter<CategoryHolder>
-    {
+
+    private class CategoriesAdapter extends RecyclerView.Adapter<CategoryHolder> {
 
         private List<Category> categories;
-        public CategoriesAdapter(List<Category> categories){this.categories = categories;}
+
+        public CategoriesAdapter(List<Category> categories) {
+            this.categories = categories;
+        }
 
         @Override
         public CategoryHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view   = getLayoutInflater().inflate(R.layout.categories_list_item, parent, false);
+            View view = getLayoutInflater().inflate(R.layout.categories_list_item, parent, false);
             return new CategoryHolder(view);
         }
 
@@ -211,7 +217,11 @@ public class CategoriesActivity extends AppCompatActivity {
                         //inventory.updateCategory(category);
                         //recyclerView.setAdapter(adapter);
                         Category cat = new Category(9999, value);
-                        inventory.addCategory(cat);
+                        if (inventory.addCategory(cat)) {
+                            Toast.makeText(CategoriesActivity.this, "Se agrego la categoría", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CategoriesActivity.this, "Error: el nombre asignado ya existe", Toast.LENGTH_SHORT).show();
+                        }
                         adapter = new CategoriesAdapter(inventory.getAllCategories());
                         recyclerView.setAdapter(adapter);
                     }

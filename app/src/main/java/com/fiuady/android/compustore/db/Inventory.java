@@ -87,7 +87,7 @@ class OrdersAssembliesCursor extends CursorWrapper {
         id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrderAssembliesTable.Columns.id));
         assembly_id = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrderAssembliesTable.Columns.assembly_id));
         qty = cursor.getInt(cursor.getColumnIndex(InventoryDbSchema.OrderAssembliesTable.Columns.qty));
-        return new Order_assemblies(id,assembly_id,qty);
+        return new Order_assemblies(id, assembly_id, qty);
     }
 }
 
@@ -139,7 +139,7 @@ class SalesCursor extends CursorWrapper {
     public Sales getSales() {
 
         Cursor cursor = getWrappedCursor();
-        return new Sales(cursor.getString(cursor.getColumnIndex((SalesTable.Columns.date))), cursor.getInt(cursor.getColumnIndex((SalesTable.Columns.total_cost))) );
+        return new Sales(cursor.getString(cursor.getColumnIndex((SalesTable.Columns.date))), cursor.getInt(cursor.getColumnIndex((SalesTable.Columns.total_cost))));
 
     }
 
@@ -153,7 +153,7 @@ class Order_SalesCursor extends CursorWrapper {
     public Order_Sales getOrderSales() {
 
         Cursor cursor = getWrappedCursor();
-        return new Order_Sales(cursor.getInt(cursor.getColumnIndex((OrderSalesTable.Columns.id)))  ,cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.first_name))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.last_name))),
+        return new Order_Sales(cursor.getInt(cursor.getColumnIndex((OrderSalesTable.Columns.id))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.first_name))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.last_name))),
                 cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.date))), cursor.getString(cursor.getColumnIndex((OrderSalesTable.Columns.status))), cursor.getInt(cursor.getColumnIndex((OrderSalesTable.Columns.cost))));
 
     }
@@ -168,7 +168,7 @@ class AssembliesOrdersCursor extends CursorWrapper {
     public Assemblies_Orders getAssembliesOrders() {
         Cursor cursor = getWrappedCursor();
         return new Assemblies_Orders(cursor.getString(cursor.getColumnIndex(AssembliesOrdersTable.Columns.Name)),
-                cursor.getInt(cursor.getColumnIndex(AssembliesOrdersTable.Columns.qty)),cursor.getInt(cursor.getColumnIndex(AssembliesOrdersTable.Columns.cost)));
+                cursor.getInt(cursor.getColumnIndex(AssembliesOrdersTable.Columns.qty)), cursor.getInt(cursor.getColumnIndex(AssembliesOrdersTable.Columns.cost)));
     }
 }
 
@@ -420,8 +420,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Products> getmisssingProducts()
-    {
+    public List<Products> getmisssingProducts() {
 
         List<Products> list = new ArrayList<Products>();
 
@@ -447,8 +446,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Sales> getSales()
-    {
+    public List<Sales> getSales() {
 
         List<Sales> list = new ArrayList<Sales>();
 
@@ -471,8 +469,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Order_Sales> getOrderSales(String date_value)
-    {
+    public List<Order_Sales> getOrderSales(String date_value) {
 
         List<Order_Sales> list = new ArrayList<Order_Sales>();
 
@@ -495,8 +492,6 @@ public final class Inventory {
         cursor.close();
         return list;
     }
-
-
 
 
     public List<Assemblies> getAllAssemblies() {
@@ -522,16 +517,26 @@ public final class Inventory {
         return list;
     }
 
-    public void updateCategory(Category category) {
-        ContentValues values = new ContentValues();
+    public boolean updateCategory(Category category) {
+        Cursor cursor = db.rawQuery("SELECT id from product_categories where description = '" + category.getDescription() +
+                "';", new String[]{});
 
-        values.put(CategoriesTable.Columns.DESCRIPTION, category.getDescription());
-        db.update(CategoriesTable.Name,
-                values,
-                CategoriesTable.Columns.ID + "= ?",
-                new String[]{Integer.toString(category.getId())}
-        );
+        if (!cursor.moveToFirst()) {
+            ContentValues values = new ContentValues();
 
+
+            values.put(CategoriesTable.Columns.DESCRIPTION, category.getDescription());
+            db.update(CategoriesTable.Name,
+                    values,
+                    CategoriesTable.Columns.ID + "= ?",
+                    new String[]{Integer.toString(category.getId())}
+            );
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
     }
 
     public void updateProductInAssembly(Assemblies assembly, Products product, int qty) {
@@ -569,7 +574,8 @@ public final class Inventory {
         //return true;
     }
 
-    public void addCategory(Category category) {
+    public boolean addCategory(Category category) {
+
         int mx = -1;
         Cursor cursor = db.rawQuery("SELECT max(ID) from product_categories", new String[]{});
         if (cursor != null) {
@@ -583,9 +589,24 @@ public final class Inventory {
         if (mx != -1) {
             //ContentValues values = new ContentValues();
             //values.put(CategoriesTable.Columns.DESCRIPTION, category.getDescription());
+            Cursor c = db.rawQuery("SELECT id from product_categories where description = '" + category.getDescription() +
+                    "';", new String[]{});
+            if (!c.moveToFirst()) {
+                if (category.getDescription().equals("")) {
+                    c.close();
+                    return false;
+                } else {
+                    db.execSQL("INSERT INTO product_categories (id, description) VALUES (" + String.valueOf(mx + 1) + ", '" + category.getDescription() + "');");
+                    c.close();
+                    return true;
+                }
+            } else {
 
-            db.execSQL("INSERT INTO product_categories (id, description) VALUES (" + String.valueOf(mx + 1) + ", '" + category.getDescription() + "');");
+                c.close();
+                return false;
+            }
         }
+        return false;
     }
 
 
@@ -773,7 +794,7 @@ public final class Inventory {
 
             if (firstname.length() > 0) {
                 flag0 = true;
-                _firsname = "first_name like \""+ descrip + "%\"";
+                _firsname = "first_name like \"" + descrip + "%\"";
             } else {
                 flag0 = false;
                 _firsname = "";
@@ -830,7 +851,7 @@ public final class Inventory {
 
 
             String aux = "SELECT * FROM customers WHERE " + _firsname + " " + or1 + " " + _lastname + " " + // this only get the last or
-                    or2 + " " + _address + " " + or3 + " " + _phones + " " + or4 + " " + _email +" order by last_name";
+                    or2 + " " + _address + " " + or3 + " " + _phones + " " + or4 + " " + _email + " order by last_name";
             CustomersCursor cursor = new CustomersCursor(db.rawQuery(aux, null));
             while (cursor.moveToNext()) {
                 list.add(cursor.getCustomer());
@@ -1143,43 +1164,46 @@ public final class Inventory {
     //For order_assemblies
     public List<Assemblies> getAssembliesbyDescription(String description) {
         ArrayList<Assemblies> list = new ArrayList<Assemblies>();
-        if(description.length()==0){description="asdasljdsadaslkj";}
-        AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies where description like \""+description+"%\" ORDER BY description;", null));
+        if (description.length() == 0) {
+            description = "asdasljdsadaslkj";
+        }
+        AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies where description like \"" + description + "%\" ORDER BY description;", null));
         while (cursor.moveToNext()) {
             list.add(cursor.getAssembly());
         }
         cursor.close();
         return list;
     }
+
     public Assemblies getAssembliebyId(int id_Aux) {
-        Assemblies assembly = new Assemblies(0,"");
-        AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies where id = "+String.valueOf(id_Aux)+" ORDER BY description;", null));
+        Assemblies assembly = new Assemblies(0, "");
+        AssembliesCursor cursor = new AssembliesCursor(db.rawQuery("SELECT * FROM assemblies where id = " + String.valueOf(id_Aux) + " ORDER BY description;", null));
         while (cursor.moveToNext()) {
             assembly = cursor.getAssembly();
         }
         cursor.close();
         return assembly;
     }
-    public void AddOrder(int id,int customer_id,String date)
-    {
-        db.execSQL("INSERT INTO orders (id, status_id, customer_id, date, change_log) " +
-                "VALUES ("+String.valueOf(id)+", 0, "+String.valueOf(customer_id)+", '"+date+"', NULL)");
 
-                //INSERT INTO orders (id, status_id, customer_id, date, change_log) VALUES (8, 0, 3, '18-03-2017', NULL);
+    public void AddOrder(int id, int customer_id, String date) {
+        db.execSQL("INSERT INTO orders (id, status_id, customer_id, date, change_log) " +
+                "VALUES (" + String.valueOf(id) + ", 0, " + String.valueOf(customer_id) + ", '" + date + "', NULL)");
+
+        //INSERT INTO orders (id, status_id, customer_id, date, change_log) VALUES (8, 0, 3, '18-03-2017', NULL);
     }
-    public void AddOrder_assembly(int id,int assembly_id,int qty)
-    {
+
+    public void AddOrder_assembly(int id, int assembly_id, int qty) {
         String aux = "INSERT INTO order_assemblies (id, assembly_id, qty) " +
-                "VALUES ("+id+", "+assembly_id+","+qty+")";
+                "VALUES (" + id + ", " + assembly_id + "," + qty + ")";
         db.execSQL("INSERT INTO order_assemblies (id, assembly_id, qty) " +
-                "VALUES ("+String.valueOf(id)+", "+String.valueOf(assembly_id)+","+String.valueOf(qty)+")");
+                "VALUES (" + String.valueOf(id) + ", " + String.valueOf(assembly_id) + "," + String.valueOf(qty) + ")");
         //INSERT INTO order_assemblies (id, assembly_id, qty) VALUES (0, 0, 2);
     }
-    public List<Order_assemblies> getOrderAssemblies_for_an_Order(int id_order)
-    {
+
+    public List<Order_assemblies> getOrderAssemblies_for_an_Order(int id_order) {
         ArrayList<Order_assemblies> list = new ArrayList<Order_assemblies>();
         OrdersAssembliesCursor cursor = new OrdersAssembliesCursor(db.rawQuery("SELECT * FROM order_assemblies" +
-                " WHERE id="+String.valueOf(id_order), null));
+                " WHERE id=" + String.valueOf(id_order), null));
         while (cursor.moveToNext()) {
             list.add(cursor.getOrderAsemblie());
         }
@@ -1187,17 +1211,17 @@ public final class Inventory {
         return list;
         //SELECT * FROM order_assemblies WHERE id=6
     }
-    public void UpdateOrderAssemblyQty(Order_assemblies oa)
-    {
-        db.execSQL("UPDATE order_assemblies SET qty="+String.valueOf(oa.getQty())+"  WHERE (id = "+String.valueOf(oa.getId())+" and assembly_id="+String.valueOf(oa.getAssembly_id())+");");
+
+    public void UpdateOrderAssemblyQty(Order_assemblies oa) {
+        db.execSQL("UPDATE order_assemblies SET qty=" + String.valueOf(oa.getQty()) + "  WHERE (id = " + String.valueOf(oa.getId()) + " and assembly_id=" + String.valueOf(oa.getAssembly_id()) + ");");
 
     }
-    public void DeleteOrderAssembly(Order_assemblies oa)
-    {
-        db.execSQL("DELETE from order_assemblies WHERE (id ="+oa.getId()+" and assembly_id="+oa.getAssembly_id()+")");
+
+    public void DeleteOrderAssembly(Order_assemblies oa) {
+        db.execSQL("DELETE from order_assemblies WHERE (id =" + oa.getId() + " and assembly_id=" + oa.getAssembly_id() + ")");
     }
-    public List<Order> GetAllPendingOrders()
-    {
+
+    public List<Order> GetAllPendingOrders() {
         ArrayList<Order> list = new ArrayList<Order>();
         OrdersCursor cursor = new OrdersCursor(db.rawQuery("    SELECT * FROM orders WHERE status_id=0 ", null));
         while (cursor.moveToNext()) {
@@ -1207,8 +1231,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Order_Sales> GetAllPendingOrdersbycost()
-    {
+    public List<Order_Sales> GetAllPendingOrdersbycost() {
         List<Order_Sales> list = new ArrayList<Order_Sales>();
 
         Order_SalesCursor cursor = new Order_SalesCursor((db.rawQuery("SELECT o.id, c.first_name, c.last_name, o.date, ords.description, SUM(oa.qty * ap.qty * p.price) AS total_cost\n" +
@@ -1231,8 +1254,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Order_Sales> GetAllPendingOrdersbyclient()
-    {
+    public List<Order_Sales> GetAllPendingOrdersbyclient() {
         List<Order_Sales> list = new ArrayList<Order_Sales>();
 
         Order_SalesCursor cursor = new Order_SalesCursor((db.rawQuery("SELECT o.id, c.first_name, c.last_name, o.date, ords.description, SUM(oa.qty * ap.qty * p.price) AS total_cost\n" +
@@ -1255,7 +1277,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Products> getallMissingProductsbyOrder(String id ) {
+    public List<Products> getallMissingProductsbyOrder(String id) {
         List<Products> list = new ArrayList<Products>();
         //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
         ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT p.id,p.category_id,p.description,p.price, (sum(oa.qty * ap.qty) - p.qty )  AS qty\n" +
@@ -1279,7 +1301,7 @@ public final class Inventory {
         return list;
     }
 
-    public List<Products> getallnotMissingProductsbyOrder(String id ) {
+    public List<Products> getallnotMissingProductsbyOrder(String id) {
         List<Products> list = new ArrayList<Products>();
         //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
         ProductCursor cursor = new ProductCursor((db.rawQuery("SELECT p.id,p.category_id,p.description,p.price, (p.qty  - sum(oa.qty * ap.qty ))  AS qty\n" +
@@ -1314,11 +1336,12 @@ public final class Inventory {
                 new String[]{id}
         );
     }
+
     public List<Assemblies_Orders> GetAssembliesbyorder(String id) {
 
         List<Assemblies_Orders> list = new ArrayList<Assemblies_Orders>();
         //  Cursor cursor = db.rawQuery("SELECT * FROM categories ORDER BY id", null);
-        AssembliesOrdersCursor cursor = new  AssembliesOrdersCursor ((db.rawQuery("select a.description, oa.qty, SUM(ap.qty * p.price) AS total_cost\n" +
+        AssembliesOrdersCursor cursor = new AssembliesOrdersCursor((db.rawQuery("select a.description, oa.qty, SUM(ap.qty * p.price) AS total_cost\n" +
                 "from orders o\n" +
                 "INNER JOIN order_assemblies oa ON (o.id = oa.id)\n" +
                 "inner join assembly_products ap on (oa.assembly_id = ap.id)\n" +

@@ -56,11 +56,11 @@ public class AddAssemblyActivity extends AppCompatActivity {
             txtId.setVisibility(View.GONE);
             txtCategory.setVisibility(View.GONE);
             txtPrice.setVisibility(View.GONE);
-            txtQuantity.setVisibility(View.GONE);
+            //txtQuantity.setVisibility(View.GONE);
             txtIdTag.setVisibility(View.GONE);
             txtCategoryTag.setVisibility(View.GONE);
             txtPriceTag.setVisibility(View.GONE);
-            txtQuantityTag.setVisibility(View.GONE);
+            //txtQuantityTag.setVisibility(View.GONE);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -216,6 +216,10 @@ public class AddAssemblyActivity extends AppCompatActivity {
             adapter = new ProductsAdapter(inventory.getAssemblyProducts(auxAssembly));
             recyclerView.setAdapter(adapter);
         }
+        if(requestCode == 2)
+        {
+            //Toast.makeText(AddAssemblyActivity.this, "Hey que onda que pez", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -240,7 +244,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
         } else {
             GridLayoutManager manager = new GridLayoutManager(AddAssemblyActivity.this,2,GridLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(manager);
-            Toast.makeText(AddAssemblyActivity.this, "El que lo lea", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(AddAssemblyActivity.this, "El que lo lea", Toast.LENGTH_SHORT).show();
         }
         if (AssembliesActivity.edit) //Editar ensamble
         {
@@ -285,7 +289,7 @@ public class AddAssemblyActivity extends AppCompatActivity {
                 if (AssembliesActivity.edit) {
                     if (inventory.updateAssembly(AssembliesActivity.selectedAssembly, assemblyDescription.getText().toString())) {
                         //setResult(RESULT_OK);
-                        Toast.makeText(AddAssemblyActivity.this, AssembliesActivity.selectedAssembly.getDescription(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(AddAssemblyActivity.this, AssembliesActivity.selectedAssembly.getDescription(), Toast.LENGTH_SHORT).show();
 
                         inventory.transferProductsToAnotherAssembly(AssembliesActivity.selectedAssembly);
                         inventory.deleteAux();
@@ -320,6 +324,8 @@ public class AddAssemblyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(AddAssemblyActivity.this,AddNewProductActivity.class);
                 startActivityForResult(i,2);
+
+
 
             }
         });

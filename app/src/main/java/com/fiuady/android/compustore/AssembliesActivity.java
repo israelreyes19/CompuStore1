@@ -52,7 +52,7 @@ public class AssembliesActivity extends AppCompatActivity {
                             if (which == 0) {
                                 edit = true;
                                 Intent i = new Intent(AssembliesActivity.this, AddAssemblyActivity.class);
-                                startActivity(i);
+                                startActivityForResult(i,AddAssemblyActivity.CODE_EDIT);
                             } else if (which == 1) {
                                 AlertDialog.Builder builder1 = new AlertDialog.Builder(AssembliesActivity.this);
                                 builder1.setTitle("¿Deseas borrar este ensamble?");
@@ -171,13 +171,13 @@ public class AssembliesActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK)
+        if(resultCode==RESULT_OK&&requestCode==AddAssemblyActivity.CODE_EDIT)
         {
             Inventory inventory = new Inventory(AssembliesActivity.this);
             adapter = new AssembliesAdapter(inventory.getAllAssemblies());
             recyclerView.setAdapter(adapter);
-            //Toast.makeText(AssembliesActivity.this,"Puta madre",Toast.LENGTH_SHORT).show();
         }
+
         //Inventory inventory = new Inventory(AssembliesActivity.this);
         //adapter = new AssembliesAdapter(inventory.getAllAssemblies());
         //recyclerView.setAdapter(adapter);
