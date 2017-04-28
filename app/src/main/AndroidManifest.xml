@@ -44,7 +44,8 @@
         <activity android:name=".MissingStockActivity" />
         <activity android:name=".SalesActivity" />
         <activity android:name=".SalesOrdersActivity" />
-        <activity android:name=".ConfirmOrderActivity"></activity>
+        <activity android:name=".ConfirmOrderActivity" />
+        <activity android:name=".Missing_Products_OrdersActivity"></activity>
     </application>
 
 </manifest>

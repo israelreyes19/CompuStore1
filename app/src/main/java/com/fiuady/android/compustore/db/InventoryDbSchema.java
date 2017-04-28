@@ -55,6 +55,7 @@ public final class InventoryDbSchema {
         public static final String Name = "order_sales";
 
         public static final class Columns {
+            public static final String id = "id";
             public static final String first_name= "first_name";
             public static final String last_name= "last_name";
             public static final String date= "date";

@@ -87,8 +87,6 @@ public class AddNewProductActivity extends AppCompatActivity {
                                 finish();
                             }
 
-
-
                         }
                     });
                     builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

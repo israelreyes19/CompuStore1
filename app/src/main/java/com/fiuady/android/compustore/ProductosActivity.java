@@ -5,10 +5,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -59,7 +61,7 @@ public class ProductosActivity extends AppCompatActivity {
         private TextView quantity;
 
 
-        public ProductsHolder(View itemView) {
+        public ProductsHolder(final View itemView) {
             super(itemView);
             category = (TextView) itemView.findViewById(R.id.txt_category);
             id = (TextView) itemView.findViewById(R.id.txt_id);
@@ -72,6 +74,196 @@ public class ProductosActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     final int pos = getAdapterPosition();
                     CharSequence options[] = new CharSequence[]{"Agregar stock","Modificar", "Eliminar"};
+                    final PopupMenu popupMenu = new PopupMenu(ProductosActivity.this, itemView);
+                    popupMenu.getMenuInflater().inflate(R.menu.pop_menu_order, popupMenu.getMenu());
+                    popupMenu.getMenu().clear();
+                    popupMenu.getMenu().add("Agregar stock");
+                    popupMenu.getMenu().add("Modificar");
+                    popupMenu.getMenu().add("Eliminar");
+                    final Products productos = adapter2.products.get(pos);
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getTitle().equals("Agregar stock") )
+                            {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ProductosActivity.this);
+                                builder1.setTitle("¿Cuantas unidades desea que tenga el producto?");
+                                View product_view = getLayoutInflater().inflate(R.layout.add_product_quantity, null);
+                                final NumberPicker agregar_cantidad = (NumberPicker)product_view.findViewById(R.id.qty_numberPicker);
+                                //final Spinner agregar_cantidad = (Spinner) product_view.findViewById(R.id.product_spinner);
+                                // ArrayAdapter<String > add_quantity_adapter = new ArrayAdapter<String>(ProductosActivity.this, android.R.layout.simple_spinner_dropdown_item);
+                                // agregar_cantidad.setAdapter((add_quantity_adapter));
+                                int qty_actual = productos.getQty();
+                                agregar_cantidad.setMinValue(qty_actual);
+                                agregar_cantidad.setMaxValue(100);
+                                //  for(int i= qty_actual; i<=50; i++) {
+                                //  }
+                                builder1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        String qty_nueva = String.valueOf(agregar_cantidad.getValue());
+                                        String producto_id = String.valueOf(productos.getId());
+                                        inventory.add_stock(producto_id,qty_nueva);
+                                        Toast.makeText(ProductosActivity.this,"La cantidad fue agregada exitosamente " ,Toast.LENGTH_SHORT).show();
+                                        update_recyclerview();
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+
+                                // builder.show();
+                                builder1.setView(product_view);
+
+                                //  builder.setView(product_layout);
+                                builder1.show();
+                            }
+                            else if(item.getTitle().equals("Modificar"))
+                            {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ProductosActivity.this);
+                                builder1.setTitle("Modificar producto existente");
+                                View product_view = getLayoutInflater().inflate(R.layout.add_product, null);
+                                // LinearLayout product_layout = new LinearLayout(ProductosActivity.this);
+                                // product_layout.setOrientation(LinearLayout.VERTICAL);
+                                final EditText nombre = (EditText) product_view.findViewById(R.id.Nombre_producto);
+                                final EditText precio = (EditText) product_view.findViewById(R.id.Precio_producto);
+                                final Spinner catgeorias_posibles = (Spinner) product_view.findViewById(R.id.product_spinner);
+                                ArrayAdapter<String > add_adapter = new ArrayAdapter<String>(ProductosActivity.this, android.R.layout.simple_spinner_dropdown_item);
+                                catgeorias_posibles.setAdapter((add_adapter));
+                                for (Category c : inventory.getAllCategories())
+                                {
+                                    add_adapter.add(c.getDescription());
+                                }
+                                nombre.setText(productos.getDescription());
+                                final String aux_text = productos.getDescription();
+
+                                double aux1 = productos.getPrice();
+                                double division = (aux1)/100;
+
+                                precio.setText(String.format("%.2f",division));
+
+                                builder1.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+
+                                        String text = catgeorias_posibles.getSelectedItem().toString();
+                                        int aux = inventory.return_categroty_id(text);
+                                        // String aux = inventory.return_categroty_id(text);
+                                        String valor_nombre = nombre.getText().toString();
+                                        String valor_precio = precio.getText().toString();
+                                        String categoria = String.valueOf(aux);
+                                        String cantidad = String.valueOf(productos.getQty());
+                                        String ID = String.valueOf(productos.getId());
+
+                                        String aux2 = valor_precio;
+
+                                        if(aux2.contains("."))
+                                        {
+                                            aux2 = aux2.replace(".","");
+                                        }
+                                        else
+                                        {
+                                            aux2 = aux2 + "00";
+                                        }
+
+
+                                        if(!nombre.getText().toString().isEmpty() && !precio.getText().toString().isEmpty() && !aux2.equals("000"))
+                                        {
+                                            if(valor_nombre.equals(aux_text)){
+                                                inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
+
+                                                Toast.makeText(ProductosActivity.this,"El producto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                update_recyclerview();
+                                            }
+                                            else
+                                            {
+
+                                                if(inventory.check_product(valor_nombre) && aux2 != "000"){
+                                                    inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
+
+                                                    Toast.makeText(ProductosActivity.this,"El producto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                    update_recyclerview();
+                                                }
+                                                else
+                                                {
+                                                    Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
+                                                            "Ya existe un producto con ese nombre " ,Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            Toast.makeText(ProductosActivity.this,"Operación no exitosa. "+
+                                                    "Debe llenar todos los campos y el precio no puede ser 0.00", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+
+                                // builder.show();
+                                builder1.setView(product_view);
+
+                                //  builder.setView(product_layout);
+                                builder1.show();
+
+                            }
+                            else
+                            {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ProductosActivity.this);
+                                builder1.setTitle("¿Deseas borrar este producto?");
+                                builder1.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                                        Inventory inventory = new Inventory(ProductosActivity.this);
+
+                                        if(inventory.DeleteProduct(String.valueOf(productos.getId())))
+                                        {
+                                            //recyclerView.setAdapter(adapter);
+
+                                            Toast.makeText(ProductosActivity.this,"Se eliminó exitosamente " +
+                                                    "el producto",Toast.LENGTH_SHORT).show();
+                                            update_recyclerview();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(ProductosActivity.this,"No se pudo eliminar el producto. " +
+                                                    "Existen ensambles con dicho producto",Toast.LENGTH_SHORT).show();
+                                        }
+                                        //recyclerView.setAdapter(adapter);
+                                    }
+                                });
+                                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+
+                                builder1.show();
+                            }
+                            return false;
+                        }
+                    });
+
+                    /*
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProductosActivity.this);
                     builder.setCancelable(true);
                     builder.setTitle("Elige una opción: ");
@@ -180,7 +372,7 @@ public class ProductosActivity extends AppCompatActivity {
                                             if(valor_nombre.equals(aux_text)){
                                                 inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
 
-                                                Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ProductosActivity.this,"El producto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
                                                 update_recyclerview();
                                         }
                                         else
@@ -189,7 +381,7 @@ public class ProductosActivity extends AppCompatActivity {
                                                 if(inventory.check_product(valor_nombre) && aux2 != "000"){
                                                     inventory.Update_product(ID,categoria,valor_nombre,aux2,cantidad);
 
-                                                    Toast.makeText(ProductosActivity.this,"El prodcuto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(ProductosActivity.this,"El producto fue modificado exitosamente " ,Toast.LENGTH_SHORT).show();
                                                     update_recyclerview();
                                                 }
                                                 else
@@ -269,8 +461,12 @@ public class ProductosActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
 
                         }
-                    });
-                    builder.show();
+                    })
+                    */
+                    //aqui
+                    ;
+                    //builder.show();
+                    popupMenu.show();
                     //Toast.makeText(getApplicationContext(), String.valueOf(pos),Toast.LENGTH_SHORT).show();
                 }
             });
