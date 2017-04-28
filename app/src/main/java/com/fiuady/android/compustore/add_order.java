@@ -2,9 +2,11 @@ package com.fiuady.android.compustore;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +24,6 @@ import android.widget.Toast;
 import com.fiuady.android.compustore.db.Assemblies;
 import com.fiuady.android.compustore.db.Customers;
 import com.fiuady.android.compustore.db.Inventory;
-import com.fiuady.android.compustore.db.Order;
 import com.fiuady.android.compustore.db.Order_assemblies;
 
 import java.util.ArrayList;
@@ -165,19 +166,18 @@ public class add_order extends AppCompatActivity {
     private Inventory inventory;
     private int id_assembly_receive_aux;
     List<Customers> clientsfounded = new ArrayList<Customers>();
-    private List<Assemblies> AssembliesOnRV = new ArrayList<Assemblies>();
-    private List<Order_assemblies> OrderAssembliesOnRV = new ArrayList<Order_assemblies>();
-    //new Order_assemblie(order_id,assembly_id,qty)
+    private ArrayList<Assemblies> AssembliesOnRV = new ArrayList<Assemblies>();
+    private ArrayList<Order_assemblies> OrderAssembliesOnRV = new ArrayList<Order_assemblies>();
+    private boolean clickingconfirm = false;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(RESULT_OK==resultCode)
         {
-            id_assembly_receive_aux = data.getIntExtra("Aux_id_assembly1",50);
+            id_assembly_receive_aux = data.getIntExtra("Aux_id_assembly1",1234);
             Inventory inventory2= new Inventory(getApplicationContext());
             Assemblies assemblieAux =inventory2.getAssembliebyId(id_assembly_receive_aux);
-
-
 
             boolean flag=false;
             for (Assemblies assembly: AssembliesOnRV)
@@ -217,7 +217,15 @@ public class add_order extends AppCompatActivity {
         ImBtn_add_assembly= (ImageButton)findViewById(R.id.imageButtonAddAssambly_add_order);
         Spnr_clients = (Spinner)findViewById(R.id.spinner_clients_add_order);
         RV_Asemblies = (RecyclerView)findViewById(R.id.recyclerview_assamblys_add_order);
-        RV_Asemblies.setLayoutManager(new LinearLayoutManager(this));
+        int display_mode = getResources().getConfiguration().orientation;
+        if (display_mode== Configuration.ORIENTATION_PORTRAIT)
+        {
+            RV_Asemblies.setLayoutManager(new LinearLayoutManager(this));
+        }
+        else {
+            GridLayoutManager manager = new GridLayoutManager(add_order.this,2);
+            RV_Asemblies.setLayoutManager(manager);
+        }
         btn_confirm = (Button)findViewById(R.id.btn_confirm_add_order);
         btn_cancel= (Button)findViewById(R.id.btn_cancel_add_order);
 
@@ -234,6 +242,41 @@ public class add_order extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spnr_clients.setAdapter(adapter);
 
+        if (savedInstanceState != null) {
+            AssembliesOnRV = savedInstanceState.getParcelableArrayList("key");
+            OrderAssembliesOnRV = savedInstanceState.getParcelableArrayList("key1");
+            clickingconfirm = savedInstanceState.getBoolean("clickingconfirm");
+
+            if (AssembliesOnRV.size() > 0) {showAssembliesonRV(AssembliesOnRV);}
+            if (clickingconfirm)
+            {
+                if (AssembliesOnRV.size()==0)
+                {
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(add_order.this);
+                    dialogo1.setTitle("Importante");
+                    dialogo1.setMessage("AGREGA UN ENSAMBLE A LA ORDEN");
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            clickingconfirm = false;
+                        }
+                    });
+                    dialogo1.show();
+
+                }
+                else {
+                    inventory.AddOrder(inventory.getAllOrders().size(), getCustomerOnSpinner().getId(), getTodayCalendar());
+                    for (Order_assemblies oa : OrderAssembliesOnRV) {
+                        inventory.AddOrder_assembly(oa.getId(), oa.getAssembly_id(), oa.getQty());
+                    }
+                    Toast.makeText(getApplicationContext(), "Se ha agregado correctamente la orden", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    clickingconfirm = false;
+                    finish();
+                }
+            }
+        }
         //eventos de los componentes
         ImBtn_backactivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,15 +301,16 @@ public class add_order extends AppCompatActivity {
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                clickingconfirm=true;
                 if (AssembliesOnRV.size()==0)
                 {
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(add_order.this);
                     dialogo1.setTitle("Importante");
                     dialogo1.setMessage("AGREGA UN ENSAMBLE A LA ORDEN");
                     dialogo1.setCancelable(false);
-                    dialogo1.setPositiveButton("OK?-OK", new DialogInterface.OnClickListener() {
+                    dialogo1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogo1, int id) {
+                            clickingconfirm = false;
                         }
                     });
                     dialogo1.show();
@@ -280,6 +324,7 @@ public class add_order extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Se ha agregado correctamente la orden", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
+                    clickingconfirm = false;
                     finish();
                 }
 
@@ -294,7 +339,7 @@ public class add_order extends AppCompatActivity {
     public void AlphabeticOrder()
     {
         List<String > stringaux = new ArrayList<>();
-        List<Assemblies> assembliesaux = new ArrayList<Assemblies>();
+        ArrayList<Assemblies> assembliesaux = new ArrayList<Assemblies>();
         for (Assemblies assemblies :AssembliesOnRV)
         {
             stringaux.add(assemblies.getDescription());
@@ -345,4 +390,12 @@ public class add_order extends AppCompatActivity {
         return c;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("key", AssembliesOnRV);
+        outState.putParcelableArrayList("key1", OrderAssembliesOnRV);
+        outState.putBoolean("clickingconfirm",clickingconfirm);
+
+    }
 }

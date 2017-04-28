@@ -2,9 +2,11 @@ package com.fiuady.android.compustore;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -244,7 +246,15 @@ public class modify_order extends AppCompatActivity {
         ImBtn_backactivity = (ImageButton) findViewById(R.id.BackActivy_modify_order);
         ImBtn_add_assembly = (ImageButton) findViewById(R.id.imageButtonAddAssambly_modify_order);
         RV_Asemblies = (RecyclerView) findViewById(R.id.recyclerview_assamblys_add_order);
-        RV_Asemblies.setLayoutManager(new LinearLayoutManager(this));
+        int display_mode = getResources().getConfiguration().orientation;
+        if (display_mode== Configuration.ORIENTATION_PORTRAIT)
+        {
+            RV_Asemblies.setLayoutManager(new LinearLayoutManager(this));
+        }
+        else {
+            GridLayoutManager manager = new GridLayoutManager(modify_order.this,2);
+            RV_Asemblies.setLayoutManager(manager);
+        }
         btn_confirm = (Button) findViewById(R.id.btn_confirm_modify_order);
         btn_cancel = (Button) findViewById(R.id.btn_cancel_modify_order);
         Txt_NameClient = (TextView) findViewById(R.id.Txt_ClientName_modifyorder);
@@ -302,7 +312,7 @@ public class modify_order extends AppCompatActivity {
                     dialogo1.setTitle("Importante");
                     dialogo1.setMessage("AGREGA UN ENSAMBLE A LA ORDEN");
                     dialogo1.setCancelable(false);
-                    dialogo1.setPositiveButton("OK?-OK", new DialogInterface.OnClickListener() {
+                    dialogo1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogo1, int id) {
                         }
                     });
@@ -310,12 +320,8 @@ public class modify_order extends AppCompatActivity {
                 }
                 else
                 {
-                    for (Order_assemblies oa : CurrentOA) {
-                        inventory.UpdateOrderAssemblyQty(oa);
-                    }
-                    for (Order_assemblies oa : NewOA) {
-                        inventory.AddOrder_assembly(oa.getId(),oa.getAssembly_id(),oa.getQty());
-                    }
+                    for (Order_assemblies oa : CurrentOA) {inventory.UpdateOrderAssemblyQty(oa);}
+                    for (Order_assemblies oa : NewOA) {inventory.AddOrder_assembly(oa.getId(),oa.getAssembly_id(),oa.getQty());}
                     Toast.makeText(modify_order.this, "La orden fue modificada", Toast.LENGTH_SHORT).show();
                     if (OAtoDelete.size()!=0)
                     {

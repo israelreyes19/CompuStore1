@@ -24,7 +24,6 @@ import com.fiuady.android.compustore.db.Inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-//import android.support.v7.widget.SearchView;
 
 public class addassembly_orderassemblies extends AppCompatActivity {
 
@@ -42,6 +41,7 @@ public class addassembly_orderassemblies extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final int pos = getAdapterPosition();
+                    POS_AUX = pos;
                     final PopupMenu popupMenu = new PopupMenu(addassembly_orderassemblies.this, itemView);
                     wastouched = true;
                     item_touched=pos;
@@ -51,6 +51,7 @@ public class addassembly_orderassemblies extends AppCompatActivity {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             if (item.getTitle().equals("Agregar")) {
+                                clickingadd = true;
                                 AlertDialog.Builder builder1 = new AlertDialog.Builder(addassembly_orderassemblies.this);
                                 builder1.setTitle("Agregar ensamble a orden: "+ String.valueOf(AssembliesOnRV.get(pos).getDescription()));
                                 builder1.setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
@@ -60,7 +61,7 @@ public class addassembly_orderassemblies extends AppCompatActivity {
                                         int value;
                                         value = AssembliesOnRV.get(pos).getId();
                                         Toast.makeText(getApplicationContext(),"Se ha agregado a la lista de órdenes ",Toast.LENGTH_SHORT).show();
-
+                                        clickingadd=false;
                                         Intent intent = new Intent();
                                         intent.putExtra("Aux_id_assembly1", value); //value should be your string from the edittext
                                         setResult(RESULT_OK,intent);
@@ -72,6 +73,7 @@ public class addassembly_orderassemblies extends AppCompatActivity {
 
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        clickingadd=false;
                                     }
                                 });
 
@@ -126,10 +128,10 @@ public class addassembly_orderassemblies extends AppCompatActivity {
     private ImageButton Img_btn_backActivity;
     private List<Assemblies> AssembliesOnRV = new ArrayList<Assemblies>();
     //Componentes auxiliares para la reanudacion
-    private int p_aux,item_touched;
+    private int p_aux,item_touched,POS_AUX;
     private String Key_p_aux= "PANTALLA_AUXILIAR", Key_Search_ALL_CH="SEARCHALLASSEMBLYS", query_aux = "", Key_query_aux="KEYQUERYAUX",Key_wastouched="KEYWASTOUCHED";
     private String Key_item_touched ="KEYITEMTOUCHED";
-    private boolean SearchAllWasChecked= false,wastouched;
+    private boolean SearchAllWasChecked= false,wastouched,clickingadd=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +145,7 @@ public class addassembly_orderassemblies extends AppCompatActivity {
         //Componentes auxiliares
         inventory = new Inventory(getApplicationContext());
         //Para saber en que parte de la app esta
-
+        ChB_ShowAllAssemblies.setVisibility(View.GONE);
 
         //eventos componentes
         Img_btn_backActivity.setOnClickListener(new View.OnClickListener() {
@@ -189,25 +191,38 @@ public class addassembly_orderassemblies extends AppCompatActivity {
             query_aux = savedInstanceState.getString(Key_query_aux);
             wastouched=savedInstanceState.getBoolean(Key_wastouched);
             item_touched=savedInstanceState.getInt(Key_item_touched,0);
+            clickingadd = savedInstanceState.getBoolean("clickingadd");
+            POS_AUX = savedInstanceState.getInt("POS_AUX");
             showAssembliesonRV(AssembliesOnRV);
-            if(p_aux==2){ // case 2
-                if (SearchAllWasChecked) {
-                    ChB_ShowAllAssemblies.setChecked(SearchAllWasChecked);
-                    p_aux=3;
-                    AssembliesOnRV = inventory.getAllAssemblies();
-                    showAssembliesonRV(AssembliesOnRV);
-                    //for (Assemblies a: AssembliesOnRV){Toast.makeText(getApplicationContext(),a.getDescription(),Toast.LENGTH_SHORT).show();}
-                }
-                else{
-                    ChB_ShowAllAssemblies.setChecked(SearchAllWasChecked);
-                    AssembliesOnRV = inventory.getAllAssemblies();
-                    showAssembliesonRV(AssembliesOnRV);
-                }
-            }
-            else if(p_aux==3)
+            if(clickingadd)
             {
-                AssembliesOnRV = inventory.getAssembliesbyDescription(String.valueOf(query_aux));
-                showAssembliesonRV(AssembliesOnRV);
+                final int pos = POS_AUX;
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(addassembly_orderassemblies.this);
+                builder1.setTitle("Agregar ensamble a orden: "+ String.valueOf(AssembliesOnRV.get(pos).getDescription()));
+                builder1.setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        int value;
+                        value = AssembliesOnRV.get(pos).getId();
+                        Toast.makeText(getApplicationContext(),"Se ha agregado a la lista de órdenes ",Toast.LENGTH_SHORT).show();
+                        clickingadd = false;
+                        Intent intent = new Intent();
+                        intent.putExtra("Aux_id_assembly1", value); //value should be your string from the edittext
+                        setResult(RESULT_OK,intent);
+                        dialog.cancel();
+                        finish();
+                    }
+                });
+                builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        clickingadd=false;
+                    }
+                });
+
+                builder1.show();
             }
 
         }
@@ -227,6 +242,8 @@ public class addassembly_orderassemblies extends AppCompatActivity {
         outState.putString(Key_query_aux,query_aux);
         outState.putInt(Key_item_touched,item_touched);
         outState.putBoolean(Key_wastouched,wastouched);
+        outState.putBoolean("clickingadd",clickingadd);
+        outState.putInt("POS_AUX",POS_AUX);
 
 
     }

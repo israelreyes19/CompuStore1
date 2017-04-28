@@ -1,7 +1,10 @@
 package com.fiuady.android.compustore.db;
 
 
-public final class Customers {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public final class Customers implements Parcelable{
     private int id;
     private String first_name;
     private String last_name;
@@ -85,4 +88,39 @@ public final class Customers {
     public void setE_mail(String e_mail) {
         this.e_mail = e_mail;
     }
+    private Customers(Parcel in) {
+        id = in.readInt();
+        first_name=in.readString();
+        last_name=in.readString();
+        address=in.readString();
+        Phone1=in.readString();
+        Phone2=in.readString();
+        Phone3=in.readString();
+        e_mail=in.readString();
+
+    }
+    public int describeContents() {
+        return 0;
+    }
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(id);
+        out.writeString(first_name);
+        out.writeString(last_name);
+        out.writeString(address);
+        out.writeString(Phone1);
+        out.writeString(Phone2);
+        out.writeString(Phone3);
+        out.writeString(e_mail);
+
+    }
+
+    public static final Parcelable.Creator<Customers> CREATOR = new Parcelable.Creator<Customers>() {
+        public Customers createFromParcel(Parcel in) {
+            return new Customers(in);
+        }
+
+        public Customers[] newArray(int size) {
+            return new Customers[size];
+        }
+    };
 }

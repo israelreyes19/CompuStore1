@@ -737,7 +737,9 @@ public final class Inventory {
 
     public List<Customers> findby(String firstname, String lastname, String address, String phone, String email, String descrip) {
         ArrayList<Customers> list = new ArrayList<Customers>();
-
+        if (descrip.length() == 0) {
+            descrip = "holajeje.jpg"; //like \""+descrip + %\"
+        }
         if (firstname.length() + lastname.length() + address.length() + phone.length() + email.length() == 0) {
             CustomersCursor cursor = new CustomersCursor(db.rawQuery("SELECT * FROM customers ORDER BY last_name", null));// ORDER BY last_name
             while (cursor.moveToNext()) {
@@ -761,35 +763,35 @@ public final class Inventory {
 
             if (firstname.length() > 0) {
                 flag0 = true;
-                _firsname = "first_name ";
+                _firsname = "first_name like \""+ descrip + "%\"";
             } else {
                 flag0 = false;
                 _firsname = "";
             }
             if (lastname.length() > 0) {
                 flag1 = true;
-                _lastname = " last_name ";
+                _lastname = " last_name like \"" + descrip + "%\"";
             } else {
                 flag1 = false;
                 _lastname = "";
             }
             if (address.length() > 0) {
                 flag2 = true;
-                _address = " address ";
+                _address = " address like \"" + descrip + "%\"";
             } else {
                 flag2 = false;
                 _address = "";
             }
             if (phone.length() > 0) {
                 flag3 = true;
-                _phones = " phone1 or phone2 or phone3";
+                _phones = " phone1 like \"" + descrip + "%\" or phone2 like \"" + descrip + "%\"  or phone3 like \"" + descrip + "%\"";
             } else {
                 flag3 = false;
                 _phones = "";
             }
             if (email.length() > 0) {
                 flag4 = true;
-                _email = " e_mail";
+                _email = " e_mail like \"" + descrip + "%\"";
             } else {
                 flag4 = false;
                 _email = "";
@@ -815,12 +817,10 @@ public final class Inventory {
                     or4 = "or";
                 }
             }
-            if (descrip.length() == 0) {
-                descrip = "holajeje.jpg";
-            }
+
 
             String aux = "SELECT * FROM customers WHERE " + _firsname + " " + or1 + " " + _lastname + " " + // this only get the last or
-                    or2 + " " + _address + " " + or3 + " " + _phones + " " + or4 + " " + _email + " like \"" + descrip + "%\" order by last_name";
+                    or2 + " " + _address + " " + or3 + " " + _phones + " " + or4 + " " + _email +" order by last_name";
             CustomersCursor cursor = new CustomersCursor(db.rawQuery(aux, null));
             while (cursor.moveToNext()) {
                 list.add(cursor.getCustomer());

@@ -1,7 +1,10 @@
 package com.fiuady.android.compustore.db;
 
 
-public final class Order_assemblies {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public final class Order_assemblies  implements Parcelable {
     private int id; // for order Id
     private int assembly_id; // for assembly id
     private int qty;
@@ -11,6 +14,7 @@ public final class Order_assemblies {
         this.assembly_id = assembly_id;
         this.qty = qty;
     }
+
 
     public int getId() {
         return id;
@@ -35,4 +39,28 @@ public final class Order_assemblies {
     public void setQty(int qty) {
         this.qty = qty;
     }
+    private Order_assemblies(Parcel in) {
+        id = in.readInt();
+        assembly_id = in.readInt();
+        qty = in.readInt();
+
+    }
+    public int describeContents() {
+        return 0;
+    }
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(id);
+        out.writeInt(assembly_id);
+        out.writeInt(qty);
+    }
+
+    public static final Parcelable.Creator<Order_assemblies> CREATOR = new Parcelable.Creator<Order_assemblies>() {
+        public Order_assemblies createFromParcel(Parcel in) {
+            return new Order_assemblies(in);
+        }
+
+        public Order_assemblies[] newArray(int size) {
+            return new Order_assemblies[size];
+        }
+    };
 }

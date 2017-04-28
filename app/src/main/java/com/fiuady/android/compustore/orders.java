@@ -3,9 +3,11 @@ package com.fiuady.android.compustore;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -140,7 +142,7 @@ public class orders extends AppCompatActivity {
 
                             } else { // se seleccionó modificar Orden
                                 Intent i = new Intent(orders.this, modify_order.class);
-                                i.putExtra("Order_Id",OrdersOnRV.get(pos).getId());
+                                i.putExtra("Order_Id", OrdersOnRV.get(pos).getId());
                                 startActivity(i);
 
                             }
@@ -211,7 +213,8 @@ public class orders extends AppCompatActivity {
     private Button btn_oldDate, btn_newDate;
     private CheckBox ChB_oldDate, ChB_newDate;
     List<Customers> clientsfounded = new ArrayList<Customers>();
-    private boolean pendiente_IsSel = false, cancelado_IsSel = false, confirmado_IsSel = false, entransito_IsSel = false, finalizado_IsSel = false;
+    private boolean pendiente_IsSel = false, cancelado_IsSel = false, confirmado_IsSel = false, entransito_IsSel = false,
+            finalizado_IsSel = false, Old_date_IsSel=false, New_date_IsSel=false, SelectingStatus=false;
     private int oldDate_DayX, oldDate_MonthX, oldDate_YearX, i;
     private TextView txt_status_order;
     private List<Order> OrdersOnRV = new ArrayList<Order>();
@@ -232,8 +235,13 @@ public class orders extends AppCompatActivity {
         ChB_newDate = (CheckBox) findViewById(R.id.ChB_newDate);
         txt_status_order = (TextView) findViewById(R.id.Txt_status_order);
         recyclerView = (RecyclerView) findViewById(R.id.orders_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        int display_mode = getResources().getConfiguration().orientation;
+        if (display_mode == Configuration.ORIENTATION_PORTRAIT) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        } else {
+            GridLayoutManager manager = new GridLayoutManager(orders.this, 3);
+            recyclerView.setLayoutManager(manager);
+        }
 
         //Componentes Auxiliares
         inventory = new Inventory(getApplicationContext());
@@ -249,14 +257,122 @@ public class orders extends AppCompatActivity {
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_clients.setAdapter(adapter);
+        ChB_oldDate.setChecked(Old_date_IsSel);
+        ChB_newDate.setChecked(New_date_IsSel);
+        if (savedInstanceState != null) {
+            pendiente_IsSel =  savedInstanceState.getBoolean("pendiente_IsSel");
+            cancelado_IsSel =  savedInstanceState.getBoolean("cancelado_IsSel");
+            confirmado_IsSel = savedInstanceState.getBoolean("confirmado_IsSel");
+            entransito_IsSel = savedInstanceState.getBoolean("entransito_IsSel");
+            finalizado_IsSel = savedInstanceState.getBoolean("finalizado_IsSel");
+            Old_date_IsSel=  savedInstanceState.getBoolean("olddate_IsSel");
+            New_date_IsSel=  savedInstanceState.getBoolean("newdate_IsSel");
+            SelectingStatus = savedInstanceState.getBoolean("SelectingStatus");
+            ChB_oldDate.setChecked(Old_date_IsSel);
+            ChB_newDate.setChecked(New_date_IsSel);
+            String auxOld = savedInstanceState.getString("Old_date_String");
+            String auxNew = savedInstanceState.getString("New_date_String");
+            btn_oldDate.setText(auxOld);
+            btn_newDate.setText(auxNew);
+            if (New_date_IsSel) {btn_newDate.setEnabled(true);} else {btn_newDate.setEnabled(false);}
+            if (Old_date_IsSel) {btn_oldDate.setEnabled(true);} else {btn_oldDate.setEnabled(false);}
+            if(SelectingStatus)
+            {
+                SelectingStatus = true;
+                final Dialog dialog = new Dialog(orders.this);
+                dialog.setTitle("Estados: ");
+                dialog.setContentView(R.layout.spinnercheckbox_options);
+                dialog.show();
+                //Definicion de componentes dentro del dialogo
+                final CheckBox ChB_pendiente = (CheckBox) dialog.findViewById(R.id.checkBox_pendiente);
+                final CheckBox ChB_Cancelado = (CheckBox) dialog.findViewById(R.id.checkBox2_cancelado);
+                final CheckBox ChB_Confirmado = (CheckBox) dialog.findViewById(R.id.checkBox3_confirmado);
+                final CheckBox ChB_EnTransito = (CheckBox) dialog.findViewById(R.id.checkBox4_entransito);
+                final CheckBox ChB_Finalizado = (CheckBox) dialog.findViewById(R.id.checkBox5_finalizado);
+                final Button Btn_acept = (Button) dialog.findViewById(R.id.btn_aceptar);
+                final Button Btn_cancel = (Button) dialog.findViewById(R.id.btn_cancelar);
+                ChB_pendiente.setChecked(pendiente_IsSel);
+                ChB_Cancelado.setChecked(cancelado_IsSel);
+                ChB_Confirmado.setChecked(confirmado_IsSel);
+                ChB_EnTransito.setChecked(entransito_IsSel);
+                ChB_Finalizado.setChecked(finalizado_IsSel);
+               // ChB_pendiente.setOnClickListener(new View.OnClickListener() {
+               //     @Override
+               //     public void onClick(View v) {
+               //         pendiente_IsSel = ChB_pendiente.isChecked();
+               //     }
+               // });
+               // ChB_Cancelado.setOnClickListener(new View.OnClickListener() {
+               //     @Override
+               //     public void onClick(View v) {
+               //         cancelado_IsSel = ChB_Cancelado.isChecked();
+               //     }
+               // });
+               // ChB_Confirmado.setOnClickListener(new View.OnClickListener() {
+               //     @Override
+               //     public void onClick(View v) {
+               //         confirmado_IsSel = ChB_Confirmado.isChecked();
+               //     }
+               // });
+               // ChB_EnTransito.setOnClickListener(new View.OnClickListener() {
+               //     @Override
+               //     public void onClick(View v) {
+               //         entransito_IsSel = ChB_EnTransito.isChecked();
+               //     }
+               // });
+               // ChB_Finalizado.setOnClickListener(new View.OnClickListener() {
+               //     @Override
+               //     public void onClick(View v) {
+               //         finalizado_IsSel = ChB_Finalizado.isChecked();
+               //     }
+               // });
+                Btn_acept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        pendiente_IsSel = ChB_pendiente.isChecked();
+                        cancelado_IsSel = ChB_Cancelado.isChecked();
+                        confirmado_IsSel = ChB_Confirmado.isChecked();
+                        entransito_IsSel = ChB_EnTransito.isChecked();
+                        finalizado_IsSel = ChB_Finalizado.isChecked();
+                        String auxS = "";
+                        if (pendiente_IsSel) {
+                            auxS = auxS + "Pendiente/ ";
+                        }
+                        if (cancelado_IsSel) {
+                            auxS = auxS + "Cancelado/ ";
+                        }
+                        if (confirmado_IsSel) {
+                            auxS = auxS + "Confirmado/ ";
+                        }
+                        if (entransito_IsSel) {
+                            auxS = auxS + "En transito/ ";
+                        }
+                        if (finalizado_IsSel) {
+                            auxS = auxS + "Finalizado ";
+                        }
+                        txt_status_order.setText(auxS);
+                        ShowOrders();
+                        SelectingStatus =false;
+                        dialog.cancel();
 
+                    }
+                });
+                Btn_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SelectingStatus = false;
+                        dialog.cancel();
 
+                    }
+                });
+            }
+        }
         //Eventos de los componentes
 
         final View.OnTouchListener spinnerOnTouch = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-
+                    SelectingStatus = true;
                     final Dialog dialog = new Dialog(orders.this);
                     dialog.setTitle("Estados: ");
                     dialog.setContentView(R.layout.spinnercheckbox_options);
@@ -274,6 +390,36 @@ public class orders extends AppCompatActivity {
                     ChB_Confirmado.setChecked(confirmado_IsSel);
                     ChB_EnTransito.setChecked(entransito_IsSel);
                     ChB_Finalizado.setChecked(finalizado_IsSel);
+                  // ChB_pendiente.setOnClickListener(new View.OnClickListener() {
+                  //     @Override
+                  //     public void onClick(View v) {
+                  //         pendiente_IsSel = ChB_pendiente.isChecked();
+                  //     }
+                  // });
+                  // ChB_Cancelado.setOnClickListener(new View.OnClickListener() {
+                  //     @Override
+                  //     public void onClick(View v) {
+                  //         cancelado_IsSel = ChB_Cancelado.isChecked();
+                  //     }
+                  // });
+                  // ChB_Confirmado.setOnClickListener(new View.OnClickListener() {
+                  //     @Override
+                  //     public void onClick(View v) {
+                  //         confirmado_IsSel = ChB_Confirmado.isChecked();
+                  //     }
+                  // });
+                  // ChB_EnTransito.setOnClickListener(new View.OnClickListener() {
+                  //     @Override
+                  //     public void onClick(View v) {
+                  //         entransito_IsSel = ChB_EnTransito.isChecked();
+                  //     }
+                  // });
+                  // ChB_Finalizado.setOnClickListener(new View.OnClickListener() {
+                  //     @Override
+                  //     public void onClick(View v) {
+                  //         finalizado_IsSel = ChB_Finalizado.isChecked();
+                  //     }
+                  // });
                     Btn_acept.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -300,13 +446,15 @@ public class orders extends AppCompatActivity {
                             }
                             txt_status_order.setText(auxS);
                             ShowOrders();
-
+                            SelectingStatus =false;
                             dialog.cancel();
+
                         }
                     });
                     Btn_cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            SelectingStatus = false;
                             dialog.cancel();
 
                         }
@@ -590,5 +738,21 @@ public class orders extends AppCompatActivity {
         if (RESULT_OK == resultCode) {
             ShowOrders();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("pendiente_IsSel", pendiente_IsSel);
+        outState.putBoolean("cancelado_IsSel", cancelado_IsSel);
+        outState.putBoolean("confirmado_IsSel", confirmado_IsSel);
+        outState.putBoolean("entransito_IsSel", entransito_IsSel);
+        outState.putBoolean("finalizado_IsSel", finalizado_IsSel);
+        outState.putBoolean("olddate_IsSel", ChB_oldDate.isChecked());
+        outState.putBoolean("newdate_IsSel", ChB_newDate.isChecked());
+        outState.putString("Old_date_String", btn_oldDate.getText().toString());
+        outState.putString("New_date_String", btn_newDate.getText().toString());
+        outState.putBoolean("SelectingStatus",SelectingStatus);
+
     }
 }
